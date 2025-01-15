@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <title>Granblue Grid Maker</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background-color: #1b1b1b
+        }
+
+        button {
+            border: 0;
+            background-size: cover;
+        }
+
+        .team-container {
+            position: relative;
+            left: 10px;
+            width: 504px;
+            height: 300px;
+            background: linear-gradient(to bottom, #4391A7, #173033);
+            box-shadow: inset 0 0 2px 3px #e5ffff, inset 0 0 6px 5px #59eaff, 1px 3px 4px #77776f
+        }
+
+        .skill-box {
+            width: 190px;
+            padding: 4px;
+            background-color: #001E28;
+            position: absolute;
+            bottom: 12px;
+            right: 10px;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
+            min-height: 82px
+        }
+
+        .skill-line {
+            width: 90%;
+            height: 2px;
+            background: linear-gradient(to right, rgba(0, 255, 255, 0), #3E7879, rgba(0, 255, 255, 0));
+            position: absolute;
+            left: 5%
+        }
+
+        .char-background {
+            background: linear-gradient(to bottom, #093D4D, #001E28);
+            border: solid 1px #356C79;
+            width: 100%;
+            height: 100%;
+            position: absolute
+        }
+
+        .skill {
+            color: #FFFFFF;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 5px
+        }
+
+        .skill-text {
+            overflow-x: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis
+        }
+
+        .team-summon {
+            position: absolute;
+            bottom: 21px;
+            left: 13px;
+            display: flex;
+            gap: 8px;
+
+            button {
+                width: 135px;
+                height: 77px;
+                background-image: url("assets/empty-weapon.png");
+            }
+        }
+
+        #w-grid-background {
+            background-image: url("assets/Weapon_Grid_background.png");
+            background-size: 523px;
+            position: relative;
+            top: -5px;
+            width: 523px;
+            height: 391px;
+        }
+
+        .w-grid-main {
+            background-image: url("assets/w-main-border.png");
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 138px;
+            height: 305px;
+
+            button {
+                width: 110px;
+                height: 231px;
+                position: relative;
+                top: 52px;
+                left: 13.5px;
+                background-image: url('assets/empty-char.jpg');
+            }
+        }
+
+        .w-grid-sub {
+            position: absolute;
+            top: 23px;
+            left: 160px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            grid-column-gap: 16px;
+            grid-row-gap: 3px;
+        }
+
+        .w-grid-sub .w {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            button {
+                width: 100px;
+                height: 63px;
+                background-image: url("assets/empty-weapon.png");
+            }
+        }
+
+        .w-skills {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            height: 40px;
+
+            img {
+                height: 100%;
+            }
+        }
+
+        .team-members {
+            position: absolute;
+            top: 18px;
+            display: flex;
+            justify-content: space-evenly;
+            gap: 4px;
+            padding: 10px 6px 10px 6px;
+            align-items: center;
+            background: linear-gradient(to bottom, #093D4D, #001E28);
+            border: solid 1px #356C79;
+
+            button {
+                width: 72px;
+                height: 150px;
+                background-image: url('assets/empty-char.jpg');
+            }
+        }
+    </style>
+    <script src="main.js"></script>
+</head>
+
+<body>
+    <div class="team-container">
+        <div class="team-members" style="left:10px;">
+            <button data-options="character"></button>
+            <button data-options="character"></button>
+            <button data-options="character"></button>
+            <button data-options="character"></button>
+        </div>
+        <div class="team-members" style="right:10px;">
+            <button data-options="character"></button>
+            <button data-options="character"></button>
+        </div>
+        <div class="team-summon">
+            <button></button>
+            <button></button>
+        </div>
+        <div class="skill-box">
+
+        </div>
+    </div>
+    <div id="w-grid-background">
+        <div class="w-grid-main">
+            <button></button>
+            <span class="w-skills"></span>
+        </div>
+        <div class="w-grid-sub">
+            <div class="w">
+                <button></button>
+                <span class="w-skills"></span>
+            </div>
+            <div class="w">
+                <button></button>
+                <span class="w-skills"></span>
+            </div>
+            <div class="w">
+                <button></button>
+                <span class="w-skills"></span>
+            </div>
+            <div class="w">
+                <button></button>
+                <span class="w-skills"></span>
+            </div>
+            <div class="w">
+                <button></button>
+                <span class="w-skills"></span>
+            </div>
+            <div class="w">
+                <button></button>
+                <span class="w-skills"></span>
+            </div>
+            <div class="w">
+                <button></button>
+                <span class="w-skills"></span>
+            </div>
+            <div class="w">
+                <button></button>
+                <span class="w-skills"></span>
+            </div>
+            <div class="w">
+                <button></button>
+                <span class="w-skills"></span>
+            </div>
+        </div>
+    </div>
+    <div id="dropdown" class="dropdown">
+        <input type="text" id="searchInput" placeholder="Search...">
+        <ul id="optionsList"></ul>
+    </div>
+</body>
+
+
+
+</html>
