@@ -26,6 +26,16 @@ window.onload = async (e) => {
             cOptions[cOptions.length - 1].metatags.push(...aliases[name]);
         }
     }
+    for (id in summons) {
+        let name = summons[id].name;
+        sOptions.push({
+            label: name,
+            metatags: [id]
+        });
+        if (aliases[name]) {
+            sOptions[sOptions.length - 1].metatags.push(...aliases[name]);
+        }
+    }
     setupButtonSearch();
 };
 
@@ -41,6 +51,7 @@ function setupButtonSearch() {
     };
 
     let currentOptions = [];
+    let filteredOptions = [];
     let activeButton = null;
     let activeIndex = -1;
 
@@ -53,6 +64,7 @@ function setupButtonSearch() {
         dropdown.style.display = 'block';
 
         currentOptions = options;
+        filteredOptions = options;
         activeButton = button;
         renderOptions(currentOptions);
         searchInput.value = ''; // Reset search input
@@ -113,7 +125,7 @@ function setupButtonSearch() {
                 updateActiveOption();
             }
             if (activeIndex >= 0) {
-                const selectedOption = currentOptions[activeIndex];
+                const selectedOption = currentOptions[currentOptions.indexOf(filteredOptions[activeIndex])];
                 setButtonBackground(activeButton, activeButton.dataset.options, selectedOption); // Update background image
                 hideDropdown();
             }
@@ -123,12 +135,12 @@ function setupButtonSearch() {
     // Filter options on input
     searchInput.addEventListener('input', () => {
         const searchTerm = searchInput.value.toLowerCase();
-        const filteredOptions = currentOptions.filter(option =>
+        filteredOptions = currentOptions.filter(option =>
             option.label.toLowerCase().includes(searchTerm) ||
             option.metatags.some(tag => tag.toLowerCase().includes(searchTerm))
         );
         renderOptions(filteredOptions);
-        activeIndex = currentOptions.indexOf(filteredOptions[0]); // Reset active index
+        activeIndex = 0; // Reset active index
     });
 
     // Attach event listeners to buttons
@@ -161,7 +173,7 @@ function setButtonBackground(button, optionSet, selectedOption) {
             backgroundUrl = `url('/images/weapons/${selectedOption.metatags[0]}.png')`;
             break;
         case 'summons':
-            backgroundUrl = `url('/images/summons/${selectedOption.metatags[0]}.png')`;
+            backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/summon/m/${selectedOption.metatags[0]}.jpg')`;
             break;
         default:
             break;
