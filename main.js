@@ -1,6 +1,54 @@
 let cOptions = [];
 let wOptions = [];
 let sOptions = [];
+let clOptions = [
+    { label: "Berserker", metatags: ["100301_sw"] },
+    { label: "Viking", metatags: ["100401_sw"] },
+    { label: "Spartan", metatags: ["110301_sw"] },
+    { label: "Paladin", metatags: ["110401_sw"] },
+    { label: "Sage", metatags: ["120301_wa"] },
+    { label: "Iatromantis", metatags: ["120401_wa"] },
+    { label: "Warlock", metatags: ["130301_wa"] },
+    { label: "Manadiver", metatags: ["130401_wa"] },
+    { label: "Bandit Tycoon", metatags: ["140301_kn"] },
+    { label: "Street King", metatags: ["140401_kn"] },
+    { label: "Chaos Ruler", metatags: ["150301_sw"] },
+    { label: "Onmyoji", metatags: ["150401_kn"] },
+    { label: "Luchador", metatags: ["160301_me"] },
+    { label: "Sumaibito", metatags: ["160401_me"] },
+    { label: "Nighthound", metatags: ["170301_bw"] },
+    { label: "Elysian", metatags: ["180301_mc"] },
+    { label: "Apsaras", metatags: ["190301_sp"] },
+    { label: "Alchemist", metatags: ["200201_kn"] },
+    { label: "Doctor", metatags: ["200301_kn"] },
+    { label: "Ninja", metatags: ["210201_kt"] },
+    { label: "Runeslayer", metatags: ["210301_kt"] },
+    { label: "Samurai", metatags: ["220201_kt"] },
+    { label: "Kengo", metatags: ["220301_kt"] },
+    { label: "Sword Master", metatags: ["230201_sw"] },
+    { label: "Glorybringer", metatags: ["230301_sw"] },
+    { label: "Gunslinger", metatags: ["240201_gu"] },
+    { label: "Soldier", metatags: ["240301_gu"] },
+    { label: "Mystic", metatags: ["250201_wa"] },
+    { label: "Nekomancer", metatags: ["250301_wa"] },
+    { label: "Assassin", metatags: ["260201_kn"] },
+    { label: "Tormentor", metatags: ["260301_kn"] },
+    { label: "Drum Master", metatags: ["270201_mc"] },
+    { label: "Rising Force", metatags: ["270301_mc"] },
+    { label: "Dancer", metatags: ["280201_kn"] },
+    { label: "Masquerade", metatags: ["280301_kn"] },
+    { label: "Mechanic", metatags: ["290201_gu"] },
+    { label: "Chrysaor", metatags: ["300301_sw"] },
+    { label: "Lumberjack", metatags: ["410301_ax"] },
+    { label: "Cavalier", metatags: ["420301_sp"] },
+    { label: "Monk", metatags: ["430301_me"] },
+    { label: "Robin Hood", metatags: ["440301_bw"] },
+    { label: "Relic Buster", metatags: ["450301_sw"] },
+    { label: "Yamato", metatags: ["460301_sw"] },
+    { label: "Shieldsworn", metatags: ["470301_ax"] }
+];
+
+let characters, summons, weapons;
 window.onload = async (e) => {
     const aliases = {
         "Catura": ["cow"],
@@ -8,13 +56,15 @@ window.onload = async (e) => {
         "Vikala": ["rat"]
     };
 
-    let characters, summons;
     await fetch("https://raw.githubusercontent.com/cajunwildcat/GBF-Party-Parser/main/characters.json", { next: 43200 })
         .then(function (response) { return response.json(); })
         .then((response) => characters = response);
     await fetch("https://raw.githubusercontent.com/cajunwildcat/GBF-Party-Parser/main/summons.json", { next: 43200 })
         .then(function (response) { return response.json(); })
         .then((response) => summons = response);
+    await fetch("https://raw.githubusercontent.com/cajunwildcat/GBF-Party-Parser/main/weapons.json", { next: 43200 })
+        .then(function (response) { return response.json(); })
+        .then((response) => weapons = response);
 
     for (id in characters) {
         let name = characters[id].name;
@@ -36,6 +86,16 @@ window.onload = async (e) => {
             sOptions[sOptions.length - 1].metatags.push(...aliases[name]);
         }
     }
+    for (id in weapons) {
+        let name = weapons[id].name;
+        wOptions.push({
+            label: name,
+            metatags: [id]
+        });
+        if (aliases[name]) {
+            sOptions[wOptions.length - 1].metatags.push(...aliases[name]);
+        }
+    }
     setupButtonSearch();
 };
 
@@ -45,7 +105,8 @@ function setupButtonSearch() {
     const optionsList = document.getElementById('optionsList');
 
     const optionSets = {
-        character: cOptions,
+        classes: clOptions,
+        characters: cOptions,
         weapons: wOptions,
         summons: sOptions
     };
@@ -129,7 +190,7 @@ function setupButtonSearch() {
                 setButtonBackground(activeButton, activeButton.dataset.options, selectedOption); // Update background image
                 hideDropdown();
             }
-        }        
+        }
     });
 
     // Filter options on input
@@ -165,17 +226,22 @@ function setupButtonSearch() {
 
 function setButtonBackground(button, optionSet, selectedOption) {
     let backgroundUrl = '';
+    let id = selectedOption.metatags[0];
     switch (optionSet) {
-        case 'character':
-            backgroundUrl = `url('https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/npc/f/${selectedOption.metatags[0]}_01.jpg')`;
+        case 'classes':
+            backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/leader/quest/${id}_1_01.jpg')`;
+            break;
+        case 'characters':
+            backgroundUrl = `url('https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/npc/f/${id}_0${characters[id].maxUncap==5? "3" : characters[id].maxUncap==6? "4" : "1"}.jpg')`;
             break;
         case 'weapons':
-            backgroundUrl = `url('/images/weapons/${selectedOption.metatags[0]}.png')`;
+            backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/weapon/${button.parentElement.classList[0].includes("main") ? "ls" : "m"}/${id}.jpg')`;
             break;
         case 'summons':
-            backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/summon/m/${selectedOption.metatags[0]}.jpg')`;
+            backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/summon/${button.parentElement.classList[0].includes("team") ? "m" : `party_${button.parentElement.classList[0].includes("main") ? "main" : "sub"}`}/${id}${summons[id].maxUncap==6? "_04": ""}.jpg')`;
             break;
         default:
+            console.error('Invalid option set');
             break;
     }
     button.style.backgroundImage = backgroundUrl;
