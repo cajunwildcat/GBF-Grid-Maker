@@ -35,6 +35,8 @@ ul {
     position: absolute;
     left: 1000px;
     font-size: 24px;
+    display: flex;
+    flex-direction: column;
 
     button:active {
         background: linear-gradient(to bottom, #041622, #08425a, #6598a8);
