@@ -340,7 +340,7 @@ function wikiTemplateText() {
 |skill2=
 |skill3=
 |main=${getTeamData("s-main")}
-|support=
+|support=${getTeamData("s-support")}
 }}
 |weapons={{WeaponGridSkills
 |mh=${getTeamData("mh")}
@@ -360,13 +360,13 @@ function wikiTemplateText() {
 |opus=${teamData.opus ? teamData.opus.join(",") : ""}
 }}
 |summons={{SummonGrid
-|main=
-|s1=${teamData.s1 ? teamData.s1 : ""}
-|s2=${teamData.s2 ? teamData.s2 : ""}
-|s3=${teamData.s3 ? teamData.s3 : ""}
-|s4=${teamData.s4 ? teamData.s4 : ""}
-|sub1=${teamData.sub1 ? teamData.sub1 : ""}
-|sub2=${teamData.sub2 ? teamData.sub2 : ""}
+|main=${getTeamData("s-main")}
+|s1=${getTeamData("s1")}
+|s2=${getTeamData("s2")}
+|s3=${getTeamData("s3")}
+|s4=${getTeamData("s4")}
+|sub1=${getTeamData("sub1")}
+|sub2=${getTeamData("sub2")}
 |quick=
 }}
 }}`
