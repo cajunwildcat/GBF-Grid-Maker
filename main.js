@@ -47,8 +47,13 @@ let clOptions = [
     { label: "Yamato", metatags: ["460301_sw"] },
     { label: "Shieldsworn", metatags: ["470301_ax"] }
 ];
-
+let teamData = {};
 let characters, summons, weapons;
+let filters = {
+    characters: [],
+    weapons: [],
+    summons: []
+}
 window.onload = async (e) => {
     const aliases = {
         "Catura": ["cow"],
@@ -136,6 +141,7 @@ function setupButtonSearch() {
     // Hide dropdown
     function hideDropdown() {
         dropdown.style.display = 'none';
+        activeButton?.focus();
         activeButton = null;
         activeIndex = -1;
     }
@@ -169,7 +175,12 @@ function setupButtonSearch() {
     // Handle keyboard navigation
     searchInput.addEventListener('keydown', (e) => {
         const items = optionsList.querySelectorAll('li');
-        if (items.length === 0) return;
+        if (e.key === 'Escape') {
+            searchInput.value = '';
+            filteredOptions = currentOptions;
+            renderOptions(filteredOptions);
+            activeIndex = -1; // Reset active index
+        } else if (items.length === 0) return;
 
         if (e.key === 'ArrowDown') {
             e.preventDefault();
@@ -205,15 +216,36 @@ function setupButtonSearch() {
     });
 
     // Attach event listeners to buttons
-    document.querySelectorAll('button').forEach(button => {
+    document.querySelectorAll('.grid-input').forEach(button => {
         button.addEventListener('click', (event) => {
-            const options = optionSets[button.dataset.options];
+            const cat = button.dataset.options;
+            const options = optionSets[cat].filter(option => {
+                switch (cat) {
+                    case 'classes':
+                        return true;
+                    case 'weapons':
+                        return filters.weapons.includes(weapons[option.metatags[0]].rarity.toLowerCase())
+                            && filters.weapons.includes(weapons[option.metatags[0]].element.toLowerCase());
+                    case 'characters':
+                        return filters.characters.includes(characters[option.metatags[0]].rarity.toLowerCase())
+                            && filters.characters.includes(characters[option.metatags[0]].element.toLowerCase());
+                    case 'summons':
+                        return filters.summons.includes(summons[option.metatags[0]].rarity.toLowerCase())
+                            && filters.summons.includes(summons[option.metatags[0]].element.toLowerCase());
+                }
+            }).sort((a, b) => a.label.localeCompare(b.label));
             if (dropdown.style.display === 'block' && activeButton === button) {
                 hideDropdown();
             } else {
                 showDropdown(event, options);
             }
         });
+
+        button.oncontextmenu = (e) => {
+            e.preventDefault();
+            button.style.backgroundImage = null;
+            delete teamData[button.id];
+        }
     });
 
     // Hide dropdown when clicking outside
@@ -221,6 +253,52 @@ function setupButtonSearch() {
         if (!dropdown.contains(event.target) && event.target.nodeName !== 'BUTTON') {
             hideDropdown();
         }
+    });
+
+    document.querySelector("#export-button").onclick = () => {
+        document.querySelector("#import-export-text").value = wikiTemplateText();
+    }
+
+    document.querySelector("#import-export-text").onkeydown = (e) => {
+        if (e.key == "Escape") {
+            document.querySelector("#import-export-text").value = "";
+        }
+    }
+
+    document.querySelectorAll(".filter-button").forEach(button => {
+        let cat = button.parentElement.id.replace("-filters", "");
+        if (button.dataset.filterEnabled == "true") {
+            filters[cat].push(button.dataset.filter);
+        }
+        button.onclick = (e) => {
+            console.log(e)
+            if (e.ctrlKey) {
+                button.dataset.filterEnabled = "true";
+                filters[cat].push(button.dataset.filter);
+                document.querySelectorAll(`#${cat}-filters .filter-button[data-filter-type="${button.dataset.filterType}"]`).forEach(b => {
+                    if (b !== button && b.dataset.filterEnabled === button.dataset.filterEnabled) b.click();
+                });
+                if (e.shiftKey) {
+                    document.querySelectorAll(`.filter-button[data-filter="${button.dataset.filter}"]`).forEach(b => {
+                        if (b !== button) b.dispatchEvent(new MouseEvent("click", { ctrlKey: true }));
+                    });
+                }
+                return;
+            }
+            if (button.dataset.filterEnabled == "true") {
+                button.dataset.filterEnabled = "false";
+                filters[cat].splice(filters[cat].indexOf(button.dataset.filter), 1);
+            } else {
+                button.dataset.filterEnabled = "true";
+                filters[cat].push(button.dataset.filter);
+            }
+            
+            if (e.shiftKey) {
+                document.querySelectorAll(`.filter-button[data-filter="${button.dataset.filter}"]`).forEach(b => {
+                    if (b.dataset.filterEnabled !== button.dataset.filterEnabled) b.click();
+                });
+            }
+        };
     });
 }
 
@@ -232,17 +310,67 @@ function setButtonBackground(button, optionSet, selectedOption) {
             backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/leader/quest/${id}_1_01.jpg')`;
             break;
         case 'characters':
-            backgroundUrl = `url('https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/npc/f/${id}_0${characters[id].maxUncap==5? "3" : characters[id].maxUncap==6? "4" : "1"}.jpg')`;
+            backgroundUrl = `url('https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/npc/f/${id}_0${characters[id].maxUncap == 5 ? "3" : characters[id].maxUncap == 6 ? "4" : "1"}.jpg')`;
             break;
         case 'weapons':
             backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/weapon/${button.parentElement.classList[0].includes("main") ? "ls" : "m"}/${id}.jpg')`;
             break;
         case 'summons':
-            backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/summon/${button.parentElement.classList[0].includes("team") ? "m" : `party_${button.parentElement.classList[0].includes("main") ? "main" : "sub"}`}/${id}${summons[id].maxUncap==6? "_04": ""}.jpg')`;
+            backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/summon/${button.parentElement.classList[0].includes("team") ? "m" : `party_${button.parentElement.classList[0].includes("main") ? "main" : "sub"}`}/${id}${summons[id].maxUncap == 6 ? "_04" : ""}.jpg')`;
             break;
         default:
             console.error('Invalid option set');
             break;
     }
     button.style.backgroundImage = backgroundUrl;
+    if (button.id == "s-main") Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].style.backgroundImage = backgroundUrl.replace(button.parentElement.classList[0].includes("team") ? "/m/" : "/party_main/", button.parentElement.classList[0].includes("team") ? "/party_main/" : "/m/");
+    teamData[button.id] = selectedOption.label;
+}
+
+function wikiTemplateText() {
+    return `{{TeamSpread
+|team={{Team
+|class=${getTeamData("mc")}
+|char1=${getTeamData("char1")}
+|char2=${getTeamData("char2")}
+|char3=${getTeamData("char3")}
+|char4=${getTeamData("char4")}
+|char5=${getTeamData("char5")}
+|skill1=
+|skill2=
+|skill3=
+|main=${getTeamData("s-main")}
+|support=
+}}
+|weapons={{WeaponGridSkills
+|mh=${getTeamData("mh")}
+|wp1=${getTeamData("wp1")}
+|wp2=${getTeamData("wp2")}
+|wp3=${getTeamData("wp3")}
+|wp4=${getTeamData("wp4")}
+|wp5=${getTeamData("wp5")}
+|wp6=${getTeamData("wp6")}
+|wp7=${getTeamData("wp7")}
+|wp8=${getTeamData("wp8")}
+|wp9=${getTeamData("wp9")}${teamData.wp10 || teamData.wp11 || teamData.wp12 ? `
+|wp10=${getTeamData("wp10")}
+|wp11=${getTeamData("wp11")}
+|wp12=${getTeamData("wp12")}` : ""}
+|ultima=${teamData.ultima ? teamData.ultima.join(",") : ""}
+|opus=${teamData.opus ? teamData.opus.join(",") : ""}
+}}
+|summons={{SummonGrid
+|main=
+|s1=${teamData.s1 ? teamData.s1 : ""}
+|s2=${teamData.s2 ? teamData.s2 : ""}
+|s3=${teamData.s3 ? teamData.s3 : ""}
+|s4=${teamData.s4 ? teamData.s4 : ""}
+|sub1=${teamData.sub1 ? teamData.sub1 : ""}
+|sub2=${teamData.sub2 ? teamData.sub2 : ""}
+|quick=
+}}
+}}`
+}
+function getTeamData(item) {
+    return teamData[item] ? teamData[item] : "";
 }
