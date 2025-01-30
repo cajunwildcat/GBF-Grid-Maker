@@ -244,12 +244,18 @@ function setupButtonSearch() {
         button.oncontextmenu = (e) => {
             e.preventDefault();
             button.style.backgroundImage = null;
+            if (button.firstChild) button.removeChild(button.firstChild);
             delete teamData[button.id];
+            delete teamData[button.id + "Uncap"];
+            delete teamData[button.id + "Trans"];
         }
     });
 
     // Hide dropdown when clicking outside
     document.addEventListener('click', (event) => {
+        if (document.querySelector("#uncap-dropdown") && !document.querySelector("#uncap-dropdown").contains(event.target)) {
+            document.querySelector("#uncap-dropdown")?.remove();
+        }
         if (!dropdown.contains(event.target) && event.target.nodeName !== 'BUTTON') {
             hideDropdown();
         }
@@ -271,7 +277,6 @@ function setupButtonSearch() {
             filters[cat].push(button.dataset.filter);
         }
         button.onclick = (e) => {
-            console.log(e)
             if (e.ctrlKey) {
                 button.dataset.filterEnabled = "true";
                 filters[cat].push(button.dataset.filter);
@@ -292,7 +297,7 @@ function setupButtonSearch() {
                 button.dataset.filterEnabled = "true";
                 filters[cat].push(button.dataset.filter);
             }
-            
+
             if (e.shiftKey) {
                 document.querySelectorAll(`.filter-button[data-filter="${button.dataset.filter}"]`).forEach(b => {
                     if (b.dataset.filterEnabled !== button.dataset.filterEnabled) b.click();
@@ -302,21 +307,94 @@ function setupButtonSearch() {
     });
 }
 
-function setButtonBackground(button, optionSet, selectedOption) {
+function setButtonBackground(button, optionSet, selectedOption, uncap = null) {
     let backgroundUrl = '';
     let id = selectedOption.metatags[0];
+    if (["characters", "summons", "weapons"].includes(optionSet)) {
+        if (uncap === null) {
+            if (button.firstChild) button.removeChild(button.firstChild);
+            switch (optionSet) {
+                case "characters": uncap = characters[id].maxUncap; break;
+                case "summons": uncap = summons[id].maxUncap; break;
+                case "weapons": uncap = weapons[id].maxUncap; break;
+            }
+            teamData[button.id + "Uncap"] = uncap;
+            if ((optionSet=="characters" && uncap === 5) || uncap == 4) {
+                let uncapButton = document.createElement("button");
+                uncapButton.classList.add("uncap-toggle");
+                uncapButton.dataset.toggled = true;
+                uncapButton.title = "Toggle 5*";
+                uncapButton.onclick = (e) => {
+                    e.stopPropagation();
+                    uncapButton.dataset.toggled = uncapButton.dataset.toggled === "true" ? "false" : "true";
+                    teamData[button.id + "Uncap"] = uncapButton.dataset.toggled === "true" ? 5 : 4;
+                    setButtonBackground(button, optionSet, selectedOption, uncapButton.dataset.toggled === "true" ? 5 : 4);
+                }
+                button.appendChild(uncapButton);
+            }
+            else if (uncap === 6) {
+                teamData[button.id + "Trans"] = "t5";
+                let uncapButton = document.createElement("button");
+                uncapButton.classList.add("uncap-select");
+                uncapButton.title = "Select Uncap";
+                uncapButton.onclick = (e) => {
+                    e.stopPropagation();
+                    let dropdown = document.createElement("div");
+                    dropdown.classList.add("dropdown");
+                    dropdown.id = "uncap-dropdown";
+                    dropdown.style.position = "absolute";
+                    dropdown.style.top = "30px";
+                    dropdown.style.left = "0";
+                    dropdown.style.display = "block";
+                    dropdown.style.width = "30px";
+                    dropdown.innerHTML = `<ul id='optionsList'>
+                    <li data-trans="t5" style="background-image: url('assets/Icon_Transcend_Star_5.png');background-size:30px 30px;width:30px;height:30px;padding:0;"></li>
+                    <li data-trans="t4" style="background-image: url('assets/Icon_Transcend_Star_4.png');background-size:30px 30px;width:30px;height:30px;padding:0;"></li>
+                    <li data-trans="t3" style="background-image: url('assets/Icon_Transcend_Star_3.png');background-size:30px 30px;width:30px;height:30px;padding:0;"></li>
+                    <li data-trans="t2" style="background-image: url('assets/Icon_Transcend_Star_2.png');background-size:30px 30px;width:30px;height:30px;padding:0;"></li>
+                    <li data-trans="t1" style="background-image: url('assets/Icon_Transcend_Star_1.png');background-size:30px 30px;width:30px;height:30px;padding:0;"></li>
+                    <li data-trans="5" style="background-image: url('assets/Icon_Blue_Star_Full.png');background-size:30px 30px;width:30px;height:30px;padding:0;"></li>
+                    <li data-trans="4" style="background-image: url('assets/Icon_Blue_Star.png');background-size:30px 30px;width:30px;height:30px;padding:0;"></li>
+                    </ul>`
+                    dropdown.querySelectorAll("li").forEach(li => {
+                        li.onclick = (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (li.dataset.trans.includes("t")) {
+                                teamData[button.id + "Uncap"] = 6;
+                                teamData[button.id + "Trans"] = li.dataset.trans;
+                            }
+                            else {
+                                teamData[button.id + "Uncap"] = li.dataset.trans;
+                                delete teamData[button.id+"Trans"];
+                            }
+                            uncapButton.style.backgroundImage = li.style.backgroundImage;
+                            setButtonBackground(button, optionSet, selectedOption, li.dataset.trans);
+                            document.querySelector("#uncap-dropdown").remove();
+                        }
+                    });
+                    uncapButton.appendChild(dropdown);
+                }
+                button.appendChild(uncapButton);
+            }
+        }
+    }
+    let art;
     switch (optionSet) {
         case 'classes':
             backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/leader/quest/${id}_1_01.jpg')`;
             break;
         case 'characters':
-            backgroundUrl = `url('https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/npc/f/${id}_0${characters[id].maxUncap == 5 ? "3" : characters[id].maxUncap == 6 ? "4" : "1"}.jpg')`;
+            art = uncap == 5 ? 3 : uncap == 6 || uncap.toString().includes("t") ? 4 : 1;
+            backgroundUrl = `url('https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/npc/f/${id}_0${art}.jpg')`;
             break;
-        case 'weapons':
-            backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/weapon/${button.parentElement.classList[0].includes("main") ? "ls" : "m"}/${id}.jpg')`;
+            case 'weapons':
+            art = uncap == 6 || uncap == "t5"? "_03" : uncap.toString().includes("t") ? "_02" : "";
+            backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/weapon/${button.parentElement.classList[0].includes("main") ? "ls" : "m"}/${id}${art}.jpg')`;
             break;
-        case 'summons':
-            backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/summon/${button.parentElement.classList[0].includes("team") ? "m" : `party_${button.parentElement.classList[0].includes("main") ? "main" : "sub"}`}/${id}${summons[id].maxUncap == 6 ? "_04" : ""}.jpg')`;
+            case 'summons':
+            art = uncap == 6 || uncap == "t5"? "_04" : uncap.toString().includes("t") ? "_03" : uncap == 5 ? "_02" : "";
+            backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/summon/${button.parentElement.classList[0].includes("team") ? "m" : `party_${button.parentElement.classList[0].includes("main") ? "main" : "sub"}`}/${id}${art}.jpg')`;
             break;
         default:
             console.error('Invalid option set');
@@ -331,11 +409,11 @@ function wikiTemplateText() {
     return `{{TeamSpread
 |team={{Team
 |class=${getTeamData("mc")}
-|char1=${getTeamData("char1")}
-|char2=${getTeamData("char2")}
-|char3=${getTeamData("char3")}
-|char4=${getTeamData("char4")}
-|char5=${getTeamData("char5")}
+|char1=${getTeamData("char1")}${getTeamData("char1Uncap") >= 5 ? `|art1=${getTeamData("char1Uncap") == 5? "C" : "D"}` : ""}${getTeamData("char1Trans") ? `|trans1=${getTeamData("char1Trans")}` : ""}
+|char2=${getTeamData("char2")}${getTeamData("char2Uncap") >= 5 ? `|art2=${getTeamData("char2Uncap") == 5? "C" : "D"}` : ""}${getTeamData("char2Trans") ? `|trans2=${getTeamData("char2Trans")}` : ""}
+|char3=${getTeamData("char3")}${getTeamData("char3Uncap") >= 5 ? `|art3=${getTeamData("char3Uncap") == 5? "C" : "D"}` : ""}${getTeamData("char3Trans") ? `|trans3=${getTeamData("char3Trans")}` : ""}
+|char4=${getTeamData("char4")}${getTeamData("char4Uncap") >= 5 ? `|art4=${getTeamData("char4Uncap") == 5? "C" : "D"}` : ""}${getTeamData("char4Trans") ? `|trans4=${getTeamData("char4Trans")}` : ""}
+|char5=${getTeamData("char5")}${getTeamData("char5Uncap") >= 5 ? `|art5=${getTeamData("char5Uncap") == 5? "C" : "D"}` : ""}${getTeamData("char5Trans") ? `|trans5=${getTeamData("char5Trans")}` : ""}
 |skill1=
 |skill2=
 |skill3=
@@ -344,29 +422,29 @@ function wikiTemplateText() {
 }}
 |weapons={{WeaponGridSkills
 |mh=${getTeamData("mh")}
-|wp1=${getTeamData("wp1")}
-|wp2=${getTeamData("wp2")}
-|wp3=${getTeamData("wp3")}
-|wp4=${getTeamData("wp4")}
-|wp5=${getTeamData("wp5")}
-|wp6=${getTeamData("wp6")}
-|wp7=${getTeamData("wp7")}
-|wp8=${getTeamData("wp8")}
+|wp1=${getTeamData("wp1")}${getTeamData("wp1Trans")? `|u1=${getTeamData("wp1Trans")}` : getTeamData("wp1Uncap")? `|u1=${getTeamData("wp1Uncap")}` : ""}
+|wp2=${getTeamData("wp2")}${getTeamData("wp2Trans")? `|u2=${getTeamData("wp2Trans")}` : getTeamData("wp2Uncap")? `|u2=${getTeamData("wp2Uncap")}` : ""}
+|wp3=${getTeamData("wp3")}${getTeamData("wp3Trans")? `|u3=${getTeamData("wp3Trans")}` : getTeamData("wp3Uncap")? `|u3=${getTeamData("wp3Uncap")}` : ""}
+|wp4=${getTeamData("wp4")}${getTeamData("wp4Trans")? `|u4=${getTeamData("wp4Trans")}` : getTeamData("wp4Uncap")? `|u4=${getTeamData("wp4Uncap")}` : ""}
+|wp5=${getTeamData("wp5")}${getTeamData("wp5Trans")? `|u5=${getTeamData("wp5Trans")}` : getTeamData("wp5Uncap")? `|u5=${getTeamData("wp5Uncap")}` : ""}
+|wp6=${getTeamData("wp6")}${getTeamData("wp6Trans")? `|u6=${getTeamData("wp6Trans")}` : getTeamData("wp6Uncap")? `|u6=${getTeamData("wp6Uncap")}` : ""}
+|wp7=${getTeamData("wp7")}${getTeamData("wp7Trans")? `|u7=${getTeamData("wp7Trans")}` : getTeamData("wp7Uncap")? `|u7=${getTeamData("wp7Uncap")}` : ""}
+|wp8=${getTeamData("wp8")}${getTeamData("wp8Trans")? `|u8=${getTeamData("wp8Trans")}` : getTeamData("wp8Uncap")? `|u8=${getTeamData("wp8Uncap")}` : ""}
 |wp9=${getTeamData("wp9")}${teamData.wp10 || teamData.wp11 || teamData.wp12 ? `
-|wp10=${getTeamData("wp10")}
-|wp11=${getTeamData("wp11")}
-|wp12=${getTeamData("wp12")}` : ""}
+|wp10=${getTeamData("wp10")}${getTeamData("wp10Trans")? `|u10=${getTeamData("wp10Trans")}` : getTeamData("wp10Uncap")? `|u10=${getTeamData("wp10Uncap")}` : ""}
+|wp11=${getTeamData("wp11")}${getTeamData("wp11Trans")? `|u11=${getTeamData("wp11Trans")}` : getTeamData("wp11Uncap")? `|u11=${getTeamData("wp11Uncap")}` : ""}
+|wp12=${getTeamData("wp12")}${getTeamData("wp12Trans")? `|u12=${getTeamData("wp12Trans")}` : getTeamData("wp12Uncap")? `|u12=${getTeamData("wp12Uncap")}` : ""}` : ""}
 |ultima=${teamData.ultima ? teamData.ultima.join(",") : ""}
 |opus=${teamData.opus ? teamData.opus.join(",") : ""}
 }}
 |summons={{SummonGrid
-|main=${getTeamData("s-main")}
-|s1=${getTeamData("s1")}
-|s2=${getTeamData("s2")}
-|s3=${getTeamData("s3")}
-|s4=${getTeamData("s4")}
-|sub1=${getTeamData("sub1")}
-|sub2=${getTeamData("sub2")}
+|main=${getTeamData("s-main")}${getTeamData("s-mainTrans")? `|umain=${getTeamData("s-mainTrans")}` : getTeamData("s-mainUncap")? `|umain=${getTeamData("s-mainUncap")}` : ""}
+|s1=${getTeamData("s1")}${getTeamData("s1Trans")? `|u1=${getTeamData("s1Trans")}` : getTeamData("s1Uncap")? `|u1=${getTeamData("s1Uncap")}` : ""}
+|s2=${getTeamData("s2")}${getTeamData("s2Trans")? `|u2=${getTeamData("s2Trans")}` : getTeamData("s2Uncap")? `|u2=${getTeamData("s2Uncap")}` : ""}
+|s3=${getTeamData("s3")}${getTeamData("s3Trans")? `|u3=${getTeamData("s3Trans")}` : getTeamData("s3Uncap")? `|u3=${getTeamData("s3Uncap")}` : ""}
+|s4=${getTeamData("s4")}${getTeamData("s4Trans")? `|u4=${getTeamData("s4Trans")}` : getTeamData("s4Uncap")? `|u4=${getTeamData("s4Uncap")}` : ""}
+|sub1=${getTeamData("s-sub1")}${getTeamData("s-sub1Trans")? `|usub1=${getTeamData("s-sub1Trans")}` : getTeamData("s-sub1Uncap")? `|usub1=${getTeamData("s-sub1Uncap")}` : ""}
+|sub2=${getTeamData("s-sub2")}${getTeamData("s-sub2Trans")? `|usub2=${getTeamData("s-sub2Trans")}` : getTeamData("s-sub2Uncap")? `|usub2=${getTeamData("s-sub2Uncap")}` : ""}
 |quick=
 }}
 }}`

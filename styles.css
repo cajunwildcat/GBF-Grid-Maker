@@ -135,7 +135,7 @@ ul {
     gap: 5px;
     background-color: transparent;
 
-    img {
+    >img {
         width: 25px;
         height: 25px;
     }
@@ -154,7 +154,7 @@ ul {
     display: flex;
     gap: 8px;
 
-    button {
+    >button {
         width: 135px;
         height: 77px;
         background-image: url("assets/empty-weapon.png");
@@ -178,7 +178,7 @@ ul {
     width: 138px;
     height: 305px;
 
-    button {
+    >button {
         width: 110px;
         height: 231px;
         position: relative;
@@ -204,7 +204,8 @@ ul {
     flex-direction: column;
     gap: 10px;
 
-    button {
+    >button {
+        position: relative;
         width: 100px;
         height: 63px;
         background-image: url("assets/empty-weapon.png");
@@ -217,7 +218,7 @@ ul {
     width: 100%;
     height: 40px;
 
-    img {
+    >img {
         height: 100%;
     }
 }
@@ -233,11 +234,34 @@ ul {
     background: linear-gradient(to bottom, #093D4D, #001E28);
     border: solid 1px #356C79;
 
-    button {
+    >button.grid-input {
         width: 72px;
         height: 150px;
+        position: relative;
         background-image: url('assets/empty-char.jpg');
     }
+}
+
+.uncap-toggle {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 30px;
+    height: 30px;
+    background-color:transparent;
+    background-image: url("assets/Icon_Blue_Star_Full.png");
+}
+.uncap-toggle[data-toggled="false"] {
+    background-image: url("assets/Icon_Blue_Star.png");
+}
+.uncap-select {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 30px;
+    height: 30px;
+    background-color:transparent;
+    background-image: url("assets/Icon_Transcend_Star_5.png");
 }
 
 .summon-grid {
@@ -254,7 +278,8 @@ ul {
         top: 58px;
         left: 23px;
 
-        button {
+        >button {
+            position: relative;
             background-image: url("assets/empty-char.jpg");
             height: 245px;
             width: 137px;
@@ -283,9 +308,10 @@ ul {
         width:fit-content;
     }
 
-    div:not(.main-summon) button {
+    div:not(.main-summon)>button {
         width: 130px;
         height: 98px;
+        position: relative;
         background-image: url("assets/empty-summon.jpg");
     }
 }
