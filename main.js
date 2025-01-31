@@ -47,8 +47,10 @@ let clOptions = [
     { label: "Yamato", metatags: ["460301_sw"] },
     { label: "Shieldsworn", metatags: ["470301_ax"] }
 ];
+let aOptoins = [];
 let teamData = {};
-let characters, summons, weapons;
+let characters, summons, weapons, abilities;
+let characterIDs = {}, summonIDs = {}, weaponIDs = {};
 let filters = {
     characters: [],
     weapons: [],
@@ -70,9 +72,13 @@ window.onload = async (e) => {
     await fetch("https://raw.githubusercontent.com/cajunwildcat/GBF-Party-Parser/main/weapons.json", { next: 43200 })
         .then(function (response) { return response.json(); })
         .then((response) => weapons = response);
+    await fetch("https://raw.githubusercontent.com/cajunwildcat/GBF-Party-Parser/main/abilities.json", { next: 43200 })
+        .then(function (response) { return response.json(); })
+        .then((response) => abilities = response);
 
     for (id in characters) {
         let name = characters[id].name;
+        characterIDs[name] = id;
         cOptions.push({
             label: name,
             metatags: [id]
@@ -83,6 +89,7 @@ window.onload = async (e) => {
     }
     for (id in summons) {
         let name = summons[id].name;
+        summonIDs[name] = id;
         sOptions.push({
             label: name,
             metatags: [id]
@@ -93,12 +100,23 @@ window.onload = async (e) => {
     }
     for (id in weapons) {
         let name = weapons[id].name;
+        weaponIDs[name] = id;
         wOptions.push({
             label: name,
             metatags: [id]
         });
         if (aliases[name]) {
             sOptions[wOptions.length - 1].metatags.push(...aliases[name]);
+        }
+    }
+    for (ability in abilities) {
+        let name = abilities[ability].name;
+        aOptoins.push({
+            label: name,
+            metatags: [ability]
+        });
+        if (aliases[name]) {
+            aOptoins[aOptoins.length - 1].metatags.push(...aliases[name]);
         }
     }
     setupButtonSearch();
@@ -113,7 +131,8 @@ function setupButtonSearch() {
         classes: clOptions,
         characters: cOptions,
         weapons: wOptions,
-        summons: sOptions
+        summons: sOptions,
+        skills: aOptoins
     };
 
     let currentOptions = [];
@@ -221,6 +240,8 @@ function setupButtonSearch() {
             const cat = button.dataset.options;
             const options = optionSets[cat].filter(option => {
                 switch (cat) {
+                    case 'skills':
+                        return true;
                     case 'classes':
                         return true;
                     case 'weapons':
@@ -244,7 +265,17 @@ function setupButtonSearch() {
         button.oncontextmenu = (e) => {
             e.preventDefault();
             button.style.backgroundImage = null;
-            if (button.firstChild) button.removeChild(button.firstChild);
+            if (button.dataset.options =="skills") {
+                button.querySelector("img").src = "assets/empty-skill.png";
+                button.querySelector("span").textContent = "";
+            }
+            else if (button.firstChild) {
+                button.removeChild(button.firstChild);
+            }
+            if (button.id == "s-main") {
+                Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].style.backgroundImage = null;
+                Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].firstChild?.remove();
+            }
             delete teamData[button.id];
             delete teamData[button.id + "Uncap"];
             delete teamData[button.id + "Trans"];
@@ -319,7 +350,7 @@ function setButtonBackground(button, optionSet, selectedOption, uncap = null) {
                 case "weapons": uncap = weapons[id].maxUncap; break;
             }
             teamData[button.id + "Uncap"] = uncap;
-            if ((optionSet=="characters" && uncap === 5) || uncap == 4) {
+            if ((optionSet != "characters" && uncap == 4) || uncap == 5) {
                 let uncapButton = document.createElement("button");
                 uncapButton.classList.add("uncap-toggle");
                 uncapButton.dataset.toggled = true;
@@ -327,7 +358,7 @@ function setButtonBackground(button, optionSet, selectedOption, uncap = null) {
                 uncapButton.onclick = (e) => {
                     e.stopPropagation();
                     uncapButton.dataset.toggled = uncapButton.dataset.toggled === "true" ? "false" : "true";
-                    teamData[button.id + "Uncap"] = uncapButton.dataset.toggled === "true" ? 5 : 4;
+                    teamData[button.id + "Uncap"] = uncapButton.dataset.toggled === "true" ? optionSet == "characters" ? 5 : optionSet == "weapons" ? weapons[weaponIDs[selectedOption]].maxUncap : summons[summonIDs[selectedOption]] : optionSet == "characters" ? 4 : 0;
                     setButtonBackground(button, optionSet, selectedOption, uncapButton.dataset.toggled === "true" ? 5 : 4);
                 }
                 button.appendChild(uncapButton);
@@ -366,9 +397,10 @@ function setButtonBackground(button, optionSet, selectedOption, uncap = null) {
                             }
                             else {
                                 teamData[button.id + "Uncap"] = li.dataset.trans;
-                                delete teamData[button.id+"Trans"];
+                                delete teamData[button.id + "Trans"];
                             }
                             uncapButton.style.backgroundImage = li.style.backgroundImage;
+                            if (button.id == "s-main") Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].firstChild.style.backgroundImage = li.style.backgroundImage;
                             setButtonBackground(button, optionSet, selectedOption, li.dataset.trans);
                             document.querySelector("#uncap-dropdown").remove();
                         }
@@ -376,11 +408,18 @@ function setButtonBackground(button, optionSet, selectedOption, uncap = null) {
                     uncapButton.appendChild(dropdown);
                 }
                 button.appendChild(uncapButton);
+                if (button.id == "s-main") Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].appendChild(uncapButton.cloneNode(true));
             }
         }
     }
     let art;
     switch (optionSet) {
+        case 'skills':
+            backgroundUrl = `https://gbf.wiki/thumb.php?f=${abilities[selectedOption.label].icon}&w=25`;
+            button.querySelector("img").src = backgroundUrl;
+            button.querySelector("span").textContent = selectedOption.label;
+            teamData[button.id] = selectedOption.label;
+            return;
         case 'classes':
             backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/leader/quest/${id}_1_01.jpg')`;
             break;
@@ -388,12 +427,12 @@ function setButtonBackground(button, optionSet, selectedOption, uncap = null) {
             art = uncap == 5 ? 3 : uncap == 6 || uncap.toString().includes("t") ? 4 : 1;
             backgroundUrl = `url('https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/npc/f/${id}_0${art}.jpg')`;
             break;
-            case 'weapons':
-            art = uncap == 6 || uncap == "t5"? "_03" : uncap.toString().includes("t") ? "_02" : "";
+        case 'weapons':
+            art = uncap == 6 || uncap == "t5" ? "_03" : uncap.toString().includes("t") ? "_02" : "";
             backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/weapon/${button.parentElement.classList[0].includes("main") ? "ls" : "m"}/${id}${art}.jpg')`;
             break;
-            case 'summons':
-            art = uncap == 6 || uncap == "t5"? "_04" : uncap.toString().includes("t") ? "_03" : uncap == 5 ? "_02" : "";
+        case 'summons':
+            art = uncap == 6 || uncap == "t5" ? "_04" : uncap.toString().includes("t") ? "_03" : uncap == 5 ? "_02" : "";
             backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/summon/${button.parentElement.classList[0].includes("team") ? "m" : `party_${button.parentElement.classList[0].includes("main") ? "main" : "sub"}`}/${id}${art}.jpg')`;
             break;
         default:
@@ -409,46 +448,94 @@ function wikiTemplateText() {
     return `{{TeamSpread
 |team={{Team
 |class=${getTeamData("mc")}
-|char1=${getTeamData("char1")}${getTeamData("char1Uncap") >= 5 ? `|art1=${getTeamData("char1Uncap") == 5? "C" : "D"}` : ""}${getTeamData("char1Trans") ? `|trans1=${getTeamData("char1Trans")}` : ""}
-|char2=${getTeamData("char2")}${getTeamData("char2Uncap") >= 5 ? `|art2=${getTeamData("char2Uncap") == 5? "C" : "D"}` : ""}${getTeamData("char2Trans") ? `|trans2=${getTeamData("char2Trans")}` : ""}
-|char3=${getTeamData("char3")}${getTeamData("char3Uncap") >= 5 ? `|art3=${getTeamData("char3Uncap") == 5? "C" : "D"}` : ""}${getTeamData("char3Trans") ? `|trans3=${getTeamData("char3Trans")}` : ""}
-|char4=${getTeamData("char4")}${getTeamData("char4Uncap") >= 5 ? `|art4=${getTeamData("char4Uncap") == 5? "C" : "D"}` : ""}${getTeamData("char4Trans") ? `|trans4=${getTeamData("char4Trans")}` : ""}
-|char5=${getTeamData("char5")}${getTeamData("char5Uncap") >= 5 ? `|art5=${getTeamData("char5Uncap") == 5? "C" : "D"}` : ""}${getTeamData("char5Trans") ? `|trans5=${getTeamData("char5Trans")}` : ""}
-|skill1=
-|skill2=
-|skill3=
-|main=${getTeamData("s-main")}
-|support=${getTeamData("s-support")}
+|char1=${getCharacterInfo("char1")}
+|char2=${getCharacterInfo("char2")}
+|char3=${getCharacterInfo("char3")}
+|char4=${getCharacterInfo("char4")}
+|char5=${getCharacterInfo("char5")}
+|skill1=${getTeamData("skill1")}
+|skill2=${getTeamData("skill2")}
+|skill3=${getTeamData("skill3")}
+|main=${getTeamSummonInfo("s-main")}
+|support=${getTeamSummonInfo("s-support")}
 }}
 |weapons={{WeaponGridSkills
-|mh=${getTeamData("mh")}
-|wp1=${getTeamData("wp1")}${getTeamData("wp1Trans")? `|u1=${getTeamData("wp1Trans")}` : getTeamData("wp1Uncap")? `|u1=${getTeamData("wp1Uncap")}` : ""}
-|wp2=${getTeamData("wp2")}${getTeamData("wp2Trans")? `|u2=${getTeamData("wp2Trans")}` : getTeamData("wp2Uncap")? `|u2=${getTeamData("wp2Uncap")}` : ""}
-|wp3=${getTeamData("wp3")}${getTeamData("wp3Trans")? `|u3=${getTeamData("wp3Trans")}` : getTeamData("wp3Uncap")? `|u3=${getTeamData("wp3Uncap")}` : ""}
-|wp4=${getTeamData("wp4")}${getTeamData("wp4Trans")? `|u4=${getTeamData("wp4Trans")}` : getTeamData("wp4Uncap")? `|u4=${getTeamData("wp4Uncap")}` : ""}
-|wp5=${getTeamData("wp5")}${getTeamData("wp5Trans")? `|u5=${getTeamData("wp5Trans")}` : getTeamData("wp5Uncap")? `|u5=${getTeamData("wp5Uncap")}` : ""}
-|wp6=${getTeamData("wp6")}${getTeamData("wp6Trans")? `|u6=${getTeamData("wp6Trans")}` : getTeamData("wp6Uncap")? `|u6=${getTeamData("wp6Uncap")}` : ""}
-|wp7=${getTeamData("wp7")}${getTeamData("wp7Trans")? `|u7=${getTeamData("wp7Trans")}` : getTeamData("wp7Uncap")? `|u7=${getTeamData("wp7Uncap")}` : ""}
-|wp8=${getTeamData("wp8")}${getTeamData("wp8Trans")? `|u8=${getTeamData("wp8Trans")}` : getTeamData("wp8Uncap")? `|u8=${getTeamData("wp8Uncap")}` : ""}
-|wp9=${getTeamData("wp9")}${teamData.wp10 || teamData.wp11 || teamData.wp12 ? `
-|wp10=${getTeamData("wp10")}${getTeamData("wp10Trans")? `|u10=${getTeamData("wp10Trans")}` : getTeamData("wp10Uncap")? `|u10=${getTeamData("wp10Uncap")}` : ""}
-|wp11=${getTeamData("wp11")}${getTeamData("wp11Trans")? `|u11=${getTeamData("wp11Trans")}` : getTeamData("wp11Uncap")? `|u11=${getTeamData("wp11Uncap")}` : ""}
-|wp12=${getTeamData("wp12")}${getTeamData("wp12Trans")? `|u12=${getTeamData("wp12Trans")}` : getTeamData("wp12Uncap")? `|u12=${getTeamData("wp12Uncap")}` : ""}` : ""}
+|mh=${getWeaponInfo("mh")}
+|wp1=${getWeaponInfo("wp1")}
+|wp2=${getWeaponInfo("wp2")}
+|wp3=${getWeaponInfo("wp3")}
+|wp4=${getWeaponInfo("wp4")}
+|wp5=${getWeaponInfo("wp5")}
+|wp6=${getWeaponInfo("wp6")}
+|wp7=${getWeaponInfo("wp7")}
+|wp8=${getWeaponInfo("wp8")}
+|wp9=${getWeaponInfo("wwp9")}${teamData.wp10 || teamData.wp11 || teamData.wp12 ? `
+|wp10=${getWeaponInfo("wp10")}
+|wp11=${getWeaponInfo("wp11")}
+|wp12=${getWeaponInfo("wp12")}` : ""}
 |ultima=${teamData.ultima ? teamData.ultima.join(",") : ""}
 |opus=${teamData.opus ? teamData.opus.join(",") : ""}
 }}
 |summons={{SummonGrid
-|main=${getTeamData("s-main")}${getTeamData("s-mainTrans")? `|umain=${getTeamData("s-mainTrans")}` : getTeamData("s-mainUncap")? `|umain=${getTeamData("s-mainUncap")}` : ""}
-|s1=${getTeamData("s1")}${getTeamData("s1Trans")? `|u1=${getTeamData("s1Trans")}` : getTeamData("s1Uncap")? `|u1=${getTeamData("s1Uncap")}` : ""}
-|s2=${getTeamData("s2")}${getTeamData("s2Trans")? `|u2=${getTeamData("s2Trans")}` : getTeamData("s2Uncap")? `|u2=${getTeamData("s2Uncap")}` : ""}
-|s3=${getTeamData("s3")}${getTeamData("s3Trans")? `|u3=${getTeamData("s3Trans")}` : getTeamData("s3Uncap")? `|u3=${getTeamData("s3Uncap")}` : ""}
-|s4=${getTeamData("s4")}${getTeamData("s4Trans")? `|u4=${getTeamData("s4Trans")}` : getTeamData("s4Uncap")? `|u4=${getTeamData("s4Uncap")}` : ""}
-|sub1=${getTeamData("s-sub1")}${getTeamData("s-sub1Trans")? `|usub1=${getTeamData("s-sub1Trans")}` : getTeamData("s-sub1Uncap")? `|usub1=${getTeamData("s-sub1Uncap")}` : ""}
-|sub2=${getTeamData("s-sub2")}${getTeamData("s-sub2Trans")? `|usub2=${getTeamData("s-sub2Trans")}` : getTeamData("s-sub2Uncap")? `|usub2=${getTeamData("s-sub2Uncap")}` : ""}
+|main=${getSummonInfo("s-main")}
+|s1=${getSummonInfo("s1")}
+|s2=${getSummonInfo("s2")}
+|s3=${getSummonInfo("s3")}
+|s4=${getSummonInfo("s4")}
+|sub1=${getSummonInfo("s-sub1")}
+|sub2=${getSummonInfo("s-sub2")}
 |quick=
 }}
 }}`
 }
 function getTeamData(item) {
     return teamData[item] ? teamData[item] : "";
+}
+
+function getWeaponInfo(weaponSlot) {
+    let weapon = teamData[weaponSlot];
+    let uncap = teamData[weaponSlot + "Uncap"];
+    let trans = teamData[weaponSlot + "Trans"];
+    if (!weapon) return "";
+    if (trans === "t5" || (uncap !== 6 && uncap === weapons[weaponIDs[weapon]].maxUncap)) {
+        return `${weapon}`;
+    }
+    return `${weapon}|u${weaponSlot.replace("wp", "")}=${trans ? trans : uncap}`;
+}
+
+function getCharacterInfo(characterSlot) {
+    let character = teamData[characterSlot];
+    let uncap = teamData[characterSlot + "Uncap"];
+    let trans = teamData[characterSlot + "Trans"];
+    if (!character) return "";
+    if (uncap === 4) {
+        return `${character}`;
+    }
+    let art;
+    if (uncap == 6)
+        art = "D";
+    else if (uncap == 5)
+        art = "C";
+    else
+        art = "A";
+    return `${character}${`|art${characterSlot.replace("char", "")}=${art}`}${trans ? `|trans${characterSlot.replace("char", "")}=${trans}` : ""}`;
+}
+
+function getSummonInfo(summonSlot) {
+    let summon = teamData[summonSlot];
+    let uncap = teamData[summonSlot + "Uncap"];
+    let trans = teamData[summonSlot + "Trans"];
+    if (!summon) return "";
+    if (trans === "t5" || (uncap !== 6 && uncap === summons[summonIDs[summon]].maxUncap)) {
+        return `${summon}`;
+    }
+    return `${summon}|u${summonSlot.substring(1).replace("-", "")}=${trans ? trans : uncap}`;
+}
+function getTeamSummonInfo(summonSlot) {
+    let summon = teamData[summonSlot];
+    let uncap = teamData[summonSlot + "Uncap"];
+    let trans = teamData[summonSlot + "Trans"];
+    let slot = summonSlot.substring(2);
+    if (!summon) return "";
+    return `${summon}${uncap > 4 ? `|art${slot}=${uncap == 6 ? trans == "t5" ? `D|trans${slot}=${trans}` : `C|trans${slot}=${trans}` : "B"}` : ""}`
 }

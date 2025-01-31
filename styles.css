@@ -155,6 +155,7 @@ ul {
     gap: 8px;
 
     >button {
+        position: relative;
         width: 135px;
         height: 77px;
         background-image: url("assets/empty-weapon.png");

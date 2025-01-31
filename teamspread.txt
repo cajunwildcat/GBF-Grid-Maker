@@ -1,0 +1,44 @@
+{{TeamSpread
+|team={{Team
+|class=Paladin|shield=Soul of Oneness
+|char1=Europa|art1=C
+|char2=Karva (SR)
+|char3=Yatima
+|char4=Haaselia|art4=C
+|char5=Gabriel
+|skill1=Pandemonium
+|skill2=Noblesse Proteger
+|skill3=Sacred Protection
+|main=Leviathan Omega|transmain=5|artmain=D
+|support=
+}}
+|weapons={{WeaponGridSkills
+|mh=Royal Deliverance (Water)|umh=5|awkmh=Attack
+|wp1=Altruism-Soul Staff|u1=4
+|wp2=Esna|u2=4|awk2=Defense
+|wp3=Leviathan Gaze Mare|u3=4
+|wp4=Staff of Repudiation|u4=t1
+|wp5=Schrodinger Mk II|u5=4|awk5=Attack
+|wp6=Schrodinger Mk II|u6=4|awk6=Defense
+|wp7=Leviathan Gaze Mare|u7=4
+|wp8=Schrodinger Mk II|u8=4|awk8=Attack
+|wp9=Schrodinger|u9=4|awk9=Defense
+|wp10=Judgment of Torrential Tides|u10=5
+|wp11=Reflection of The Moon|u11=5
+|wp12=Ultima Staff|u12=5
+|opus=skill,Stamina
+|ultima=strength,auto,seraphic
+|draconic=fire,magna
+|ccw=Nature
+}}
+|summons={{SummonGrid
+|main=Leviathan Omega|umain=trans5
+|s1=Garnet Carbuncle|u1=3
+|s2=Leviathan Omega|u2=trans5
+|s3=Justice (SSR)|u3=5
+|s4=The Moon (SSR)|u4=5
+|sub1=Wedges of the Sky|usub1=3
+|sub2=Wamdus (Summon)|usub2=1
+|quick=1
+}}
+}}
