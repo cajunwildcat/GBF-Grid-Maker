@@ -269,12 +269,12 @@ function setupButtonSearch() {
                 button.querySelector("img").src = "assets/empty-skill.png";
                 button.querySelector("span").textContent = "";
             }
-            else if (button.firstChild) {
-                button.removeChild(button.firstChild);
+            else if (button.querySelector("#uncap-dropdown")) {
+                button.querySelector("#uncap-dropdown").remove();
             }
             if (button.id == "s-main") {
                 Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].style.backgroundImage = null;
-                Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].firstChild?.remove();
+                Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].querySelector("#uncap-dropdown")?.remove();
             }
             delete teamData[button.id];
             delete teamData[button.id + "Uncap"];
@@ -343,7 +343,7 @@ function setButtonBackground(button, optionSet, selectedOption, uncap = null) {
     let id = selectedOption.metatags[0];
     if (["characters", "summons", "weapons"].includes(optionSet)) {
         if (uncap === null) {
-            if (button.firstChild) button.removeChild(button.firstChild);
+            if (button.querySelector("#uncap-dropdown")) button.querySelector("#uncap-dropdown").remove();
             switch (optionSet) {
                 case "characters": uncap = characters[id].maxUncap; break;
                 case "summons": uncap = summons[id].maxUncap; break;
@@ -400,7 +400,7 @@ function setButtonBackground(button, optionSet, selectedOption, uncap = null) {
                                 delete teamData[button.id + "Trans"];
                             }
                             uncapButton.style.backgroundImage = li.style.backgroundImage;
-                            if (button.id == "s-main") Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].firstChild.style.backgroundImage = li.style.backgroundImage;
+                            if (button.id == "s-main") Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].querySelector("#uncap-dropdown").style.backgroundImage = li.style.backgroundImage;
                             setButtonBackground(button, optionSet, selectedOption, li.dataset.trans);
                             document.querySelector("#uncap-dropdown").remove();
                         }
@@ -430,6 +430,24 @@ function setButtonBackground(button, optionSet, selectedOption, uncap = null) {
         case 'weapons':
             art = uncap == 6 || uncap == "t5" ? "_03" : uncap.toString().includes("t") ? "_02" : "";
             backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/weapon/${button.parentElement.classList[0].includes("main") ? "ls" : "m"}/${id}${art}.jpg')`;
+
+            let skills = button.parentElement.querySelector(".w-skills");
+            while (skills.firstChild) skills.firstChild.remove();
+            if (weapons[id]["s1 icon"]) {
+                let img = document.createElement("img");
+                img.src = `https://gbf.wiki/thumb.php?f=${weapons[id]["s1 icon"]}&w=33`;
+                skills.appendChild(img);
+            }
+            if (weapons[id]["s2 icon"]) {
+                let img = document.createElement("img");
+                img.src = `https://gbf.wiki/thumb.php?f=${weapons[id]["s2 icon"]}&w=33`;
+                skills.appendChild(img);
+            }
+            if (weapons[id]["s3 icon"]) {
+                let img = document.createElement("img");
+                img.src = `https://gbf.wiki/thumb.php?f=${weapons[id]["s3 icon"]}&w=33`;
+                skills.appendChild(img);
+            }
             break;
         case 'summons':
             art = uncap == 6 || uncap == "t5" ? "_04" : uncap.toString().includes("t") ? "_03" : uncap == 5 ? "_02" : "";
