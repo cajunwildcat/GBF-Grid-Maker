@@ -1,11 +1,11 @@
 {{TeamSpread
 |team={{Team
-|class=Paladin|shield=Soul of Oneness
+|class=Paladin
 |char1=Europa|art1=C
 |char2=Karva (SR)
 |char3=Yatima
 |char4=Haaselia|art4=C
-|char5=Gabriel
+|char5=Anre|art5=D|trans5=5
 |skill1=Pandemonium
 |skill2=Noblesse Proteger
 |skill3=Sacred Protection
@@ -29,7 +29,6 @@
 |opus=skill,Stamina
 |ultima=strength,auto,seraphic
 |draconic=fire,magna
-|ccw=Nature
 }}
 |summons={{SummonGrid
 |main=Leviathan Omega|umain=trans5
