@@ -808,7 +808,7 @@ function addUncap(button, optionSet, selectedOption, uncap, id) {
             }
             button.appendChild(uncapButton);
         }
-        if (button.id == "s-main") Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].appendChild(uncapButton.cloneNode(true));
+        if (uncapButton && button.id == "s-main") Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].appendChild(uncapButton.cloneNode(true));
     }
     return uncap;
 }
