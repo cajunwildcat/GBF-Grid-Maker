@@ -148,7 +148,7 @@ window.onload = async (e) => {
         .then(function (response) { return response.json(); })
         .then((response) => abilities = response);
 
-    for (id in characters) {
+    for (let id in characters) {
         let name = characters[id].name;
         characterIDs[name] = id;
         cOptions.push({
@@ -159,7 +159,7 @@ window.onload = async (e) => {
             cOptions[cOptions.length - 1].metatags.push(...aliases[name]);
         }
     }
-    for (id in summons) {
+    for (let id in summons) {
         let name = summons[id].name;
         summonIDs[name] = id;
         sOptions.push({
@@ -170,7 +170,7 @@ window.onload = async (e) => {
             sOptions[sOptions.length - 1].metatags.push(...aliases[name]);
         }
     }
-    for (id in weapons) {
+    for (let id in weapons) {
         let name = weapons[id].name;
         weaponIDs[name] = id;
         wOptions.push({
@@ -181,7 +181,8 @@ window.onload = async (e) => {
             sOptions[wOptions.length - 1].metatags.push(...aliases[name]);
         }
     }
-    for (ability in abilities) {
+    for (let ability in abilities) {
+        abilities[ability].name = abilities[ability].name.replace("&#039;", "'");
         let name = abilities[ability].name;
         aOptoins.push({
             label: name,
@@ -194,10 +195,17 @@ window.onload = async (e) => {
     setupButtonSearch();
 
     document.querySelector("#export-as-image-button").onclick = () => {
-        html2canvas(document.querySelector("#team-spread"), {useCORS: true, backgroundColor: "transparent"}).then(canvas => {
-            document.body.appendChild(canvas);
-            canvas.style.position = "absolute";
-        });
+        var node = document.getElementById('#team-spread');
+
+        domtoimage.toPng(node)
+            .then(function (dataUrl) {
+                var img = new Image();
+                img.src = dataUrl;
+                document.body.appendChild(img);
+            })
+            .catch(function (error) {
+                console.error('oops, something went wrong!', error);
+            });
     }
 };
 
@@ -847,7 +855,7 @@ function importData(data) {
         let key = `skill${i}`;
         if (!team[key]) continue;
         let value = team[key];
-        setGridData(key, value);
+        setGridData(key, value, false, true);
     }
     if (team.main) setGridData("s-main", team.main);
     if (team.support) setGridData("s-support", team.support);
@@ -882,11 +890,11 @@ function importData(data) {
         setGridData(`s-sub${i}`, value);
     }
 
-    function setGridData(key, value, ws = false) {
+    function setGridData(key, value, weaponSkill = false, ability = false) {
         let button = document.querySelector(`#${key}`);
         let optionSet = button.dataset.options;
         let selectedOption;
-        if (ws) {
+        if (weaponSkill) {
             selectedOption = optionSets[optionSet].find(option => option.metatags.includes(value.toLowerCase()));
         }
         else {

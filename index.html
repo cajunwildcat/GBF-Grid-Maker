@@ -7,94 +7,11 @@
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
     <title>Granblue Grid Maker</title>
     <link rel="stylesheet" href="styles.css">
-    <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="dom-to-image.js"></script>
     <script src="main.js"></script>
 </head>
 
 <body>
-    <div id="controls">
-        <div>
-            <button id="export-button" class="ui-button">Export to<br>Wikitext</button>
-            <button id="import-button" class="ui-button">Import from<br>Wikitext</button>
-        </div>
-        <textarea id="import-export-text"></textarea>
-        <button id="export-as-image-button" class="ui-button" disabled>Export to<br>image</button>
-    </div>
-    <div id="filters">
-        <div id="weapons-filters">
-            <span>Weapons</span>
-            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="n"
-                data-filter-enabled="false"><img src="assets/Label_Rarity_N.png"></button>
-            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="r"
-                data-filter-enabled="false"><img src="assets/Label_Rarity_R.png"></button>
-            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="sr"
-                data-filter-enabled="false"><img src="assets/Label_Rarity_SR.png"></button>
-            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="ssr"
-                data-filter-enabled="true"><img src="assets/Label_Rarity_SSR.png"></button>
-            <span class="spacer">|</span>
-            <button class="ui-button filter-button" data-filter-type="element" data-filter="fire"
-                data-filter-enabled="true"><img src="assets/Icon_Element_Fire.png"></button>
-            <button class="ui-button filter-button" data-filter-type="element" data-filter="water"
-                data-filter-enabled="true"><img src="assets/Icon_Element_Water.png"></button>
-            <button class="ui-button filter-button" data-filter-type="element" data-filter="earth"
-                data-filter-enabled="true"><img src="assets/Icon_Element_Earth.png"></button>
-            <button class="ui-button filter-button" data-filter-type="element" data-filter="wind"
-                data-filter-enabled="true"><img src="assets/Icon_Element_Wind.png"></button>
-            <button class="ui-button filter-button" data-filter-type="element" data-filter="light"
-                data-filter-enabled="true"><img src="assets/Icon_Element_Light.png"></button>
-            <button class="ui-button filter-button" data-filter-type="element" data-filter="dark"
-                data-filter-enabled="true"><img src="assets/Icon_Element_Dark.png"></button>
-        </div>
-        <div id="characters-filters">
-            <span>Characters</span>
-            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="n"
-                data-filter-enabled="false"><img src="assets/Label_Rarity_N.png"></button>
-            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="r"
-                data-filter-enabled="false"><img src="assets/Label_Rarity_R.png"></button>
-            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="sr"
-                data-filter-enabled="false"><img src="assets/Label_Rarity_SR.png"></button>
-            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="ssr"
-                data-filter-enabled="true"><img src="assets/Label_Rarity_SSR.png"></button>
-            <span class="spacer">|</span>
-            <button class="ui-button filter-button" data-filter-type="element" data-filter="fire"
-                data-filter-enabled="true"><img src="assets/Icon_Element_Fire.png"></button>
-            <button class="ui-button filter-button" data-filter-type="element" data-filter="water"
-                data-filter-enabled="true"><img src="assets/Icon_Element_Water.png"></button>
-            <button class="ui-button filter-button" data-filter-type="element" data-filter="earth"
-                data-filter-enabled="true"><img src="assets/Icon_Element_Earth.png"></button>
-            <button class="ui-button filter-button" data-filter-type="element" data-filter="wind"
-                data-filter-enabled="true"><img src="assets/Icon_Element_Wind.png"></button>
-            <button class="ui-button filter-button" data-filter-type="element" data-filter="light"
-                data-filter-enabled="true"><img src="assets/Icon_Element_Light.png"></button>
-            <button class="ui-button filter-button" data-filter-type="element" data-filter="dark"
-                data-filter-enabled="true"><img src="assets/Icon_Element_Dark.png"></button>
-        </div>
-        <div id="summons-filters">
-            <span>Summons</span>
-            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="n"
-                data-filter-enabled="false"><img src="assets/Label_Rarity_N.png"></button>
-            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="r"
-                data-filter-enabled="false"><img src="assets/Label_Rarity_R.png"></button>
-            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="sr"
-                data-filter-enabled="false"><img src="assets/Label_Rarity_SR.png"></button>
-            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="ssr"
-                data-filter-enabled="true"><img src="assets/Label_Rarity_SSR.png"></button>
-            <span class="spacer">|</span>
-            <button class="ui-button filter-button" data-filter-type="element" data-filter="fire"
-                data-filter-enabled="true"><img src="assets/Icon_Element_Fire.png"></button>
-            <button class="ui-button filter-button" data-filter-type="element" data-filter="water"
-                data-filter-enabled="true"><img src="assets/Icon_Element_Water.png"></button>
-            <button class="ui-button filter-button" data-filter-type="element" data-filter="earth"
-                data-filter-enabled="true"><img src="assets/Icon_Element_Earth.png"></button>
-            <button class="ui-button filter-button" data-filter-type="element" data-filter="wind"
-                data-filter-enabled="true"><img src="assets/Icon_Element_Wind.png"></button>
-            <button class="ui-button filter-button" data-filter-type="element" data-filter="light"
-                data-filter-enabled="true"><img src="assets/Icon_Element_Light.png"></button>
-            <button class="ui-button filter-button" data-filter-type="element" data-filter="dark"
-                data-filter-enabled="true"><img src="assets/Icon_Element_Dark.png"></button>
-        </div>
-        <span>Shift+Click: Toggle Column<br>Ctrl+Click: Disable All But Clicked</span>
-    </div>
     <div id="team-spread">
         <div class="team-container">
             <div class="team-members" style="left:10px;">
@@ -204,6 +121,91 @@
             </div>
         </div>
     </div>
+    <div id="controls">
+        <div>
+            <button id="export-button" class="ui-button">Export to<br>Wikitext</button>
+            <button id="import-button" class="ui-button">Import from<br>Wikitext</button>
+        </div>
+        <textarea id="import-export-text"></textarea>
+        <button id="export-as-image-button" class="ui-button">Export to<br>image</button>
+    </div>
+    <div id="filters">
+        <div id="weapons-filters">
+            <span>Weapons</span>
+            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="n"
+                data-filter-enabled="false"><img src="assets/Label_Rarity_N.png"></button>
+            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="r"
+                data-filter-enabled="false"><img src="assets/Label_Rarity_R.png"></button>
+            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="sr"
+                data-filter-enabled="false"><img src="assets/Label_Rarity_SR.png"></button>
+            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="ssr"
+                data-filter-enabled="true"><img src="assets/Label_Rarity_SSR.png"></button>
+            <span class="spacer">|</span>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="fire"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Fire.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="water"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Water.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="earth"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Earth.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="wind"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Wind.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="light"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Light.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="dark"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Dark.png"></button>
+        </div>
+        <div id="characters-filters">
+            <span>Characters</span>
+            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="n"
+                data-filter-enabled="false"><img src="assets/Label_Rarity_N.png"></button>
+            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="r"
+                data-filter-enabled="false"><img src="assets/Label_Rarity_R.png"></button>
+            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="sr"
+                data-filter-enabled="false"><img src="assets/Label_Rarity_SR.png"></button>
+            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="ssr"
+                data-filter-enabled="true"><img src="assets/Label_Rarity_SSR.png"></button>
+            <span class="spacer">|</span>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="fire"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Fire.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="water"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Water.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="earth"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Earth.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="wind"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Wind.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="light"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Light.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="dark"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Dark.png"></button>
+        </div>
+        <div id="summons-filters">
+            <span>Summons</span>
+            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="n"
+                data-filter-enabled="false"><img src="assets/Label_Rarity_N.png"></button>
+            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="r"
+                data-filter-enabled="false"><img src="assets/Label_Rarity_R.png"></button>
+            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="sr"
+                data-filter-enabled="false"><img src="assets/Label_Rarity_SR.png"></button>
+            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="ssr"
+                data-filter-enabled="true"><img src="assets/Label_Rarity_SSR.png"></button>
+            <span class="spacer">|</span>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="fire"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Fire.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="water"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Water.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="earth"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Earth.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="wind"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Wind.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="light"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Light.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="dark"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Dark.png"></button>
+        </div>
+        <span>Shift+Click: Toggle Column<br>Ctrl+Click: Disable All But Clicked</span>
+    </div>
+
+
     <div id="dropdown" class="dropdown">
         <input type="text" id="searchInput" placeholder="Search...">
         <ul id="optionsList"></ul>

@@ -1,5 +1,6 @@
 body {
-    background-color: #1b1b1b
+    background-color: #1b1b1b;
+    display: flex;
 }
 
 button {
@@ -38,11 +39,10 @@ ul {
 }
 
 #controls {
-    position: absolute;
-    left: 1000px;
     font-size: 24px;
     display: flex;
     flex-direction: column;
+    margin-left: 10px;
 
     button:active {
         background: linear-gradient(to bottom, #041622, #08425a, #6598a8);
@@ -310,7 +310,7 @@ ul {
     width: 470px;
     height: 509px;
     position: absolute;
-    top: 3px;
+    top: 9px;
     left: 521px;
 
     .main-summon {
