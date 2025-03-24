@@ -149,18 +149,18 @@ window.onload = async (e) => {
         .then((response) => abilities = response);
 
     for (let id in characters) {
-        let name = characters[id].name;
+        let name = characters[id].pageName;
         characterIDs[name] = id;
         cOptions.push({
             label: name,
-            metatags: [id]
+            metatags: [id, characters[id].jpname]
         });
         if (aliases[name]) {
             cOptions[cOptions.length - 1].metatags.push(...aliases[name]);
         }
     }
     for (let id in summons) {
-        let name = summons[id].name;
+        let name = summons[id].pageName;
         summonIDs[name] = id;
         sOptions.push({
             label: name,
@@ -171,7 +171,7 @@ window.onload = async (e) => {
         }
     }
     for (let id in weapons) {
-        let name = weapons[id].name;
+        let name = weapons[id].pageName;
         weaponIDs[name] = id;
         wOptions.push({
             label: name,
