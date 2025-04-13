@@ -263,7 +263,9 @@ function setupButtonSearch() {
             if (activeIndex >= 0) {
                 const selectedOption = currentOptions[currentOptions.indexOf(filteredOptions[activeIndex])];
                 setButtonBackground(activeButton, activeButton.dataset.options, selectedOption); // Update background image
+                let nextButton = document.querySelector(`[tabIndex='${activeButton.tabIndex + 1}']`);
                 hideDropdown();
+                nextButton.focus();
             }
         }
     });
