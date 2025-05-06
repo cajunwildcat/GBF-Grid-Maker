@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
       - name: Set up Git
         run: |
@@ -40,5 +40,5 @@ jobs:
         run: |
           cd gh-pages
           git add .
-          git commit -m "Update content for branch ${{ github.ref_name }}"
+          git commit -m "Update content for branch"
           git push origin gh-pages
