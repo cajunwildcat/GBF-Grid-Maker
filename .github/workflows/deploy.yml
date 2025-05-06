@@ -18,24 +18,42 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Create subdir for beta branch (if needed)
+      - name: Prepare site for beta branch
         if: github.ref == 'refs/heads/beta'
         run: |
           mkdir -p _site/beta
           rsync -av --exclude '_site' . _site/beta
           rm -rf _site/beta/.git _site/beta/.github
 
-      - name: Prepare site for main branch (if needed)
+      - name: Prepare site for main branch
         if: github.ref == 'refs/heads/main'
         run: |
           mkdir -p _site
           rsync -av --exclude '_site' . _site
           rm -rf _site/.git _site/.github
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: _site
+      - name: Download existing site
+        run: |
+          git clone --branch gh-pages https://github.com/${{ github.repository }} gh-pages || exit 0
+          mkdir -p gh-pages
+          mv gh-pages/* _site/ || true
+
+      - name: Merge new content
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/beta" ]; then
+            rsync -av _site/beta/ gh-pages/beta/
+          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            rsync -av _site/ gh-pages/
+          fi
+
+      - name: Commit and push changes
+        run: |
+          cd gh-pages
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git add .
+          git commit -m "Deploy from ${{ github.ref }}" || true
+          git push origin gh-pages
 
   deploy-pages:
     needs: deploy
@@ -44,11 +62,6 @@ jobs:
       pages: write
       id-token: write
 
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
       - name: Deploy to GitHub Pages
-        id: deployment
         uses: actions/deploy-pages@v4
