@@ -21,7 +21,7 @@ jobs:
 
       - name: Clone the gh-pages branch
         run: |
-          git clone --branch gh-pages https://github.com/${{ github.repository }} gh-pages || mkdir gh-pages
+          git clone --branch gh-pages git@github.com/${{ github.repository }} gh-pages || mkdir gh-pages
 
       - name: Prepare content for deployment
         run: |
