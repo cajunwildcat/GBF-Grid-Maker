@@ -1,0 +1,54 @@
+name: Deploy Static HTML to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - beta
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create subdir for beta branch (if needed)
+        if: github.ref == 'refs/heads/beta'
+        run: |
+          mkdir -p _site/beta
+          rsync -av --exclude '_site' . _site/beta
+          rm -rf _site/beta/.git _site/beta/.github
+
+      - name: Prepare site for main branch (if needed)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          mkdir -p _site
+          rsync -av --exclude '_site' . _site
+          rm -rf _site/.git _site/.github
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy-pages:
+    needs: deploy
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
