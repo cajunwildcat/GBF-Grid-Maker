@@ -40,5 +40,5 @@ jobs:
         run: |
           cd gh-pages
           git add .
-          git commit -m "Update content for branch ${{ github.ref_name }}" || true
+          git commit -m "Update content for branch ${{ github.ref_name }}"
           git push origin gh-pages
