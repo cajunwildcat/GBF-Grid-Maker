@@ -1,4 +1,4 @@
-name: Deploy Branch Content to gh-pages
+name: Sync Branches to gh-pages
 
 on:
   push:
@@ -6,43 +6,46 @@ on:
       - gh-pages
 
 jobs:
-  deploy:
+  sync-to-gh-pages:
     runs-on: ubuntu-latest
-    permissions: write-all
 
     steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v2
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Fetch all branches
 
-      - name: Set up Git
+      # Create a temporary directory to store branch contents
+      - name: Create temporary directory
+        run: mkdir temp
+
+      # Loop through all branches and copy their contents
+      - name: Copy branch contents
         run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
+          for branch in $(git branch -r | grep -v gh-pages | grep -v HEAD | sed 's/origin\///'); do
+            git checkout $branch
+            if [ "$branch" = "main" ]; then
+              cp -r . ../temp/
+            else
+              mkdir -p ../temp/$branch
+              cp -r . ../temp/$branch/
+            fi
+          done
 
-      - name: Clone the gh-pages branch
+      # Switch to gh-pages branch
+      - name: Switch to gh-pages branch
         run: |
-          git clone --branch gh-pages git@github.com/${{ github.repository }} gh-pages || mkdir gh-pages
+          git checkout gh-pages || git checkout --orphan gh-pages
+          rm -rf *
+          cp -r ../temp/* .
+          rm -rf ../temp
 
-      - name: Prepare content for deployment
-        run: |
-          # Determine the target directory
-          if [ "${{ github.ref_name }}" == "main" ]; then
-            TARGET_DIR="."
-          else
-            TARGET_DIR="${{ github.ref_name }}"
-          fi
-
-          # Create the target directory and copy content
-          mkdir -p gh-pages/$TARGET_DIR
-          rsync -av --exclude '.git' --exclude '.github' ./ gh-pages/$TARGET_DIR
-          pushd gh-pages
-
+      # Commit and push changes to gh-pages
       - name: Commit and push changes
         run: |
-          cd gh-pages
-          git init
-          git remote add origin git@github.com:${{ github.repository }} || true
-          git checkout gh-pages || git checkout -b gh-pages
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
           git add .
-          git commit -m "Update content for branch ${{ github.ref_name }}" || echo "No changes to commit"
-          git push origin gh-pages
+          git commit -m "Sync branches to gh-pages" || echo "No changes to commit"
+          git push origin gh-pages --force
