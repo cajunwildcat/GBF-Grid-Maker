@@ -1,54 +1,51 @@
-name: Deploy Static HTML to GitHub Pages
+name: Sync Branches to gh-pages
 
 on:
   push:
-    branches:
-      - main
-      - beta
+    branches-ignore:
+      - gh-pages
 
 jobs:
-  deploy:
+  sync-to-gh-pages:
     runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-      contents: read
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Create subdir for beta branch (if needed)
-        if: github.ref == 'refs/heads/beta'
-        run: |
-          mkdir -p _site/beta
-          rsync -av --exclude '_site' . _site/beta
-          rm -rf _site/beta/.git _site/beta/.github
-
-      - name: Prepare site for main branch (if needed)
-        if: github.ref == 'refs/heads/main'
-        run: |
-          mkdir -p _site
-          rsync -av --exclude '_site' . _site
-          rm -rf _site/.git _site/.github
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
         with:
-          path: _site
+          fetch-depth: 0 # Fetch all branches
 
-  deploy-pages:
-    needs: deploy
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
+      # Create a temporary directory to store branch contents
+      - name: Create temporary directory
+        run: mkdir temp
 
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      # Loop through all branches and copy their contents, excluding .git and .gitignore
+      - name: Copy branch contents
+        run: |
+          for branch in $(git branch -r | grep -v gh-pages | grep -v HEAD | sed 's/origin\///'); do
+            git checkout $branch
+            if [ "$branch" = "main" ]; then
+              rsync -av --exclude='.git' --exclude='.gitignore' ./ ../temp/
+            else
+              mkdir -p ../temp/$branch
+              rsync -av --exclude='.git' --exclude='.gitignore' ./ ../temp/$branch/
+            fi
+          done
 
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      # Switch to gh-pages branch
+      - name: Switch to gh-pages branch
+        run: |
+          git checkout gh-pages || git checkout --orphan gh-pages
+          rm -rf *
+          rsync -av ../temp/ ./
+          rm -rf ../temp
+
+      # Commit and push changes to gh-pages
+      - name: Commit and push changes
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Sync branches to gh-pages" || echo "No changes to commit"
+          git push origin gh-pages --force
