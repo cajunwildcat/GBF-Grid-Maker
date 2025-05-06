@@ -20,16 +20,16 @@ jobs:
       - name: Create temporary directory
         run: mkdir temp
 
-      # Loop through all branches and copy their contents
+      # Loop through all branches and copy their contents, excluding .git and .gitignore
       - name: Copy branch contents
         run: |
           for branch in $(git branch -r | grep -v gh-pages | grep -v HEAD | sed 's/origin\///'); do
             git checkout $branch
             if [ "$branch" = "main" ]; then
-              cp -r . ../temp/
+              rsync -av --exclude='.git' --exclude='.gitignore' ./ ../temp/
             else
               mkdir -p ../temp/$branch
-              cp -r . ../temp/$branch/
+              rsync -av --exclude='.git' --exclude='.gitignore' ./ ../temp/$branch/
             fi
           done
 
@@ -38,7 +38,7 @@ jobs:
         run: |
           git checkout gh-pages || git checkout --orphan gh-pages
           rm -rf *
-          cp -r ../temp/* .
+          rsync -av ../temp/ ./
           rm -rf ../temp
 
       # Commit and push changes to gh-pages
