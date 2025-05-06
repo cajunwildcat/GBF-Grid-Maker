@@ -26,7 +26,7 @@ jobs:
           for branch in $(git branch -r | grep -v gh-pages | grep -v HEAD | sed 's/origin\///'); do
             git checkout $branch
             if [ "$branch" = "main" ]; then
-              rsync -av --exclude='.git' --exclude='.gitignore' --exclude='.github' ./ ../temp/
+              rsync -av ./ ../temp/
             else
               mkdir -p ../temp/$branch
               rsync -av --exclude='.git' --exclude='.gitignore' --exclude='.github' ./ ../temp/$branch/
