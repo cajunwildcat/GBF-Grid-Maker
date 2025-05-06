@@ -22,14 +22,14 @@ jobs:
         if: github.ref == 'refs/heads/beta'
         run: |
           mkdir -p _site/beta
-          cp -r . _site/beta
+          rsync -av --exclude '_site' . _site/beta
           rm -rf _site/beta/.git _site/beta/.github
 
       - name: Prepare site for main branch (if needed)
         if: github.ref == 'refs/heads/main'
         run: |
           mkdir -p _site
-          cp -r . _site
+          rsync -av --exclude '_site' . _site
           rm -rf _site/.git _site/.github
 
       - name: Upload artifact
