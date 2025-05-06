@@ -1,70 +1,45 @@
-name: Deploy Static HTML to GitHub Pages
+name: Deploy Branch Content to gh-pages
 
 on:
   push:
-    branches:
-      - main
-      - beta
+    branches-ignore:
+      - gh-pages
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
-      pages: write
-      id-token: write
-      contents: read
+      contents: write
 
     steps:
-      - name: Set up Git
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-
-      - name: Checkout code
+      - name: Checkout the repository
         uses: actions/checkout@v4
 
-      - name: Prepare site for beta branch
-        if: github.ref == 'refs/heads/beta'
+      - name: Set up Git
         run: |
-          mkdir -p _site/beta
-          rsync -av --exclude '_site' . _site/beta
-          rm -rf _site/beta/.git _site/beta/.github
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
 
-      - name: Prepare site for main branch
-        if: github.ref == 'refs/heads/main'
+      - name: Clone the gh-pages branch
         run: |
-          mkdir -p _site
-          rsync -av --exclude '_site' . _site
-          rm -rf _site/.git _site/.github
+          git clone --branch gh-pages https://github.com/${{ github.repository }} gh-pages || mkdir gh-pages
 
-      - name: Download existing site
+      - name: Prepare content for deployment
         run: |
-          git clone --branch gh-pages https://github.com/${{ github.repository }} gh-pages || exit 0
-          mkdir -p gh-pages
-          mv gh-pages/* _site/ || true
-
-      - name: Merge new content
-        run: |
-          if [ "${{ github.ref }}" == "refs/heads/beta" ]; then
-            rsync -av _site/beta/ gh-pages/beta/
-          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            rsync -av _site/ gh-pages/
+          # Determine the target directory
+          if [ "${{ github.ref_name }}" == "main" ]; then
+            TARGET_DIR="."
+          else
+            TARGET_DIR="${{ github.ref_name }}"
           fi
+
+          # Create the target directory and copy content
+          mkdir -p gh-pages/$TARGET_DIR
+          rsync -av --exclude '.git' --exclude '.github' ./ gh-pages/$TARGET_DIR
 
       - name: Commit and push changes
         run: |
           cd gh-pages
           git add .
-          git commit -m "Deploy from ${{ github.ref }}" || true
+          git commit -m "Update content for branch ${{ github.ref_name }}" || true
           git push origin gh-pages
-
-  deploy-pages:
-    needs: deploy
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-
-    steps:
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
