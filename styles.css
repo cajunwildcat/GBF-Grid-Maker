@@ -265,7 +265,7 @@ ul {
 
 .team-members {
     position: absolute;
-    top: 11px;
+    top: 21px;
     display: flex;
     justify-content: space-evenly;
     gap: 4px;
@@ -275,8 +275,8 @@ ul {
     border: solid 1px #356C79;
 
     >button.grid-input {
-        width: 72px;
-        height: 159px;
+        width: 74px;
+        height: 135px;
         position: relative;
         background-image: url('assets/empty-char.jpg');
     }
@@ -301,7 +301,27 @@ ul {
     width: 30px;
     height: 30px;
     background-color:transparent;
-    background-image: url("assets/Icon_Transcend_Star_5.png");
+    &[data-trans="t5"],&[data-trans="trans5"] {
+        background-image: url("assets/Icon_Transcend_Star_5.png");
+    }
+    &[data-trans="t4"],&[data-trans="trans4"] {
+        background-image: url("assets/Icon_Transcend_Star_4.png");
+    }
+    &[data-trans="t3"],&[data-trans="trans3"] {
+        background-image: url("assets/Icon_Transcend_Star_3.png");
+    }
+    &[data-trans="t2"],&[data-trans="trans2"] {
+        background-image: url("assets/Icon_Transcend_Star_2.png");
+    }
+    &[data-trans="t1"],&[data-trans="trans1"] {
+        background-image: url("assets/Icon_Transcend_Star_1.png");
+    }
+    &[data-trans="5"] {
+        background-image: url("assets/Icon_Blue_Star_Full.png");
+    }
+    &[data-trans="4"] {
+        background-image: url("assets/Icon_Blue_Star.png");
+    }
 }
 
 .summon-grid {
