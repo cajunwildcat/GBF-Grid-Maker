@@ -35,10 +35,14 @@ jobs:
           # Create the target directory and copy content
           mkdir -p gh-pages/$TARGET_DIR
           rsync -av --exclude '.git' --exclude '.github' ./ gh-pages/$TARGET_DIR
+          pushd gh-pages
 
       - name: Commit and push changes
         run: |
           cd gh-pages
+          git init
+          git remote add origin git@github.com:${{ github.repository }} || true
+          git checkout gh-pages || git checkout -b gh-pages
           git add .
-          git commit -m "Update content for branch"
+          git commit -m "Update content for branch ${{ github.ref_name }}" || echo "No changes to commit"
           git push origin gh-pages
