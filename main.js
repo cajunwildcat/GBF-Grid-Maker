@@ -136,7 +136,35 @@ let minoOptions = [
     { label: "Chachazero", metatags: ["13", "chachazero", "evangeline"] },
     { label: "Perfida", metatags: ["14", "ccw"] }
 ]
-let shieldOptions = []
+let shieldOptions = [
+    { label: "Round Shield", metatags: ["2001", "round shield", "round", "hp1"] },
+    { label: "Buckler", metatags: ["2002", "buckler", "dodge"] },
+    { label: "Knight Shield", metatags: ["2003", "knight shield", "knight", "def1"] },
+    { label: "Scutum", metatags: ["3001", "scutum", "def2"] },
+    { label: "Mythril Shield", metatags: ["3002", "mythril shield", "mythril", "hp2"] },
+    { label: "Holy Shield", metatags: ["3003", "holy shield", "holy", "darkres"] },
+    { label: "Tiamat Shield", metatags: ["3004", "tiamat shield", "tiamat", "windatk"] },
+    { label: "Rose Crystal Shield", metatags: ["3005", "rose crystal shield", "rose", "superiorelementres"] },
+    { label: "Spartan Shield", metatags: ["4001", "spartan shield", "spartan", "default", "def3"] },
+    { label: "Malice Adarga", metatags: ["4002", "malice adarga", "malice", "atk"] },
+    { label: "Archangel's Shield", metatags: ["4003", "archangel's shield", "angel", "hp3"] },
+    { label: "Colossus Wall", metatags: ["4004", "colossus wall", "colossus", "fireatk"] },
+    { label: "Bahamut Shield", metatags: ["4005", "bahamut shield", "bahamut", "baha", "cadmg"] },
+    { label: "Soul of Oneness", metatags: ["4006", "soul of oneness", "twinelements", "firewaterdef"] },
+    { label: "Eutr Nogadr Ldeysh", metatags: ["4007", "eutr nogadr ldeysh", "lindwurm", "debuffres"] },
+    { label: "Hero's Shield", metatags: ["4008", "hero's shield", "hero", "gilgamesh", "gilg", "def"] },
+    { label: "Shield of Lamentation", metatags: ["4009", "shield of lamentation", "grandorder", "go", "nadmg"] },
+    { label: "Huanglong Shield", metatags: ["4010", "huanglong shield", "huanglong", "lightatk"] },
+    { label: "Qilin Shield", metatags: ["4011", "qilin shield", "qilin", "darkatk"] },
+    { label: "Nibelung Mauer", metatags: ["4012", "nibelung mauer", "alex", "alexiel", "waterres"] },
+    { label: "Obelisk", metatags: ["4013", "obelisk", "ennead", "cb"] },
+    { label: "Shield of the Enthroned", metatags: ["4014", "atum", "enthroned", "shield of the enthroned"] },
+    { label: "Lustrous Wall", metatags: ["4015", "horus", "lustrous wall"] },
+    { label: "Eth Ldog Ldeysh", metatags: ["4016", "galleon", "eth ldog ldeysh"] },
+    { label: "Eth Ckalb Ldeysh", metatags: ["4017", "fediel", "eth ckalb ldeysh"] },
+    { label: "Moonhill", metatags: ["4018", "dias", "diaspora", "moonhill"] },
+    { label: "Shield of Tenets", metatags: ["4019", "subhl", "subbie", "tenets", "shield of tenets"] }
+]
 let elements = { "fire": 1, "water": 2, "earth": 3, "wind": 4, "light": 5, "dark": 6 };
 let weaponTypes = { "sabre": 1, "dagger": 2, "spear": 3, "axe": 4, "staff": 5, "gun": 6, "melee": 7, "bow": 8, "harp": 9, "katana": 10 };
 let teamData = {};
@@ -518,8 +546,11 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
     switch (optionSet) {
         case 'skills': return;
         case 'classes':
-            if (button.querySelector(".class-gear")) gridInputContextMenu(null, button.querySelector(".class-gear"));
-            if (["Manadiver", "Paladin"].includes(selectedOption.label)) addClassGear(button, selectedOption.label)
+            if (button.querySelector(".class-gear")) {
+                gridInputContextMenu(null, button.querySelector(".class-gear"));
+                button.querySelector(".class-gear").remove();
+            }
+            if (["Manadiver", "Paladin", "Shieldsworn"].includes(selectedOption.label)) addClassGear(button, selectedOption.label)
             break;
         case 'characters': break;
         case 'weapons':
@@ -546,7 +577,7 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
     if (optionSet !== "skills" && optionSet.includes("Skill")) {
         teamData[button.id] = selectedOption.metatags[0];
     }
-    if (optionSet == "mino" || optionSet == "shield") {
+    else if (optionSet == "mino" || optionSet == "shield") {
         teamData[button.id] = selectedOption.metatags[1];
     }
     else {
@@ -580,6 +611,9 @@ function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
             break;
         case 'mino':
             backgroundUrl = `url(https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/familiar/s/${selectedOption.metatags[0]}.jpg)`
+            break;
+        case 'shield':
+            backgroundUrl = `url(https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/shield/s/${selectedOption.metatags[0]}.jpg)`
             break;
         case 'opusSkill2':
         case 'opusSkill3':
@@ -619,6 +653,7 @@ function addClassGear(button, className) {
         case "Manadiver":
             id = options = "mino";
             break;
+        case "Shieldsworn":
         case "Paladin":
             id = options = "shield";
             break
@@ -652,7 +687,7 @@ function addQuickSummonButton(button) {
 function wikiTemplateText() {
     return `{{TeamSpread
 |team={{Team
-|class=${getTeamData("mc")}${teamData.mino? `|mino=${teamData.mino}` : ""}
+|class=${getTeamData("mc")}${teamData.mino ? `|mino=${teamData.mino}` : ""}${teamData.shield ? `|shield=${teamData.shield}` : ""}
 |char1=${getCharacterInfo("char1")}
 |char2=${getCharacterInfo("char2")}
 |char3=${getCharacterInfo("char3")}
@@ -994,7 +1029,8 @@ function importData(data) {
     });
 
     if (team.class) setGridData("mc", team.class);
-    if (team.class =="Manadiver" && team.mino) setGridData("mino", team.mino);
+    if (team.class == "Manadiver" && team.mino) setGridData("mino", team.mino);
+    if ((team.class == "Paladin" || team.class == "Shieldsworn") && team.shield) setGridData("shield", team.shield);
     for (let i = 1; i <= 5; i++) {
         let key = `char${i}`;
         if (!team[key]) continue;
