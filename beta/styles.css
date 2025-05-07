@@ -377,6 +377,21 @@ ul {
     }
 }
 
+.quick-summon-toggle {
+    background-image: url("assets/Icon_summon_quick.png");
+    opacity: 0.5;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: transparent;
+
+    &[data-toggled="true"] {
+        opacity: 1;
+    }
+}
+
 .dropdown {
     position: absolute;
     top: 0;
