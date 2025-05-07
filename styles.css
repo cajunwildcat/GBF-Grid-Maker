@@ -377,6 +377,15 @@ ul {
     }
 }
 
+.class-gear {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 40px;
+    height: 40px;
+    background-image: url("assets/Secret_square.jpg");
+}
+
 .quick-summon-toggle {
     background-image: url("assets/Icon_summon_quick.png");
     opacity: 0.5;
