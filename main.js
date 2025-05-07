@@ -488,7 +488,9 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
         case 'weapons':
             addWeaponSkills(button, id);
             break;
-        case 'summons': break;
+        case 'summons':
+            if (!button.parentElement.classList.contains("team-summon")) addQuickSummonButton(button);
+            break;
         case 'opusSkill2':
         case 'opusSkill3':
         case 'ultimaSkill1':
@@ -563,6 +565,24 @@ function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
     }
 }
 
+function addQuickSummonButton(button) {
+    let qsButton = document.createElement("button");
+    qsButton.classList.add("quick-summon-toggle");
+    qsButton.dataset.toggled = "false";
+    qsButton.onclick = (e) => {
+        e.stopPropagation();
+        qsButton.dataset.toggled = qsButton.dataset.toggled == "true" ? "false" : "true";
+        if (qsButton.dataset.toggled == "true") {
+            teamData.quickSummon = button.id.replace("s", "").replace("-","");
+            Array(...document.querySelectorAll(".quick-summon-toggle")).filter(e => e != qsButton).forEach(e => e.dataset.toggled = "false");
+        }
+        else {
+            delete teamData.quickSummon;
+        }
+    }
+    button.appendChild(qsButton);
+}
+
 function wikiTemplateText() {
     return `{{TeamSpread
 |team={{Team
@@ -604,7 +624,7 @@ function wikiTemplateText() {
 |s4=${getSummonInfo("s4")}
 |sub1=${getSummonInfo("s-sub1")}
 |sub2=${getSummonInfo("s-sub2")}
-|quick=
+|quick=${teamData.quickSummon? teamData.quickSummon : ""}
 }}
 }}`
 }
@@ -951,6 +971,7 @@ function importData(data) {
         let value = summons[key];
         setGridData(`s-sub${i}`, value, { uncap: summons[`u${key}`] });
     }
+    if (summons["quick"]) document.querySelector(`.summon-grid button[id*="${summons["quick"]}"] .quick-summon-toggle`).click()
 
     function setGridData(key, value, options = {}) {
         let button = document.querySelector(`#${key}`);
