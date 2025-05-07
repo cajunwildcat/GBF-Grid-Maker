@@ -1,0 +1,57 @@
+name: Sync Branches to gh-pages
+
+on:
+  push:
+    branches-ignore:
+      - gh-pages
+  workflow_dispatch:
+
+jobs:
+  sync-to-gh-pages:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Fetch all branches
+
+      # Create a temporary directory to store branch contents
+      - name: Create temporary directory
+        run: mkdir temp
+
+      # Loop through all branches and copy their contents, excluding .git, .gitignore, .github, and temp
+      - name: Copy branch contents
+        run: |
+          for branch in $(git branch -r | grep -v gh-pages | grep -v HEAD | sed 's/origin\///'); do
+            git checkout $branch
+            if [ "$branch" = "main" ]; then
+              rsync -av --exclude='.git' --exclude='.gitignore' --exclude='.github' --exclude='temp' ./ ../temp/
+            else
+              mkdir -p ../temp/$branch
+              rsync -av --exclude='.git' --exclude='.gitignore' --exclude='.github' --exclude='temp' ./ ../temp/$branch/
+            fi
+          done
+
+      # Switch to gh-pages branch
+      - name: Switch to gh-pages branch
+        run: |
+          git checkout gh-pages || git checkout --orphan gh-pages
+          rm -rf *
+          rsync -av --exclude='temp' ../temp/ ./
+          rm -rf ../temp
+
+      # Remove unnecessary files (e.g., .github folder)
+      - name: Clean up unnecessary files
+        run: |
+          rm -rf .github
+
+      # Commit and push changes to gh-pages
+      - name: Commit and push changes
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Sync branches to gh-pages" || echo "No changes to commit"
+          git push origin gh-pages --force
