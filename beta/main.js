@@ -120,6 +120,23 @@ let draconicSkillOptions = {
 
     ]
 }
+let minoOptions = [
+    { label: "Burlona", metatags: ["1", "burlona"] },
+    { label: "Schalk", metatags: ["2", "schalk"] },
+    { label: "Leviathan Mino", metatags: ["3", "levi"] },
+    { label: "Yggdrasil Mino", metatags: ["4", "yggy"] },
+    { label: "Bahamut", metatags: ["5", "baha"] },
+    { label: "Lu Woh Mino", metatags: ["6", "luwoh"] },
+    { label: "Mini Mimic", metatags: ["7", "mimic"] },
+    { label: "Ouroboros", metatags: ["8", "ouro", "cag"] },
+    { label: "Europa", metatags: ["9", "europa"] },
+    { label: "Wilnas", metatags: ["10", "wilnas"] },
+    { label: "Agastia Simulacrum", metatags: ["11", "agastia", "agatura"] },
+    { label: "Dark Rapture Simulacrum", metatags: ["12", "faa", "blue"] },
+    { label: "Chachazero", metatags: ["13", "chachazero", "evangeline"] },
+    { label: "Perfida", metatags: ["14", "ccw"] }
+]
+let shieldOptions = []
 let elements = { "fire": 1, "water": 2, "earth": 3, "wind": 4, "light": 5, "dark": 6 };
 let weaponTypes = { "sabre": 1, "dagger": 2, "spear": 3, "axe": 4, "staff": 5, "gun": 6, "melee": 7, "bow": 8, "harp": 9, "katana": 10 };
 let teamData = {};
@@ -237,7 +254,9 @@ const optionSets = {
     draconicSkill3: draconicSkillOptions.skill3,
     ultimaSkill1: ultimaSkillOptions.skill1,
     ultimaSkill2: ultimaSkillOptions.skill2,
-    ultimaSkill3: ultimaSkillOptions.skill3
+    ultimaSkill3: ultimaSkillOptions.skill3,
+    mino: minoOptions,
+    shield: shieldOptions
 };
 let currentOptions = [];
 let filteredOptions = [];
@@ -297,9 +316,9 @@ function setupButtonSearch() {
 
     // Attach event listeners to buttons
     document.querySelectorAll('.grid-input').forEach(button => {
-        button.addEventListener('click', (event) => gridInputClick(event, button));
+        button.addEventListener('click', (event) => gridInputClick(event));
 
-        button.oncontextmenu = (e) => gridInputContextMenu(e, button);
+        button.oncontextmenu = (e) => gridInputContextMenu(e);
 
         button.onkeydown = (e) => {
             if (e.key === "Tab") return;
@@ -367,7 +386,10 @@ function setupButtonSearch() {
     });
 }
 
-function gridInputClick(event, button, sort = true) {
+function gridInputClick(event, sort = true) {
+    button = event.target;
+    event.preventDefault();
+    event.stopPropagation();
     const cat = button.dataset.options;
     let options = optionSets[cat].filter(option => {
         switch (cat) {
@@ -392,7 +414,8 @@ function gridInputClick(event, button, sort = true) {
         showDropdown(event, options);
     }
 }
-function gridInputContextMenu(event, button) {
+function gridInputContextMenu(event, button = null) {
+    if (!button) button = event.target;
     event?.preventDefault();
     button.style.backgroundImage = null;
     if (button.dataset.options == "skills") {
@@ -414,12 +437,23 @@ function gridInputContextMenu(event, button) {
     else if (button.classList.contains("weapon-skill")) {
         button.style.backgroundImage = `url(https://gbf.wiki/thumb.php?f=ws_skill_blank.png&w=33`;
     }
-    if (button.querySelector(".uncap")) {
-        button.querySelector(".uncap").remove();
+
+    button.querySelector(".uncap")?.remove();
+    if (button.querySelector(".quick-summon-toggle")) {
+        if (button.querySelector(".quick-summon-toggle").dataset.toggled == "true") delete teamData.quickSummon;
+        button.querySelector(".quick-summon-toggle").remove();
     }
+    //possibly re-write to call contextmenu on each child ".grid-input" item so they auto handle teamData deletion
+    if (button.querySelector(".class-gear")) {
+        delete teamData.mino;
+        delete teamData.shield;
+        button.querySelector(".class-gear").remove();
+    }
+
     delete teamData[button.id];
     delete teamData[button.id + "Uncap"];
     delete teamData[button.id + "Trans"];
+    if (button.dataset.itemId) button.dataset.itemId = "";
     hideDropdown();
 }
 // Position and show dropdown
@@ -483,7 +517,10 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
     setButtonBackground(button, selectedOption, optionSet, uncap, id);
     switch (optionSet) {
         case 'skills': return;
-        case 'classes': break;
+        case 'classes':
+            if (button.querySelector(".class-gear")) gridInputContextMenu(null, button.querySelector(".class-gear"));
+            if (["Manadiver", "Paladin"].includes(selectedOption.label)) addClassGear(button, selectedOption.label)
+            break;
         case 'characters': break;
         case 'weapons':
             addWeaponSkills(button, id);
@@ -491,6 +528,8 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
         case 'summons':
             if (!button.parentElement.classList.contains("team-summon")) addQuickSummonButton(button);
             break;
+        case 'mino':
+        case 'shield':
         case 'opusSkill2':
         case 'opusSkill3':
         case 'ultimaSkill1':
@@ -506,6 +545,9 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
     if (button.id == "s-main") Array(...document.querySelectorAll("#s-main")).filter(e => e.dataset.itemId != id).forEach(e => setButtonToItem(e, optionSet, selectedOption, uncap, options));
     if (optionSet !== "skills" && optionSet.includes("Skill")) {
         teamData[button.id] = selectedOption.metatags[0];
+    }
+    if (optionSet == "mino" || optionSet == "shield") {
+        teamData[button.id] = selectedOption.metatags[1];
     }
     else {
         teamData[button.id] = selectedOption.label;
@@ -536,6 +578,9 @@ function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
             art = uncap == 6 || uncap == "t5" ? "_04" : uncap.toString().includes("t") ? "_03" : uncap == 5 && !summons[id].pageName.includes("SSR") ? "_02" : "";
             backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/summon/${button.parentElement.classList[0].includes("team") ? "m" : `party_${button.parentElement.classList[0].includes("main") ? "main" : "sub"}`}/${id}${art}.jpg')`;
             break;
+        case 'mino':
+            backgroundUrl = `url(https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/familiar/s/${selectedOption.metatags[0]}.jpg)`
+            break;
         case 'opusSkill2':
         case 'opusSkill3':
         case 'ultimaSkill1':
@@ -565,7 +610,28 @@ function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
     }
 }
 
+function addClassGear(button, className) {
+    let gearButton = document.createElement("button");
+    gearButton.classList.add("class-gear");
+    gearButton.classList.add("grid-input");
+    let options, id;
+    switch (className) {
+        case "Manadiver":
+            id = options = "mino";
+            break;
+        case "Paladin":
+            id = options = "shield";
+            break
+    }
+    gearButton.dataset.options = options;
+    gearButton.id = id;
+    gearButton.onclick = gridInputClick;
+    gearButton.oncontextmenu = gridInputContextMenu;
+    button.appendChild(gearButton);
+}
+
 function addQuickSummonButton(button) {
+    button.querySelector(".quick-summon-toggle")?.remove();
     let qsButton = document.createElement("button");
     qsButton.classList.add("quick-summon-toggle");
     qsButton.dataset.toggled = "false";
@@ -573,7 +639,7 @@ function addQuickSummonButton(button) {
         e.stopPropagation();
         qsButton.dataset.toggled = qsButton.dataset.toggled == "true" ? "false" : "true";
         if (qsButton.dataset.toggled == "true") {
-            teamData.quickSummon = button.id.replace("s", "").replace("-","");
+            teamData.quickSummon = button.id.replace("s", "").replace("-", "");
             Array(...document.querySelectorAll(".quick-summon-toggle")).filter(e => e != qsButton).forEach(e => e.dataset.toggled = "false");
         }
         else {
@@ -586,7 +652,7 @@ function addQuickSummonButton(button) {
 function wikiTemplateText() {
     return `{{TeamSpread
 |team={{Team
-|class=${getTeamData("mc")}
+|class=${getTeamData("mc")}${teamData.mino? `|mino=${teamData.mino}` : ""}
 |char1=${getCharacterInfo("char1")}
 |char2=${getCharacterInfo("char2")}
 |char3=${getCharacterInfo("char3")}
@@ -624,7 +690,7 @@ function wikiTemplateText() {
 |s4=${getSummonInfo("s4")}
 |sub1=${getSummonInfo("s-sub1")}
 |sub2=${getSummonInfo("s-sub2")}
-|quick=${teamData.quickSummon? teamData.quickSummon : ""}
+|quick=${teamData.quickSummon ? teamData.quickSummon : ""}
 }}
 }}`
 }
@@ -798,8 +864,8 @@ function addSelectableWeaponSkill(skill, optionSet) {
     skill.classList.add("grid-input");
     skill.style.backgroundImage = `url(https://gbf.wiki/thumb.php?f=ws_skill_blank.png&w=33`;
     skill.style.width = "33px";
-    skill.onclick = (e) => gridInputClick(e, skill, false);
-    skill.oncontextmenu = (e) => gridInputContextMenu(e, skill);
+    skill.onclick = (e) => gridInputClick(e, false);
+    skill.oncontextmenu = (e) => gridInputContextMenu(e);
     return skill;
 }
 
@@ -907,6 +973,7 @@ function importData(data) {
     document.querySelectorAll(".grid-input").forEach(button => {
         gridInputContextMenu(null, button);
     });
+    teamData = {};
     let team = {}, weapons = {}, summons = {};
     data = data.replace("{{TeamSpread", "").replace(/(?:\r\n|\r|\n)/g, '');
     data = data.split("}}").slice(0, -2);
@@ -927,6 +994,7 @@ function importData(data) {
     });
 
     if (team.class) setGridData("mc", team.class);
+    if (team.class =="Manadiver" && team.mino) setGridData("mino", team.mino);
     for (let i = 1; i <= 5; i++) {
         let key = `char${i}`;
         if (!team[key]) continue;
@@ -939,7 +1007,7 @@ function importData(data) {
         let value = team[key];
         setGridData(key, value);
     }
-    if (team.main) setGridData("s-main", team.main);
+    //if (team.main) setGridData("s-main", team.main);
     if (team.support) setGridData("s-support", team.support);
 
     if (weapons.mh) setGridData("mh", weapons.mh, { uncap: weapons.umh });
