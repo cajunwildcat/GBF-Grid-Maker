@@ -276,7 +276,7 @@ function setupButtonSearch() {
             }
             if (activeIndex >= 0) {
                 const selectedOption = currentOptions[currentOptions.indexOf(filteredOptions[activeIndex])];
-                setButtonBackground(activeButton, activeButton.dataset.options, selectedOption); // Update background image
+                setButtonToItem(activeButton, activeButton.dataset.options, selectedOption);
                 let nextButton = document.querySelector(`[tabIndex='${activeButton.tabIndex + 1}']`);
                 hideDropdown();
                 nextButton.focus();
@@ -310,7 +310,7 @@ function setupButtonSearch() {
     // Hide dropdown when clicking outside
     document.addEventListener('click', (event) => {
         if (document.querySelector("#uncap-dropdown") && !document.querySelector("#uncap-dropdown").contains(event.target)) {
-            document.querySelector("#uncap-dropdown")?.remove();
+            document.querySelector("#uncap-dropdown")?.parentElement.click();
         }
         if (!dropdown.contains(event.target) && (event.target.nodeName !== 'BUTTON' && event.target.parentElement?.nodeName !== 'BUTTON')) {
             hideDropdown();
@@ -453,7 +453,7 @@ function renderOptions(options) {
         li.textContent = option.label;
         li.setAttribute('data-index', index);
         li.addEventListener('click', () => {
-            setButtonBackground(activeButton, activeButton.dataset.options, option); // Update background image
+            setButtonToItem(activeButton, activeButton.dataset.options, option); // Update background image
             hideDropdown();
         });
         optionsList.appendChild(li);
@@ -470,14 +470,48 @@ function updateActiveOption() {
     });
 }
 
-function setButtonBackground(button, optionSet, selectedOption, iUncap = null, options = {}) {
-    let backgroundUrl = '';
+function setButtonToItem(button, optionSet, selectedOption, uncap = null, options = {}) {
     let id = selectedOption.metatags[0];
-    let uncap;
-    if (["characters", "summons", "weapons"].includes(optionSet)) {
-        uncap = addUncap(button, optionSet, selectedOption, iUncap, id);
+    if (id == button.dataset.itemId && !button.id == "s-main") {
+        setButtonBackground(button, selectedOption, optionSet, uncap, id);
+        return;
     }
-    let art;
+    button.dataset.itemId = id;
+    if (["characters", "summons", "weapons"].includes(optionSet)) {
+        uncap = addUncapButton(button, optionSet, selectedOption, uncap, id);
+    }
+    setButtonBackground(button, selectedOption, optionSet, uncap, id);
+    switch (optionSet) {
+        case 'skills': return;
+        case 'classes': break;
+        case 'characters': break;
+        case 'weapons':
+            addWeaponSkills(button, id);
+            break;
+        case 'summons': break;
+        case 'opusSkill2':
+        case 'opusSkill3':
+        case 'ultimaSkill1':
+        case 'ultimaSkill2':
+        case 'ultimaSkill3':
+        case 'draconicSkill2':
+        case 'draconicSkill3':
+        case 'ccwSkill2': break;
+        default:
+            console.error('Invalid option set');
+            break;
+    }
+    if (button.id == "s-main") Array(...document.querySelectorAll("#s-main")).filter(e => e.dataset.itemId != id).forEach(e => setButtonToItem(e, optionSet, selectedOption, uncap, options));
+    if (optionSet !== "skills" && optionSet.includes("Skill")) {
+        teamData[button.id] = selectedOption.metatags[0];
+    }
+    else {
+        teamData[button.id] = selectedOption.label;
+    }
+}
+
+function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
+    let backgroundUrl = '';
     switch (optionSet) {
         case 'skills':
             backgroundUrl = `https://gbf.wiki/thumb.php?f=${abilities[selectedOption.label].icon}&w=25`;
@@ -495,10 +529,9 @@ function setButtonBackground(button, optionSet, selectedOption, iUncap = null, o
         case 'weapons':
             art = uncap == 6 || uncap == "t5" ? "_03" : uncap.toString().includes("t") ? "_02" : "";
             backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/weapon/${button.parentElement.classList[0].includes("main") ? "ls" : "m"}/${id}${art}.jpg')`;
-            if (!options.skipWeaponSkills) addWeaponSkills(button, id);
             break;
         case 'summons':
-            art = uncap == 6 || uncap == "t5" ? "_04" : uncap.toString().includes("t") ? "_03" : uncap == 5 && !selectedOption.label.includes("SSR") ? "_02" : "";
+            art = uncap == 6 || uncap == "t5" ? "_04" : uncap.toString().includes("t") ? "_03" : uncap == 5 && !summons[id].pageName.includes("SSR") ? "_02" : "";
             backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/summon/${button.parentElement.classList[0].includes("team") ? "m" : `party_${button.parentElement.classList[0].includes("main") ? "main" : "sub"}`}/${id}${art}.jpg')`;
             break;
         case 'opusSkill2':
@@ -522,12 +555,11 @@ function setButtonBackground(button, optionSet, selectedOption, iUncap = null, o
             break;
     }
     button.style.backgroundImage = backgroundUrl;
-    if (button.id == "s-main") Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].style.backgroundImage = backgroundUrl.replace(button.parentElement.classList[0].includes("team") ? "/m/" : "/party_main/", button.parentElement.classList[0].includes("team") ? "/party_main/" : "/m/");
-    if (optionSet !== "skills" && optionSet.includes("Skill")) {
-        teamData[button.id] = selectedOption.metatags[0];
-    }
-    else {
-        teamData[button.id] = selectedOption.label;
+    if (button.id == "s-main") {
+        let otherButton = Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0];
+        if (backgroundUrl.includes("/m/")) backgroundUrl = backgroundUrl.replace("/m/", "/party_main/");
+        else backgroundUrl = backgroundUrl.replace("/party_main/", "/m/");
+        otherButton.style.backgroundImage = backgroundUrl;
     }
 }
 
@@ -635,7 +667,7 @@ function getWeaponInfo(weaponSlot) {
     let uncap = teamData[weaponSlot + "Uncap"];
     let trans = teamData[weaponSlot + "Trans"];
     if (!weapon) return "";
-    if (trans === "t5" || (uncap !== 6 && uncap === weapons[weaponIDs[weapon]].maxUncap)) {
+    if (trans === "t5" || (uncap !== 6 && uncap === weapons[weaponIDs[weapon]].maxUncap) || (weapons[weaponIDs[weapon]].series == "dark opus" && uncap == 5)) {
         return `${weapon}`;
     }
     return `${weapon}|u${weaponSlot.replace("wp", "")}=${trans ? trans : uncap}`;
@@ -649,14 +681,8 @@ function getCharacterInfo(characterSlot) {
     if (uncap === 4) {
         return `${character}`;
     }
-    let art;
-    if (uncap == 6)
-        art = "D";
-    else if (uncap == 5)
-        art = "C";
-    else
-        art = "A";
-    return `${character}${`|art${characterSlot.replace("char", "")}=${art}`}${trans ? `|trans${characterSlot.replace("char", "")}=${trans}` : ""}`;
+    let art = uncapToArt(uncap)
+    return `${character}${art != "A" ? `|art${characterSlot.replace("char", "")}=${art}` : ""}${trans ? `|trans${characterSlot.replace("char", "")}=${trans}` : ""}`;
 }
 
 function getSummonInfo(summonSlot) {
@@ -676,7 +702,8 @@ function getTeamSummonInfo(summonSlot) {
     let trans = teamData[summonSlot + "Trans"];
     let slot = summonSlot.substring(2);
     if (!summon) return "";
-    return `${summon}${uncap > 4 ? `|art${slot}=${uncap == 6 ? trans == "t5" ? `D|trans${slot}=${trans}` : `C|trans${slot}=${trans}` : "B"}` : ""}`
+    let art = uncap == 6 ? trans == "t5" ? "D" : "C" : uncap == 5 ? "B" : undefined;
+    return `${summon}${trans ? `|trans${slot}=${trans.replace("t", "")}` : ""}${art ? `|art${slot}=${art}` : ""}`;
 }
 
 function addWeaponSkills(button, id) {
@@ -756,15 +783,24 @@ function addSelectableWeaponSkill(skill, optionSet) {
     return skill;
 }
 
-function addUncap(button, optionSet, selectedOption, uncap, id) {
+function addUncapButton(button, optionSet, selectedOption, uncap, id) {
     let maxUncap;
+    let dopus = false;
     if (button.querySelector(".uncap")) button.querySelector(".uncap").remove();
     switch (optionSet) {
         case "characters": maxUncap = characters[id].maxUncap; break;
         case "summons": maxUncap = summons[id].maxUncap; break;
-        case "weapons": maxUncap = weapons[id].maxUncap; break;
+        case "weapons":
+            maxUncap = weapons[id].maxUncap;
+            if (weapons[id].series == "dark opus") {
+                dopus = true;
+            }
+            break;
     }
-    if (uncap == null) uncap = maxUncap;
+    if (uncap == null) {
+        if (dopus) uncap = 5;
+        else uncap = maxUncap;
+    }
     teamData[button.id + "Uncap"] = uncap;
     let uncapButton;
     if ((optionSet != "characters" && maxUncap == 4) || maxUncap == 5) {
@@ -777,17 +813,18 @@ function addUncap(button, optionSet, selectedOption, uncap, id) {
             e.stopPropagation();
             uncapButton.dataset.toggled = uncapButton.dataset.toggled === "true" ? "false" : "true";
             switch (optionSet) {
-                case "characters": maxUncap = uncapButton.dataset.toggled === "true" ? 5 : 4; break;
-                case "weapons": maxUncap = uncapButton.dataset.toggled === "true" ? weapons[weaponIDs[selectedOption.label]].maxUncap : 0; break;
-                case "summons": maxUncap = uncapButton.dataset.toggled === "true" ? summons[summonIDs[selectedOption.label]].maxUncap : 0; break;
+                case "characters": uncap = uncapButton.dataset.toggled === "true" ? 5 : 4; break;
+                case "weapons": uncap = uncapButton.dataset.toggled === "true" ? weapons[weaponIDs[selectedOption.label]].maxUncap : 0; break;
+                case "summons": uncap = uncapButton.dataset.toggled === "true" ? summons[summonIDs[selectedOption.label]].maxUncap : 0; break;
             }
             if (button.id == "s-main") Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].querySelector(".uncap").dataset.toggled = uncapButton.dataset.toggled;
-            setButtonBackground(button, optionSet, selectedOption, uncap);
+            setButtonToItem(button, optionSet, selectedOption, uncap);
+            teamData[button.id + "Uncap"] = uncap;
         }
         button.appendChild(uncapButton);
     }
     else if (maxUncap === 6) {
-        teamData[button.id + "Trans"] = uncap == 6? "t5" : uncap;
+        teamData[button.id + "Trans"] = uncap == 6 ? "t5" : uncap;
         uncapButton = document.createElement("button");
         uncapButton.classList.add("uncap-select");
         uncapButton.classList.add("uncap");
@@ -796,6 +833,7 @@ function addUncap(button, optionSet, selectedOption, uncap, id) {
         uncapButton.onclick = openTransDropdown;
         function openTransDropdown(e) {
             e.stopPropagation();
+            hideDropdown();
             uncapButton.onclick = closeTransDropdown;
             let dropdown = document.createElement("div");
             dropdown.classList.add("dropdown");
@@ -823,13 +861,14 @@ function addUncap(button, optionSet, selectedOption, uncap, id) {
                         teamData[button.id + "Trans"] = li.dataset.trans;
                     }
                     else {
-                        teamData[button.id + "Uncap"] = li.dataset.trans;
+                        teamData[button.id + "Uncap"] = parseInt(li.dataset.trans);
                         delete teamData[button.id + "Trans"];
                     }
                     uncapButton.style.backgroundImage = li.style.backgroundImage;
                     if (button.id == "s-main") Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].querySelector(".uncap").style.backgroundImage = li.style.backgroundImage;
-                    setButtonBackground(button, optionSet, selectedOption, li.dataset.trans, { skipWeaponSkills: true });
+                    setButtonToItem(button, optionSet, selectedOption, li.dataset.trans, { skipWeaponSkills: true });
                     uncapButton.querySelector("#uncap-dropdown")?.remove();
+                    uncapButton.onclick = openTransDropdown;
                 }
             });
             uncapButton.appendChild(dropdown);
@@ -841,7 +880,6 @@ function addUncap(button, optionSet, selectedOption, uncap, id) {
         }
         button.appendChild(uncapButton);
     }
-    if (uncapButton && button.id == "s-main") Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].appendChild(uncapButton.cloneNode(true));
     return uncap;
 }
 
@@ -867,13 +905,13 @@ function importData(data) {
         let [key, value] = item.split("=");
         summons[key] = value;
     });
-    
+
     if (team.class) setGridData("mc", team.class);
     for (let i = 1; i <= 5; i++) {
         let key = `char${i}`;
         if (!team[key]) continue;
         let value = team[key];
-        setGridData(key, value, {uncap: team[`trans${i}`]? `t${team[`trans${i}`]}` : artToUncap(team[`art${i}`])});
+        setGridData(key, value, { uncap: team[`trans${i}`] ? `t${team[`trans${i}`]}` : artToUncap(team[`art${i}`]) });
     }
     for (let i = 1; i <= 3; i++) {
         let key = `skill${i}`;
@@ -922,6 +960,6 @@ function importData(data) {
         if (selectedOption == null) {
             selectedOption = optionSets[optionSet].find(option => option.metatags.includes(value.toLowerCase()));
         }
-        setButtonBackground(button, optionSet, selectedOption, options.uncap ? options.uncap : null);
+        setButtonToItem(button, optionSet, selectedOption, options.uncap ? options.uncap : null);
     }
 }
