@@ -386,6 +386,17 @@ ul {
     background-image: url("assets/Secret_square.jpg");
 }
 
+.w-awakening {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    left: 0;
+    top: 15%;
+
+    background-image: url("assets/Awakening_empty.png");
+    background-color: transparent;
+}
+
 .quick-summon-toggle {
     background-image: url("assets/Icon_summon_quick.png");
     opacity: 0.5;
@@ -398,6 +409,22 @@ ul {
 
     &[data-toggled="true"] {
         opacity: 1;
+    }
+}
+
+#uncap-dropdown, 
+#awakening-dropdown {
+    position: absolute;
+    top: 30px;
+    left: 0;
+    display: block;
+    width: 30px;
+
+    li {
+        background-size: 30px 30px;
+        width: 30px;
+        height: 30px;
+        padding: 0;
     }
 }
 
