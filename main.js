@@ -562,7 +562,7 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
             addWeaponSkills(button, id);
             break;
         case 'summons':
-            if (!button.parentElement.classList.contains("team-summon")) addQuickSummonButton(button);
+            if (!button.parentElement.classList.contains("team-summon") && !button.id.includes("sub")) addQuickSummonButton(button);
             break;
         case 'mino':
         case 'shield':
@@ -884,7 +884,7 @@ function getWeaponInfo(weaponSlot) {
     if (trans === "t5" || (uncap !== 6 && uncap === weapons[weaponIDs[weapon]].maxUncap) || (weapons[weaponIDs[weapon]].series == "dark opus" && uncap == 5)) {
         uncap = null;
     }
-    return `${weapon}${uncap? `|u${index}=${trans ? trans : uncap}` : ""}${awk && awk != "empty"? `|awk${index}=${awk}` : ""}`;
+    return `${weapon}${uncap != null? `|u${index}=${trans ? trans : uncap}` : ""}${awk && awk != "empty"? `|awk${index}=${awk}` : ""}`;
 }
 
 function getCharacterInfo(characterSlot) {
