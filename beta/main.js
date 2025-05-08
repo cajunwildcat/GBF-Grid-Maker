@@ -167,6 +167,7 @@ let shieldOptions = [
 ]
 let elements = { "fire": 1, "water": 2, "earth": 3, "wind": 4, "light": 5, "dark": 6 };
 let weaponTypes = { "sabre": 1, "dagger": 2, "spear": 3, "axe": 4, "staff": 5, "gun": 6, "melee": 7, "bow": 8, "harp": 9, "katana": 10 };
+let worldHarps = [1040815000,1040815100,1040815200,1040815300,1040815400];
 let teamData = {};
 let characters, summons, weapons, abilities;
 let characterIDs = {}, summonIDs = {}, weaponIDs = {};
@@ -467,6 +468,7 @@ function gridInputContextMenu(event, button = null) {
     }
 
     button.querySelector(".uncap")?.remove();
+    button.querySelector(".w-awakening")?.remove();
     if (button.querySelector(".quick-summon-toggle")) {
         if (button.querySelector(".quick-summon-toggle").dataset.toggled == "true") delete teamData.quickSummon;
         button.querySelector(".quick-summon-toggle").remove();
@@ -481,6 +483,7 @@ function gridInputContextMenu(event, button = null) {
     delete teamData[button.id];
     delete teamData[button.id + "Uncap"];
     delete teamData[button.id + "Trans"];
+    delete teamData[button.id + "Awk"];
     if (button.dataset.itemId) button.dataset.itemId = "";
     hideDropdown();
 }
@@ -533,6 +536,7 @@ function updateActiveOption() {
 }
 
 function setButtonToItem(button, optionSet, selectedOption, uncap = null, options = {}) {
+    let itemName = selectedOption.label;
     let id = selectedOption.metatags[0];
     if (id == button.dataset.itemId && !button.id == "s-main") {
         setButtonBackground(button, selectedOption, optionSet, uncap, id);
@@ -550,10 +554,11 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
                 gridInputContextMenu(null, button.querySelector(".class-gear"));
                 button.querySelector(".class-gear").remove();
             }
-            if (["Manadiver", "Paladin", "Shieldsworn"].includes(selectedOption.label)) addClassGear(button, selectedOption.label)
+            if (["Manadiver", "Paladin", "Shieldsworn"].includes(itemName)) addClassGear(button, itemName);
             break;
         case 'characters': break;
         case 'weapons':
+            if (weapons[id].awakening) addAwakeningButton(button, id, options.awk);
             addWeaponSkills(button, id);
             break;
         case 'summons':
@@ -644,6 +649,91 @@ function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
     }
 }
 
+function addAwakeningButton(button, id, iAwk) {
+    id = parseInt(id);
+    if (worldHarps.includes(id)) {
+        let awkType;
+        switch (id) {
+            //moros
+            case 1040815000: awkType = "ca"; break;
+            case 1040815100: awkType = "attack"; break;
+            case 1040815200: awkType = "skill"; break;
+            case 1040815300: awkType = "skill"; break;
+            case 1040815400: awkType = "attack"; break;
+        }
+        let awkButton = document.createElement("button");
+        awkButton.classList.add("w-awakening");
+        awkButton.classList.add("w-awakening-toggle");
+        awkButton.id = button.id + "Awk";
+        awkButton.dataset.toggled = "false";
+        awkButton.title = "Toggle Awakening";
+        awkButton.onclick = (e) => {
+            e.stopPropagation();
+            awkButton.dataset.toggled = awkButton.dataset.toggled === "true" ? "false" : "true";
+            if (awkButton.dataset.toggled == "true") {
+                teamData[awkButton.id] = awkType;
+                awkButton.style.backgroundImage = `url(assets/Awakening_${awkType}.png)`;
+            }
+            else {
+                delete teamData[awkButton.id];
+                awkButton.style.backgroundImage = `url(assets/Awakening_Empty.png)`;
+            }
+        }
+        if (iAwk) awkButton.click();
+        button.appendChild(awkButton);
+        return;
+    }
+    let awks = ["empty"];
+    switch (weapons[id].awakening) {
+        //differnt per weapon
+        case "grand": awks.push(weapons[id].awakeningType1, weapons[id].awakeningType2); break;
+        //no special
+        case "rowv": awks.push("attack", "defense"); break;
+        //atk def special
+        default: awks.push("attack", "defense", "special"); break;
+    }
+    let awkButton = document.createElement("button");
+    awkButton.classList.add("w-awakening");
+    awkButton.classList.add("w-awakening-select");
+    awkButton.id = button.id + "Awk";
+    awkButton.title = "Select Awakening";
+    awkButton.onclick = openAwakeningDropdown;
+    function openAwakeningDropdown(e) {
+        e.stopPropagation();
+        hideDropdown();
+        awkButton.onclick = closeAwakeningDropdown;
+        let dropdown = document.createElement("div");
+        dropdown.classList.add("dropdown");
+        dropdown.id = "awakening-dropdown";
+        dropdown.innerHTML = `<ul id="options-list">
+            ${awks.map(awk => 
+                `<li data-awk="${awk}" style="background-image: url('assets/Awakening_${awk}.png');"></li>`
+            ).join("\n")}
+            </ul>`
+        dropdown.querySelectorAll("li").forEach(li =>{
+            li.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                teamData[awkButton.id] = li.dataset.awk;
+                awkButton.style.backgroundImage = li.style.backgroundImage;
+                awkButton.querySelector("#awakening-dropdown")?.remove();
+                awkButton.onclick = openAwakeningDropdown;
+            }
+        });
+        awkButton.appendChild(dropdown);
+    }
+    function closeAwakeningDropdown(e) {
+        e.stopPropagation();
+        awkButton.querySelector("#awakening-dropdown")?.remove();
+        awkButton.onclick = openAwakeningDropdown;
+    }
+    if (iAwk) {
+        awkButton.style.backgroundImage = `url('assets/Awakening_${iAwk}.png')`;
+        teamData[awkButton.id] = iAwk;
+    }
+    button.appendChild(awkButton);
+}
+
 function addClassGear(button, className) {
     let gearButton = document.createElement("button");
     gearButton.classList.add("class-gear");
@@ -713,9 +803,9 @@ function wikiTemplateText() {
 |wp10=${getWeaponInfo("wp10")}
 |wp11=${getWeaponInfo("wp11")}
 |wp12=${getWeaponInfo("wp12")}` : ""}${getOpusSkillInfo()
-        }${getUltimaSkillInfo()
-        }${getDraconicSkillInfo()
-        }${getCCWSkillInfo()}
+}${getUltimaSkillInfo()
+}${getDraconicSkillInfo()
+}${getCCWSkillInfo()}
 }}
 |summons={{SummonGrid
 |main=${getSummonInfo("s-main")}
@@ -784,14 +874,17 @@ function getCCWSkillInfo() {
 }
 
 function getWeaponInfo(weaponSlot) {
+    let index = weaponSlot.replace("wp", "");
     let weapon = teamData[weaponSlot];
+    if (index != mh) weapon = weapon.split("(")[0].trim();
     let uncap = teamData[weaponSlot + "Uncap"];
     let trans = teamData[weaponSlot + "Trans"];
+    let awk = teamData[weaponSlot + "Awk"];
     if (!weapon) return "";
     if (trans === "t5" || (uncap !== 6 && uncap === weapons[weaponIDs[weapon]].maxUncap) || (weapons[weaponIDs[weapon]].series == "dark opus" && uncap == 5)) {
-        return `${weapon}`;
+        uncap = null;
     }
-    return `${weapon}|u${weaponSlot.replace("wp", "")}=${trans ? trans : uncap}`;
+    return `${weapon}${uncap? `|u${index}=${trans ? trans : uncap}` : ""}${awk && awk != "empty"? `|awk${index}=${awk}` : ""}`;
 }
 
 function getCharacterInfo(characterSlot) {
@@ -799,11 +892,8 @@ function getCharacterInfo(characterSlot) {
     let uncap = teamData[characterSlot + "Uncap"];
     let trans = teamData[characterSlot + "Trans"];
     if (!character) return "";
-    if (uncap === 4) {
-        return `${character}`;
-    }
     let art = uncapToArt(uncap)
-    return `${character}${art != "A" ? `|art${characterSlot.replace("char", "")}=${art}` : ""}${trans ? `|trans${characterSlot.replace("char", "")}=${trans}` : ""}`;
+    return `${character}${art != "A" ? `|art${characterSlot.replace("char", "")}=${art}` : ""}${trans ? `|trans${characterSlot.replace("char", "")}=${trans.replace("t","")}` : ""}`;
 }
 
 function getSummonInfo(summonSlot) {
@@ -946,6 +1036,7 @@ function addUncapButton(button, optionSet, selectedOption, uncap, id) {
     }
     else if (maxUncap === 6) {
         teamData[button.id + "Trans"] = uncap == 6 ? "t5" : uncap;
+        teamData[button.id + "Uncap"] = 6
         uncapButton = document.createElement("button");
         uncapButton.classList.add("uncap-select");
         uncapButton.classList.add("uncap");
@@ -959,19 +1050,14 @@ function addUncapButton(button, optionSet, selectedOption, uncap, id) {
             let dropdown = document.createElement("div");
             dropdown.classList.add("dropdown");
             dropdown.id = "uncap-dropdown";
-            dropdown.style.position = "absolute";
-            dropdown.style.top = "30px";
-            dropdown.style.left = "0";
-            dropdown.style.display = "block";
-            dropdown.style.width = "30px";
             dropdown.innerHTML = `<ul id='options-list'>
-                <li data-trans="t5" style="background-image: url('assets/Icon_Transcend_Star_5.png');background-size:30px 30px;width:30px;height:30px;padding:0;"></li>
-                <li data-trans="t4" style="background-image: url('assets/Icon_Transcend_Star_4.png');background-size:30px 30px;width:30px;height:30px;padding:0;"></li>
-                <li data-trans="t3" style="background-image: url('assets/Icon_Transcend_Star_3.png');background-size:30px 30px;width:30px;height:30px;padding:0;"></li>
-                <li data-trans="t2" style="background-image: url('assets/Icon_Transcend_Star_2.png');background-size:30px 30px;width:30px;height:30px;padding:0;"></li>
-                <li data-trans="t1" style="background-image: url('assets/Icon_Transcend_Star_1.png');background-size:30px 30px;width:30px;height:30px;padding:0;"></li>
-                <li data-trans="5" style="background-image: url('assets/Icon_Blue_Star_Full.png');background-size:30px 30px;width:30px;height:30px;padding:0;"></li>
-                <li data-trans="4" style="background-image: url('assets/Icon_Blue_Star.png');background-size:30px 30px;width:30px;height:30px;padding:0;"></li>
+                <li data-trans="t5" style="background-image: url('assets/Icon_Transcend_Star_5.png');"></li>
+                <li data-trans="t4" style="background-image: url('assets/Icon_Transcend_Star_4.png');"></li>
+                <li data-trans="t3" style="background-image: url('assets/Icon_Transcend_Star_3.png');"></li>
+                <li data-trans="t2" style="background-image: url('assets/Icon_Transcend_Star_2.png');"></li>
+                <li data-trans="t1" style="background-image: url('assets/Icon_Transcend_Star_1.png');"></li>
+                <li data-trans="5" style="background-image: url('assets/Icon_Blue_Star_Full.png');"></li>
+                <li data-trans="4" style="background-image: url('assets/Icon_Blue_Star.png');"></li>
                 </ul>`;
             dropdown.querySelectorAll("li").forEach(li => {
                 li.onclick = (e) => {
@@ -1046,12 +1132,12 @@ function importData(data) {
     //if (team.main) setGridData("s-main", team.main);
     if (team.support) setGridData("s-support", team.support);
 
-    if (weapons.mh) setGridData("mh", weapons.mh, { uncap: weapons.umh });
+    if (weapons.mh) setGridData("mh", weapons.mh, { uncap: weapons.umh, awk: weapons.awkmh });
     for (let i = 1; i <= 12; i++) {
         let key = `wp${i}`;
         if (!weapons[key]) continue;
         let value = weapons[key];
-        setGridData(key, value, { uncap: weapons[`u${i}`] });
+        setGridData(key, value, { uncap: weapons[`u${i}`], awk: weapons[`awk${i}`] });
     }
     if (weapons.opus) setGridData("opusSkill2", weapons.opus.split(",")[0]);
     if (weapons.opus) setGridData("opusSkill3", weapons.opus.split(",")[1]);
@@ -1085,6 +1171,6 @@ function importData(data) {
         if (selectedOption == null) {
             selectedOption = optionSets[optionSet].find(option => option.metatags.includes(value.toLowerCase()));
         }
-        setButtonToItem(button, optionSet, selectedOption, options.uncap ? options.uncap : null);
+        setButtonToItem(button, optionSet, selectedOption, options.uncap ? options.uncap : null, options);
     }
 }
