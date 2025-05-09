@@ -558,6 +558,10 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
             break;
         case 'characters': break;
         case 'weapons':
+            if (button.querySelector(".w-awakening")) {
+                delete teamData[button.querySelector(".w-awakening").id];
+                button.querySelector(".w-awakening").remove();
+            }
             if (weapons[id].awakening) addAwakeningButton(button, id, options.awk);
             addWeaponSkills(button, id);
             break;
@@ -686,7 +690,7 @@ function addAwakeningButton(button, id, iAwk) {
     let awks = ["empty"];
     switch (weapons[id].awakening) {
         //differnt per weapon
-        case "grand": awks.push(weapons[id].awakeningType1, weapons[id].awakeningType2); break;
+        case "grand": awks.push(weapons[id].awakeningType1.replaceAll(".",""), weapons[id].awakeningType2.replaceAll(".","")); break;
         //no special
         case "rowv": awks.push("attack", "defense"); break;
         //atk def special
@@ -876,11 +880,11 @@ function getCCWSkillInfo() {
 function getWeaponInfo(weaponSlot) {
     let index = weaponSlot.replace("wp", "");
     let weapon = teamData[weaponSlot];
-    if (index != mh) weapon = weapon.split("(")[0].trim();
     let uncap = teamData[weaponSlot + "Uncap"];
     let trans = teamData[weaponSlot + "Trans"];
     let awk = teamData[weaponSlot + "Awk"];
     if (!weapon) return "";
+    if (index != "mh") weapon = weapon.split("(")[0].trim();
     if (trans === "t5" || (uncap !== 6 && uncap === weapons[weaponIDs[weapon]].maxUncap) || (weapons[weaponIDs[weapon]].series == "dark opus" && uncap == 5)) {
         uncap = null;
     }
