@@ -870,6 +870,7 @@ function addUncapButton(button, optionSet, selectedOption, uncap, id) {
 }
 
 function addAwakeningButton(button, id, iAwk) {
+    if (iAwk) iAwk = iAwk.toLowerCase();
     id = parseInt(id);
     if (worldHarps.includes(id)) {
         let awkType;
