@@ -329,12 +329,17 @@ function setupButtonSearch() {
         activeIndex = 0; // Reset active index
     });
 
-    // Attach event listeners to buttons
+    // Attach event listeners to grid input buttons
     document.querySelectorAll('.grid-input').forEach(button => {
         button.addEventListener('click', (event) => gridInputClick(event));
 
+        //middle clicks - opens wiki page
+        //button.addEventListener("auxclick", e => console.log("middle"));
+
+        //right click - clears content
         button.oncontextmenu = (e) => gridInputContextMenu(e);
 
+        //janky workaround for searching on any key press
         button.onkeydown = (e) => {
             if (e.key === "Tab") return;
             button.click();
