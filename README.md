@@ -1,6 +1,6 @@
 # Repo Structure
 ## main branch
-the latest stable build of the app. no manual pushes should be made to this branch as of 07-05-2025. all changes to this branch should come from merges of other branches, predominantly `beta`
+the latest stable build of the app. no manual pushes of anything other the README should be made to this branch as of 07-05-2025. all changes to this branch should come from merges of other branches, predominantly `beta`
 
 ## beta branch
 the predominant test build branch. all manual pushes should be made to this branch or another working branch before being pushed to main.
