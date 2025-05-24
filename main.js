@@ -339,7 +339,7 @@ function setupButtonSearch() {
 
         const itemId = button.dataset.itemId;
         const option = button.dataset.options;
-        let url = "https://gbf.wiki/index.php?search=";
+        let url = "https://gbf.wiki/";
 
         // 1 represents the middle mouse button
         if (event.button === 1) {
