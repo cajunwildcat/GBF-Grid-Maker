@@ -333,8 +333,37 @@ function setupButtonSearch() {
     document.querySelectorAll('.grid-input').forEach(button => {
         button.addEventListener('click', (event) => gridInputClick(event));
 
-        //middle clicks - opens wiki page
-        //button.addEventListener("auxclick", e => console.log("middle"));
+        // middle clicks - opens wiki page
+        button.addEventListener("auxclick", (event) => {
+        event.preventDefault();
+
+        const itemId = button.dataset.itemId;
+        const option = button.dataset.options;
+        let url = "https://gbf.wiki/index.php?search=";
+
+        // 1 represents the middle mouse button
+        if (event.button === 1) {
+            switch (option) {
+            case "characters":
+                url += characters[itemId].pageName;
+                window.open(url, "_blank");
+                break;
+
+            case "weapons":
+                url += weapons[itemId].pageName;
+                window.open(url, "_blank");
+                break;
+
+            case "summons":
+                url += summons[itemId].pageName;
+                window.open(url, "_blank");
+                break;
+
+            default:
+                break;
+            }
+        }
+        });
 
         //right click - clears content
         button.oncontextmenu = (e) => gridInputContextMenu(e);
