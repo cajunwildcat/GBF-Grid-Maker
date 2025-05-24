@@ -344,6 +344,13 @@ function setupButtonSearch() {
         // 1 represents the middle mouse button
         if (event.button === 1) {
             switch (option) {
+            case "classes":
+                if (teamData.mc) {
+                    url += teamData.mc;  
+                    window.open(url, "_blank");
+                }
+                break;
+
             case "characters":
                 url += characters[itemId].pageName;
                 window.open(url, "_blank");
