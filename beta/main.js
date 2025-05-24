@@ -176,11 +176,6 @@ let filters = {
     weapons: ["any"],
     summons: ["any"]
 }
-const aliases = {
-    "Catura": ["cow"],
-    "Payila": ["dragon"],
-    "Vikala": ["rat"]
-};
 const artToUncap = (art) => {
     switch (art) {
         case "D": return 6;
@@ -210,15 +205,36 @@ window.onload = async (e) => {
         .then((response) => abilities = response);
 
     for (let id in characters) {
-        let name = characters[id].pageName;
+        let c = characters[id];
+        let name = c.pageName;
         characterIDs[name] = id;
+        let metas = [id.toString()];
+        c.jpname ? metas.push(c.jpname) : null;
+        if (c.series && c.series.toLowerCase().includes("grand")) {
+            metas.push(`G.${name.split(" (")[0]}`)
+        }
+        if (c.series && c.series.toLowerCase().includes("summer")) {
+            metas.push(`S.${name.split(" (")[0]}`)
+        }
+        if (c.series && c.series.toLowerCase().includes("halloween")) {
+            metas.push(`H.${name.split(" (")[0]}`)
+        }
+        if (c.series && c.series.toLowerCase().includes("holiday")) {
+            metas.push(`C.${name.split(" (")[0]}`)
+        }
+        if (c.series && c.series.toLowerCase().includes("yukata")) {
+            metas.push(`Y.${name.split(" (")[0]}`)
+        }
+        if (c.series && c.series.toLowerCase().includes("valentine")) {
+            metas.push(`V.${name.split(" (")[0]}`)
+        }
+        if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id])) {
+            metas.push(...alias);
+        }
         cOptions.push({
             label: name,
-            metatags: [id, characters[id].jpname]
+            metatags: metas
         });
-        if (aliases[name]) {
-            cOptions[cOptions.length - 1].metatags.push(...aliases[name]);
-        }
     }
     for (let id in summons) {
         let name = summons[id].pageName;
@@ -227,8 +243,8 @@ window.onload = async (e) => {
             label: name,
             metatags: [id]
         });
-        if (aliases[name]) {
-            sOptions[sOptions.length - 1].metatags.push(...aliases[name]);
+        if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id])) {
+            sOptions[sOptions.length - 1].metatags.push(...alias);
         }
     }
     for (let id in weapons) {
@@ -238,8 +254,8 @@ window.onload = async (e) => {
             label: name,
             metatags: [id]
         });
-        if (aliases[name]) {
-            sOptions[wOptions.length - 1].metatags.push(...aliases[name]);
+        if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id])) {
+            wOptions[wOptions.length - 1].metatags.push(...alias);
         }
     }
     for (let ability in abilities) {
@@ -249,8 +265,8 @@ window.onload = async (e) => {
             label: name,
             metatags: [ability]
         });
-        if (aliases[name]) {
-            aOptoins[aOptoins.length - 1].metatags.push(...aliases[name]);
+        if (alias = (aliases[name])) {
+            aOptoins[aOptoins.length - 1].metatags.push(...alias);
         }
     }
     setupButtonSearch();
@@ -329,12 +345,17 @@ function setupButtonSearch() {
         activeIndex = 0; // Reset active index
     });
 
-    // Attach event listeners to buttons
+    // Attach event listeners to grid input buttons
     document.querySelectorAll('.grid-input').forEach(button => {
         button.addEventListener('click', (event) => gridInputClick(event));
 
+        //middle clicks - opens wiki page
+        //button.addEventListener("auxclick", e => console.log("middle"));
+
+        //right click - clears content
         button.oncontextmenu = (e) => gridInputContextMenu(e);
 
+        //janky workaround for searching on any key press
         button.onkeydown = (e) => {
             if (e.key === "Tab") return;
             button.click();
