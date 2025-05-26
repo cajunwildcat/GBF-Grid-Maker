@@ -260,6 +260,9 @@ window.onload = async (e) => {
 
     // Make summon grid elements draggable
     InitSummonsContainer();
+
+    // Make weapon grid elements draggable
+    InitWeaponsContainer()
 };
 
 const optionSets = {
