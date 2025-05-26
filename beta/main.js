@@ -351,41 +351,38 @@ function setupButtonSearch() {
 
         // middle clicks - opens wiki page
         button.addEventListener("auxclick", (event) => {
-        event.preventDefault();
+            event.preventDefault();
 
-        const itemId = button.dataset.itemId;
-        const option = button.dataset.options;
-        let url = "https://gbf.wiki/";
+            const itemId = button.dataset.itemId;
+            if (!itemId) return;
+            const option = button.dataset.options;
+            let url = "https://gbf.wiki/";
 
-        // 1 represents the middle mouse button
-        if (event.button === 1) {
-            switch (option) {
-            case "classes":
-                if (teamData.mc) {
-                    url += teamData.mc;  
-                    window.open(url, "_blank");
+            // 1 represents the middle mouse button
+            if (event.button === 1) {
+                switch (option) {
+                    case "classes":
+                        url += teamData.mc;
+                        break;
+
+                    case "characters":
+                        url += characters[itemId].pageName;
+                        break;
+
+                    case "weapons":
+                        url += weapons[itemId].pageName;
+                        break;
+
+                    case "summons":
+                        url += summons[itemId].pageName;
+                        break;
+
+                    default:
+                        break;
                 }
-                break;
-
-            case "characters":
-                url += characters[itemId].pageName;
+                if (!url) return;
                 window.open(url, "_blank");
-                break;
-
-            case "weapons":
-                url += weapons[itemId].pageName;
-                window.open(url, "_blank");
-                break;
-
-            case "summons":
-                url += summons[itemId].pageName;
-                window.open(url, "_blank");
-                break;
-
-            default:
-                break;
             }
-        }
         });
 
         //right click - clears content
