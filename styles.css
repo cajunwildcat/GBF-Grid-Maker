@@ -475,3 +475,7 @@ ul {
 li.active {
     background-color: #d3d3d3;
 }
+
+.sortable-ghost {
+    opacity: 0.4;
+}

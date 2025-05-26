@@ -254,6 +254,9 @@ window.onload = async (e) => {
         }
     }
     setupButtonSearch();
+
+    // Make character grid elements draggable
+    InitTeamContainer()
 };
 
 const optionSets = {
