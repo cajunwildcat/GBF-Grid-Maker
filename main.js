@@ -257,6 +257,9 @@ window.onload = async (e) => {
 
     // Make character grid elements draggable
     InitTeamContainer()
+
+    // Make summon grid elements draggable
+    InitSummonsContainer();
 };
 
 const optionSets = {
