@@ -20,8 +20,8 @@ function NewSortableSwapContainer(container, draggable, group, extraOptions = {}
 
 function swapItems(e) {
     if (e.oldIndex != e.newIndex) {
-        const draggedElement = e.item;
-        const swappedElement = e.swapItem;
+        const draggedElement = e.item.classList.contains("w") ? e.item.firstElementChild : e.item;
+        const swappedElement = e.swapItem.classList.contains("w") ? e.swapItem.firstElementChild : e.swapItem;
 
         const draggedID = draggedElement.id;
         const swappedID = swappedElement.id;
