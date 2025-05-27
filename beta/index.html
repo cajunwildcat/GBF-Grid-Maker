@@ -7,117 +7,119 @@
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
     <title>Granblue Grid Maker</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="aliases.js"></script>
+    <script src="aliases.js"></script> 
+    <script src="sortable.js"></script> 
     <script src="main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 </head>
 
 <body>
     <div id="team-spread">
         <div class="team-container">
             <div class="team-members" style="left:10px;">
-                <button id="mc" class="grid-input" data-options="classes" tabindex="1"></button>
-                <button id="char1" class="grid-input" data-options="characters" tabindex="2"></button>
-                <button id="char2" class="grid-input" data-options="characters" tabindex="3"></button>
-                <button id="char3" class="grid-input" data-options="characters" tabindex="4"></button>
+                <div id="mc" class="grid-input no-drag" data-options="classes" tabindex="1"></div>
+                <div id="char1" class="grid-input" data-options="characters" tabindex="2"></div>
+                <div id="char2" class="grid-input" data-options="characters" tabindex="3"></div>
+                <div id="char3" class="grid-input" data-options="characters" tabindex="4"></div>
             </div>
-            <div class="team-members" style="right:10px;">
-                <button id="char4" class="grid-input" data-options="characters" tabindex="5"></button>
-                <button id="char5" class="grid-input" data-options="characters" tabindex="6"></button>
+            <div class="team-members sub-members" style="right:10px;">
+                <div id="char4" class="grid-input" data-options="characters" tabindex="5"></div>
+                <div id="char5" class="grid-input" data-options="characters" tabindex="6"></div>
             </div>
             <div class="team-summon">
-                <button id="s-main" class="grid-input" data-options="summons" tabindex="7"></button>
-                <button id="s-support" class="grid-input" data-options="summons" tabindex="8"></button>
+                <div id="s-main" class="grid-input" data-options="summons" tabindex="7"></div>
+                <div id="s-support" class="grid-input" data-options="summons" tabindex="8"></div>
             </div>
             <div class="skill-box">
-                <button id="skill1" class="skill grid-input" data-options="skills" tabindex="9">
+                <div id="skill1" class="skill grid-input" data-options="skills" tabindex="9">
                     <img src="assets/empty-skill.png">
                     <span class="skill name"></span>
-                </button>
+                </div>
                 <div style="top: 29px;" class="skill-line"></div>
-                <button id="skill2" class="skill grid-input" data-options="skills" tabindex="10">
+                <div id="skill2" class="skill grid-input" data-options="skills" tabindex="10">
                     <img src="assets/empty-skill.png">
                     <span class="skill name"></span>
-                </button>
+                </div>
                 <div style="top: 57px;" class="skill-line"></div>
-                <button id="skill3" class="skill grid-input" data-options="skills" tabindex="11">
+                <div id="skill3" class="skill grid-input" data-options="skills" tabindex="11">
                     <img src="assets/empty-skill.png">
                     <span class="skill name"></span>
-                </button>
+                </div>
             </div>
         </div>
         <div id="weapon-grid">
             <div class="w-grid-main">
-                <button id="mh" class="grid-input" data-options="weapons" tabindex="12"></button>
+                <div id="mh" class="grid-input" data-options="weapons" tabindex="12"></div>
                 <span class="w-skills"></span>
             </div>
             <div class="w-grid-sub">
-                <div class="w">
-                    <button id="wp1" class="grid-input" data-options="weapons" tabindex="13"></button>
+                <div id="slot1" class="w">
+                    <div id="wp1" class="grid-input" data-options="weapons" tabindex="13"></div>
                     <span class="w-skills"></span>
                 </div>
-                <div class="w">
-                    <button id="wp2" class="grid-input" data-options="weapons" tabindex="14"></button>
+                <div id="slot2" class="w">
+                    <div id="wp2" class="grid-input" data-options="weapons" tabindex="14"></div>
                     <span class="w-skills"></span>
                 </div>
-                <div class="w">
-                    <button id="wp3" class="grid-input" data-options="weapons" tabindex="15"></button>
+                <div id="slot3" class="w">
+                    <div id="wp3" class="grid-input" data-options="weapons" tabindex="15"></div>
                     <span class="w-skills"></span>
                 </div>
-                <div class="w">
-                    <button id="wp4" class="grid-input" data-options="weapons" tabindex="16"></button>
+                <div id="slot4" class="w">
+                    <div id="wp4" class="grid-input" data-options="weapons" tabindex="16"></div>
                     <span class="w-skills"></span>
                 </div>
-                <div class="w">
-                    <button id="wp5" class="grid-input" data-options="weapons" tabindex="17"></button>
+                <div id="slot5" class="w">
+                    <div id="wp5" class="grid-input" data-options="weapons" tabindex="17"></div>
                     <span class="w-skills"></span>
                 </div>
-                <div class="w">
-                    <button id="wp6" class="grid-input" data-options="weapons" tabindex=18></button>
+                <div id="slot6" class="w">
+                    <div id="wp6" class="grid-input" data-options="weapons" tabindex=18></div>
                     <span class="w-skills"></span>
                 </div>
-                <div class="w">
-                    <button id="wp7" class="grid-input" data-options="weapons" tabindex="19"></button>
+                <div id="slot7" class="w">
+                    <div id="wp7" class="grid-input" data-options="weapons" tabindex="19"></div>
                     <span class="w-skills"></span>
                 </div>
-                <div class="w">
-                    <button id="wp8" class="grid-input" data-options="weapons" tabindex="20"></button>
+                <div id="slot8" class="w">
+                    <div id="wp8" class="grid-input" data-options="weapons" tabindex="20"></div>
                     <span class="w-skills"></span>
                 </div>
-                <div class="w">
-                    <button id="wp9" class="grid-input" data-options="weapons" tabindex="21"></button>
+                <div id="slot9" class="w">
+                    <div id="wp9" class="grid-input" data-options="weapons" tabindex="21"></div>
                     <span class="w-skills"></span>
                 </div>
             </div>
         </div>
         <div id="weapon-grid-extra">
             <div class="w-grid-sub">
-                <div class="w">
-                    <button id="wp10" class="grid-input" data-options="weapons" tabindex="29"></button>
+                <div id="slot10" class="w">
+                    <div id="wp10" class="grid-input" data-options="weapons" tabindex="29"></div>
                     <span class="w-skills"></span>
                 </div>
-                <div class="w">
-                    <button id="wp11" class="grid-input" data-options="weapons" tabindex="30"></button>
+                <div id="slot11" class="w">
+                    <div id="wp11" class="grid-input" data-options="weapons" tabindex="30"></div>
                     <span class="w-skills"></span>
                 </div>
-                <div class="w">
-                    <button id="wp12" class="grid-input" data-options="weapons" tabindex="31"></button>
+                <div id="slot12" class="w">
+                    <div id="wp12" class="grid-input" data-options="weapons" tabindex="31"></div>
                     <span class="w-skills"></span>
                 </div>
             </div>
         </div>
         <div class="summon-grid">
             <div class="main-summon">
-                <button id="s-main" class="grid-input" data-options="summons" tabindex="22"></button>
+                <div id="s-main" class="grid-input" data-options="summons" tabindex="22"></div>
             </div>
             <div class="callable-summons">
-                <button id="s1" class="grid-input" data-options="summons" tabindex="23"></button>
-                <button id="s2" class="grid-input" data-options="summons" tabindex="24"></button>
-                <button id="s3" class="grid-input" data-options="summons" tabindex="25"></button>
-                <button id="s4" class="grid-input" data-options="summons" tabindex="26"></button>
+                <div id="s1" class="grid-input" data-options="summons" tabindex="23"></div>
+                <div id="s2" class="grid-input" data-options="summons" tabindex="24"></div>
+                <div id="s3" class="grid-input" data-options="summons" tabindex="25"></div>
+                <div id="s4" class="grid-input" data-options="summons" tabindex="26"></div>
             </div>
             <div class="sub-summons">
-                <button id="s-sub1" class="grid-input" data-options="summons" tabindex="27"></button>
-                <button id="s-sub2" class="grid-input" data-options="summons" tabindex="28"></button>
+                <div id="s-sub1" class="grid-input" data-options="summons" tabindex="27"></div>
+                <div id="s-sub2" class="grid-input" data-options="summons" tabindex="28"></div>
             </div>
         </div>
     </div>

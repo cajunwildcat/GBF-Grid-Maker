@@ -270,6 +270,15 @@ window.onload = async (e) => {
         }
     }
     setupButtonSearch();
+
+    // Make character grid elements draggable
+    InitTeamContainer()
+
+    // Make summon grid elements draggable
+    InitSummonsContainer();
+
+    // Make weapon grid elements draggable
+    InitWeaponsContainer()
 };
 
 const optionSets = {
@@ -1227,7 +1236,7 @@ function importData(data) {
         let value = summons[key];
         setGridData(`s-sub${i}`, value, { uncap: summons[`u${key}`] });
     }
-    if (summons["quick"]) document.querySelector(`.summon-grid button[id*="${summons["quick"]}"] .quick-summon-toggle`).click()
+    if (summons["quick"]) document.querySelector(`.summon-grid div[id*="${summons["quick"]}"] .quick-summon-toggle`).click()
 
     function setGridData(key, value, options = {}) {
         let button = document.querySelector(`#${key}`);
