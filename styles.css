@@ -3,7 +3,7 @@ body {
     display: flex;
 }
 
-button {
+div.grid-input, button {
     border: 0;
     background-size: cover;
     cursor: pointer;
@@ -165,7 +165,7 @@ ul {
     display: flex;
     gap: 8px;
 
-    >button {
+    >div {
         position: relative;
         width: 135px;
         height: 77px;
@@ -197,7 +197,7 @@ ul {
         grid-column-gap: 11px;
         grid-template-rows: repeat(1, 1fr);
 
-        >.w>button {
+        >.w>div {
             width: 105px;
             background-size: 105px 63px;
         }
@@ -212,7 +212,7 @@ ul {
     width: 138px;
     height: 305px;
 
-    >button {
+    >div {
         width: 110px;
         height: 231px;
         position: relative;
@@ -244,7 +244,7 @@ ul {
     flex-direction: column;
     gap: 10px;
 
-    >button {
+    >div {
         position: relative;
         width: 100px;
         height: 63px;
@@ -275,7 +275,7 @@ ul {
     background: linear-gradient(to bottom, #093D4D, #001E28);
     border: solid 1px #356C79;
 
-    >button.grid-input {
+    >div.grid-input {
         width: 74px;
         height: 135px;
         position: relative;
@@ -339,7 +339,7 @@ ul {
         top: 58px;
         left: 23px;
 
-        >button {
+        >div {
             position: relative;
             background-image: url("assets/empty-char.jpg");
             height: 245px;
@@ -369,7 +369,7 @@ ul {
         width:fit-content;
     }
 
-    div:not(.main-summon)>button {
+    div:not(.main-summon)>div {
         width: 130px;
         height: 98px;
         position: relative;
@@ -474,4 +474,8 @@ ul {
 
 li.active {
     background-color: #d3d3d3;
+}
+
+.sortable-ghost {
+    opacity: 0.4;
 }
