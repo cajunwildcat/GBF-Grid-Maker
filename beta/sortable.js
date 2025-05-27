@@ -19,32 +19,29 @@ function NewSortableSwapContainer(container, draggable, group, extraOptions = {}
 }
 
 function swapItems(e) {
-    if (e.oldIndex != e.newIndex) {
-        const draggedElement = e.item.classList.contains("w") ? e.item.firstElementChild : e.item;
-        const swappedElement = e.swapItem.classList.contains("w") ? e.swapItem.firstElementChild : e.swapItem;
+    const draggedElement = e.item.classList.contains("w") ? e.item.firstElementChild : e.item;
+    const swappedElement = e.swapItem.classList.contains("w") ? e.swapItem.firstElementChild : e.swapItem;
+    const draggedID = draggedElement.id;
+    const swappedID = swappedElement.id;
 
-        const draggedID = draggedElement.id;
-        const swappedID = swappedElement.id;
+    // Swap IDs
+    draggedElement.id = swappedID;
+    swappedElement.id = draggedID;
 
-        // Swap IDs
-        draggedElement.id = swappedID;
-        swappedElement.id = draggedID;
-
-        if (teamData[draggedID]) {
-            const oldData = { ...teamData }
-            Object.keys(oldData).filter(key=>key.startsWith(draggedID)).forEach(key => {
-                let newKey = key.replace(draggedID,swappedID);
-                // Swap the dragged character's data with the swapped character's data
-                if (!oldData[newKey]) delete teamData[key];
-                teamData[newKey] = oldData[key];
-            })
-            Object.keys(oldData).filter(key=>key.startsWith(swappedID)).forEach(key => {
-                let newKey = key.replace(swappedID,draggedID);
-                // Swap the dragged character's data with the swapped character's data
-                if (!oldData[newKey]) delete teamData[key];
-                teamData[newKey] = oldData[key];
-            })
-        }
+    if (teamData[draggedID]) {
+        const oldData = { ...teamData }
+        Object.keys(oldData).filter(key => key.match(new RegExp(`${draggedID}(\\D|\$)`))).forEach(key => {
+            let newKey = key.replace(draggedID, swappedID);
+            // Swap the dragged character's data with the swapped character's data
+            if (!oldData[newKey]) delete teamData[key];
+            teamData[newKey] = oldData[key];
+        });
+        Object.keys(oldData).filter(key => key.match(new RegExp(`${swappedID}(\\D|\$)`))).forEach(key => {
+            let newKey = key.replace(swappedID, draggedID);
+            // Swap the dragged character's data with the swapped character's data
+            if (!oldData[newKey]) delete teamData[key];
+            teamData[newKey] = oldData[key];
+        });
     }
 }
 
