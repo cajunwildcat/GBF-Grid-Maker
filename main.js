@@ -1187,7 +1187,7 @@ function importData(data) {
         let value = summons[key];
         setGridData(`s-sub${i}`, value, { uncap: summons[`u${key}`] });
     }
-    if (summons["quick"]) document.querySelector(`.summon-grid button[id*="${summons["quick"]}"] .quick-summon-toggle`).click()
+    if (summons["quick"]) document.querySelector(`.summon-grid div[id*="${summons["quick"]}"] .quick-summon-toggle`).click()
 
     function setGridData(key, value, options = {}) {
         let button = document.querySelector(`#${key}`);
