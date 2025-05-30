@@ -177,6 +177,11 @@ let filters = {
     weapons: ["any"],
     summons: ["any"]
 }
+const aliases = {
+    "Catura": ["cow"],
+    "Payila": ["dragon"],
+    "Vikala": ["rat"]
+};
 const artToUncap = (art) => {
     switch (art) {
         case "D": return 6;
@@ -206,36 +211,15 @@ window.onload = async (e) => {
         .then((response) => abilities = response);
 
     for (let id in characters) {
-        let c = characters[id];
-        let name = c.pageName;
+        let name = characters[id].pageName;
         characterIDs[name] = id;
-        let metas = [id.toString()];
-        c.jpname ? metas.push(c.jpname) : null;
-        if (c.series && c.series.toLowerCase().includes("grand")) {
-            metas.push(`G.${name.split(" (")[0]}`)
-        }
-        if (c.series && c.series.toLowerCase().includes("summer")) {
-            metas.push(`S.${name.split(" (")[0]}`)
-        }
-        if (c.series && c.series.toLowerCase().includes("halloween")) {
-            metas.push(`H.${name.split(" (")[0]}`)
-        }
-        if (c.series && c.series.toLowerCase().includes("holiday")) {
-            metas.push(`C.${name.split(" (")[0]}`)
-        }
-        if (c.series && c.series.toLowerCase().includes("yukata")) {
-            metas.push(`Y.${name.split(" (")[0]}`)
-        }
-        if (c.series && c.series.toLowerCase().includes("valentine")) {
-            metas.push(`V.${name.split(" (")[0]}`)
-        }
-        if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id])) {
-            metas.push(...alias);
-        }
         cOptions.push({
             label: name,
-            metatags: metas
+            metatags: [id, characters[id].jpname]
         });
+        if (aliases[name]) {
+            cOptions[cOptions.length - 1].metatags.push(...aliases[name]);
+        }
     }
     for (let id in summons) {
         let name = summons[id].pageName;
@@ -244,8 +228,8 @@ window.onload = async (e) => {
             label: name,
             metatags: [id]
         });
-        if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id])) {
-            sOptions[sOptions.length - 1].metatags.push(...alias);
+        if (aliases[name]) {
+            sOptions[sOptions.length - 1].metatags.push(...aliases[name]);
         }
     }
     for (let id in weapons) {
@@ -255,8 +239,8 @@ window.onload = async (e) => {
             label: name,
             metatags: [id]
         });
-        if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id])) {
-            wOptions[wOptions.length - 1].metatags.push(...alias);
+        if (aliases[name]) {
+            sOptions[wOptions.length - 1].metatags.push(...aliases[name]);
         }
     }
     for (let ability in abilities) {
@@ -266,20 +250,11 @@ window.onload = async (e) => {
             label: name,
             metatags: [ability]
         });
-        if (alias = (aliases[name])) {
-            aOptoins[aOptoins.length - 1].metatags.push(...alias);
+        if (aliases[name]) {
+            aOptoins[aOptoins.length - 1].metatags.push(...aliases[name]);
         }
     }
     setupButtonSearch();
-
-    // Make character grid elements draggable
-    InitTeamContainer()
-
-    // Make summon grid elements draggable
-    InitSummonsContainer();
-
-    // Make weapon grid elements draggable
-    InitWeaponsContainer()
 };
 
 const optionSets = {
@@ -359,41 +334,8 @@ function setupButtonSearch() {
     document.querySelectorAll('.grid-input').forEach(button => {
         button.addEventListener('click', (event) => gridInputClick(event));
 
-        // middle clicks - opens wiki page
-        button.addEventListener("auxclick", (event) => {
-            event.preventDefault();
-
-            const itemId = button.dataset.itemId;
-            if (!itemId) return;
-            const option = button.dataset.options;
-            let url = "https://gbf.wiki/";
-
-            // 1 represents the middle mouse button
-            if (event.button === 1) {
-                switch (option) {
-                    case "classes":
-                        url += teamData.mc;
-                        break;
-
-                    case "characters":
-                        url += characters[itemId].pageName;
-                        break;
-
-                    case "weapons":
-                        url += weapons[itemId].pageName;
-                        break;
-
-                    case "summons":
-                        url += summons[itemId].pageName;
-                        break;
-
-                    default:
-                        break;
-                }
-                if (!url) return;
-                window.open(url, "_blank");
-            }
-        });
+        //middle clicks - opens wiki page
+        //button.addEventListener("auxclick", e => console.log("middle"));
 
         //right click - clears content
         button.oncontextmenu = (e) => gridInputContextMenu(e);
@@ -1237,7 +1179,7 @@ function importData(data) {
         let value = summons[key];
         setGridData(`s-sub${i}`, value, { uncap: summons[`u${key}`] });
     }
-    if (summons["quick"]) document.querySelector(`.summon-grid div[id*="${summons["quick"]}"] .quick-summon-toggle`).click()
+    if (summons["quick"]) document.querySelector(`.summon-grid button[id*="${summons["quick"]}"] .quick-summon-toggle`).click()
 
     function setGridData(key, value, options = {}) {
         let button = document.querySelector(`#${key}`);
