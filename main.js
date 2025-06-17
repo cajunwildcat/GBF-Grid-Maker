@@ -19,6 +19,7 @@ let clOptions = [
     { label: "Nighthound", metatags: ["170301_bw"] },
     { label: "Boogeyman", metatags: ["170401_bw"] },
     { label: "Elysian", metatags: ["180301_mc"] },
+    { label: "Mariachi", metatags: ["180401_mc"] },
     { label: "Apsaras", metatags: ["190301_sp"] },
     { label: "Alchemist", metatags: ["200201_kn"] },
     { label: "Doctor", metatags: ["200301_kn"] },
