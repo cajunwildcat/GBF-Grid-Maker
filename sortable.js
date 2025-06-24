@@ -24,6 +24,39 @@ function swapItems(e) {
     const draggedID = draggedElement.id;
     const swappedID = swappedElement.id;
 
+    // Handle quick summon button when swapping summons
+    if (draggedElement.dataset.options === "summons") {
+        const draggedQuickSummon = draggedElement.querySelector(".quick-summon-toggle");
+        const swappedQuickSummon = swappedElement.querySelector(".quick-summon-toggle");
+        
+        // Remove quick summon if moving to sub summons
+        if (draggedQuickSummon && draggedElement.parentElement.classList.contains("sub-summons")) {
+            if (draggedQuickSummon.dataset.toggled === "true") {
+                delete teamData.quickSummon;
+            }
+            draggedQuickSummon.remove();
+        }
+        
+        // Remove quick summon if moving to sub summons
+        if (swappedQuickSummon && swappedElement.parentElement.classList.contains("sub-summons")) {
+            if (swappedQuickSummon.dataset.toggled === "true") {
+                delete teamData.quickSummon;
+            }
+            swappedQuickSummon.remove();
+        }
+        
+        // Add quick summon button if moving from sub summons to main area
+        if (!draggedQuickSummon && !draggedElement.parentElement.classList.contains("sub-summons") && 
+            !draggedElement.parentElement.classList.contains("team-summon")) {
+            addQuickSummonButton(draggedElement);
+        }
+        
+        if (!swappedQuickSummon && !swappedElement.parentElement.classList.contains("sub-summons") && 
+            !swappedElement.parentElement.classList.contains("team-summon")) {
+            addQuickSummonButton(swappedElement);
+        }
+    }
+
     // Swap IDs
     draggedElement.id = swappedID;
     swappedElement.id = draggedID;
