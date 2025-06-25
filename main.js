@@ -166,6 +166,7 @@ let shieldOptions = [
     { label: "Moonhill", metatags: ["4018", "dias", "diaspora", "moonhill"] },
     { label: "Shield of Tenets", metatags: ["4019", "subhl", "subbie", "tenets", "shield of tenets"] }
 ]
+let abilityIcons = { "Armor Break": "11_1", "Venom": "7_1", "Overdrive Surge": "33_1", "Overdrive Surge II": "33_1", "Overdrive Surge III": "33_1", "Hard Line": "42_1", "Bullseye Run": "42_1", "Blessing": "12_1", "Fire": "4_1", "Freeze": "5_1", "Fighting Spirit": "49_1", "Rain of Arrows": "59_1", "Rain of Arrows II": "59_1", "Rain of Arrows III": "59_1", "Battle Scar": "66_1", "Resonating Surge": "42_1", "Fuma Shuriken": "74_1", "Haze": "75_1", "Twin Coil": "847_1", "Decimate": "848_1", "Bard Song": "47_2", "Clarity": "26_2", "Revive": "46_2", "Chi Channeler": "50_2", "Just the Cure": "36_2", "Rage": "14_3", "Rage II": "14_3", "Rage III": "14_3", "Grace": "22_3", "Taking Chances": "35_3", "Taking Chances II": "35_3", "Rampage": "45_3", "Centurion": "29_3", "Laser Focus": "38_3", "Lethal Aim": "2_3", "Elemental Focus": "20_3", "Elemental Focus II": "20_3", "Quick Strike": "24_3", "Double Trouble": "64_3", "Double Trouble II": "64_3", "Double Trouble III": "64_3", "Sky Realm Song": "24_3", "Pandemonium": "57_3", "Substitute": "56_3", "A Little Pick-Me-Up": "69_3", "Self Reflection": "77_3", "Quiet Strategy": "78_3", "Splitting Spirit": "188_3", "Out of Sight": "190_3", "Blind": "39_4", "Gravity Wave": "25_4", "Miserable Mist": "44_4", "Angelic Voice": "62_4", "Angelic Voice II": "62_4", "Soul Soloist": "65_4", "Dispel": "58_4", "Tricky Moves": "34_4", "Bounty Hunter": "13_4", "Bounty Hunter II": "13_4", "Bounty Hunter III": "13_4", "Armor Break II ": "11_1", "Banahogg": "1706_1", "Beast Fang": "1978_1", "Rage IV": "14_3", "Rampage II": "45_3", "Power Raise": "90_3", "Brave Soul": "14_3", "Ulfhedinn": "1096_3", "Vinland": "1704_3", "Jomsborg": "1705_3", "Ferocious Roar": "1977_3", "Bloodzerker": "1979_3", "Thermopylae": "2076_1", "Reflection": "48_3", "Centurion II": "29_3", "Testudo": "31_3", "Guardian": "195_3", "Noblesse Proteger": "1721_3", "Boosted Resistance": "1722_3", "Sacred Protection": "1723_3", "Hoplite": "2077_3", "Molon Labe": "2078_3", "Hardened Shield": "48_4", "Blessing II": "12_1", "Megali Fotia": "1820_1", "Peace of Mind": "54_2", "Veil": "53_3", "White Wall": "52_3", "Amyntiko Fos": "1818_3", "Pneuma": "1819_3", "Dispel Deluge": "58_4", "Bounce": "42_1", "Resounding Chant": "1097_1", "Wild Magica": "1922_1", "Choke": "95_3", "Chaser": "95_3", "Secret Triad": "1923_3", "Overtrance": "1924_3", "Dark Haze": "1_4", "Aether Bane": "60_4", "Demonic Flare": "2144_1", "Arcane Field": "2145_3", "Crest Discharge": "2146_3", "Rupie Flip": "260_1", "Couteau Royal": "2111_1", "Force Snatch": "96_3", "White Smoke": "87_3", "Spring's Gate": "1098_3", "Parfait d'Amour": "2112_3", "Le Manteau du Roi": "2113_3", "Extend Break": "6_4", "Bounty Hunter IV": "13_1", "Shikigami: Mizuchi": "2286_1", "Blood Sword": "96_3", "Uprising": "57_3", "Absorption": "576_3", "Celestial Genesis": "2287_3", "Quick Down": "28_4", "Unpredictable": "65_4", "Execration": "2288_4", "Chaos": "65_5", "Path Illuminated": "2011_1", "Lapin Blanc": "2012_3", "Cathedral's Benison": "2013_3", "Bleak Disorder": "2005_1", "Flames of Chaos": "2006_4", "Malignity": "2007_4", "Roll of the Dice": "2189_3", "Sublime Springscape": "2190_1", "Heart of Chivalry": "2191_3", "Ultimate Palm Strike": "2375_1", "Spirit of Training": "49_3", "Ring Ruler": "85_3", "Mic Hype": "301_3", "Tag Team": "302_1", "Horizontal Solace": "97_3", "Lucha de Parejas": "1234_3", "Fight Song": "2074_3", "Vez de Rudo": "2075_3", "In the Face of Adversity": "2421_3", "Sumai Meet": "2422_3", "Homing Beacon": "2180_4", "Stealth Protocol": "2181_3", "Judicious Shot": "577_1", "Change": "98_3", "Tactical Relocation": "98_3", "Frequency Jam": "315_3", "Twilight Zone": "316_5", "Rearguard Relocation": "2182_3", "Blood Oath": "2551_3", "Bespoke Tailoring": "2552_3", "Steady Aim": "39_4", "Time On Target": "1099_4", "Sei Colpi": "2550_4", "Pizzicato": "2622_1", "Voice Unveiled": "387_2", "Despierta, Mi Bien": "2623_2", "Tremor Round": "147_3", "Oratorio": "1008_3", "Ultimate Ensemble": "2624_3", "Sheep Song": "62_4", "Dirge for the Dead": "11_4", "Call of the Abyss": "388_3", "Flageolet": "2008_1", "Diatonic Harmony": "2009_3", "Accelerando": "2010_3", "Crowning Fluidity": "1981_3", "Showstopper": "1982_3", "Nyagrodha": "1980_1", "Einherjar": "49_3", "Springwater Robe": "344_3", "Dance of Zeal": "346_3", "Swan Song": "345_3", "Crestfallen Flower": "578_3", "Lightning Strike": "1004_3", "Randgrith": "11_4", "Aurum Flow": "851_1", "Astrapste": "2132_1", "Amber Edge": "774_1", "Cross Guard": "37_3", "Chase Blade": "64_3", "Dual Arts": "849_3", "Diptych": "850_3", "Deuce Xiphos": "2131_3", "Laughing Logger": "1120_1", "Log Lop": "2148_1", "Dappled Sunlight": "1122_2", "Leaf Burning": "1121_3", "Verdant Melody": "637_3", "Birdsong of Balmy Breeze": "2147_3", "Field Commander": "2262_3", "Dragphract": "1124_1", "Battering Ram": "1125_1", "Valorous Assault": "2260_1", "High Command": "1126_3", "Mounted Bulwark": "2261_3", "True Strike": "1198_1", "Unyielding Form": "1199_1", "Rock Crusher": "1200_1", "Enlightened Fury": "2188_1", "Mystic Restoration": "2186_3", "Fervent Focus": "2187_3", "Return of the Fox": "1276_3", "Acrobatic Volley": "1274_4", "Emerald Fog": "1275_4", "Thousand Arrows": "2149_1", "Rebellion Shot": "1204_1", "Rapid Nocking": "2150_3", "Blitz Raid": "1419_1", "Tactical Shield": "1417_3", "Limit Burst": "1418_3", "Lightning Shot": "2263_1", "Hypervelocity": "2264_1", "Brutal Cell": "2265_1", "Breath of the Serpent": "2266_3", "Ameno Totsuka": "2267_1", "Watch and Wound": "1965_1", "Seasplitter": "1967_1", "Whitehail Gust": "1966_3", "Sanctifying Kagura": "2268_3", "Assault Drive": "2350_1", "Shield Hurl": "2564_1", "Marshaling Shout": "2352_3", "Regimented Formation": "2353_3", "Combat Shield": "2562_3", "Defiance": "2563_3", "Fury Capsule": "85_3", "Nutrients": "758_3", "Maddening Vitality": "759_3", "Adrenaline Rush": "760_3", "Primary Care": "2141_3", "Outperform": "2142_3", "High Immunity": "2143_3", "Home-Made Bomb": "99_1", "Mana Burst": "697_1", "Dragon Break": "698_3", "Spell Boost": "699_3", "Multiplying Magic": "2017_3", "Circle of Coalescence": "2018_3", "Quadruple Hex": "2019_1", "Eagle Reversal": "23_1", "Into Thin Air": "51_3", "No More Doubt": "609_3", "Rending Flash": "610_3", "Nocked Exorcism": "1983_1", "Secret Style: Blink Slash": "1984_1", "Intuition": "1985_3", "Espada": "563_1", "Contrablade": "23_1", "Gloryblade": "960_1", "Al Doble": "95_3", "Colmillos": "565_3", "Glorious Vow": "2014_3", "Mastery's Edge": "2016_3", "Open Fire": "880_1", "Blitzburst": "579_3", "Fortitude": "70_3", "Guerrilla Tactics": "881_3", "Combat Rations": "2079_3", "Immortal Operative": "1134_3", "Ammunition Belt": "2080_3", "Third Eye": "580_3", "Moonshadow": "558_3", "Paws of Power": "559_3", "Oculus Felis": "1986_3", "Matatabby": "1987_3", "Scratching Post": "1988_3", "Black Cat's Path": "557_4", "Conceal": "251_3", "Devotion": "985_3", "Recursive Nightmare": "986_3", "Barbed Wire": "987_4", "Fatal Venom": "1768_1", "Thousand Slices": "2081_4", "Executing Blow": "2082_3", "Unleash the Fury": "1034_1", "Pinch Harmonics": "2184_1", "Resonate Rhythm": "529_3", "Mosh Pit": "1032_5", "Jet to Jet": "1033_3", "Fever Pitch": "2183_3", "Everlasting Bonds": "2185_3", "Non-Sequence": "1414_1", "Pas Seul": "581_3", "Bounce Chasse": "1413_3", "Shall We Dance": "1415_5", "On the Waltz": "2269_3", "Spiral Turn": "2270_1", "Martial Choreography": "2271_3" };
 let elements = { "fire": 1, "water": 2, "earth": 3, "wind": 4, "light": 5, "dark": 6 };
 let weaponTypes = { "sabre": 1, "dagger": 2, "spear": 3, "axe": 4, "staff": 5, "gun": 6, "melee": 7, "bow": 8, "harp": 9, "katana": 10 };
 let worldHarps = [1040815000, 1040815100, 1040815200, 1040815300, 1040815400];
@@ -177,11 +178,6 @@ let filters = {
     weapons: ["any"],
     summons: ["any"]
 }
-const aliases = {
-    "Catura": ["cow"],
-    "Payila": ["dragon"],
-    "Vikala": ["rat"]
-};
 const artToUncap = (art) => {
     switch (art) {
         case "D": return 6;
@@ -211,15 +207,36 @@ window.onload = async (e) => {
         .then((response) => abilities = response);
 
     for (let id in characters) {
-        let name = characters[id].pageName;
+        let c = characters[id];
+        let name = c.pageName;
         characterIDs[name] = id;
+        let metas = [id.toString()];
+        c.jpname ? metas.push(c.jpname) : null;
+        if (c.series && c.series.toLowerCase().includes("grand")) {
+            metas.push(`G.${name.split(" (")[0]}`)
+        }
+        if (c.series && c.series.toLowerCase().includes("summer")) {
+            metas.push(`S.${name.split(" (")[0]}`)
+        }
+        if (c.series && c.series.toLowerCase().includes("halloween")) {
+            metas.push(`H.${name.split(" (")[0]}`)
+        }
+        if (c.series && c.series.toLowerCase().includes("holiday")) {
+            metas.push(`C.${name.split(" (")[0]}`)
+        }
+        if (c.series && c.series.toLowerCase().includes("yukata")) {
+            metas.push(`Y.${name.split(" (")[0]}`)
+        }
+        if (c.series && c.series.toLowerCase().includes("valentine")) {
+            metas.push(`V.${name.split(" (")[0]}`)
+        }
+        if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id])) {
+            metas.push(...alias);
+        }
         cOptions.push({
             label: name,
-            metatags: [id, characters[id].jpname]
+            metatags: metas
         });
-        if (aliases[name]) {
-            cOptions[cOptions.length - 1].metatags.push(...aliases[name]);
-        }
     }
     for (let id in summons) {
         let name = summons[id].pageName;
@@ -228,8 +245,8 @@ window.onload = async (e) => {
             label: name,
             metatags: [id]
         });
-        if (aliases[name]) {
-            sOptions[sOptions.length - 1].metatags.push(...aliases[name]);
+        if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id])) {
+            sOptions[sOptions.length - 1].metatags.push(...alias);
         }
     }
     for (let id in weapons) {
@@ -239,22 +256,32 @@ window.onload = async (e) => {
             label: name,
             metatags: [id]
         });
-        if (aliases[name]) {
-            sOptions[wOptions.length - 1].metatags.push(...aliases[name]);
+        if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id])) {
+            wOptions[wOptions.length - 1].metatags.push(...alias);
         }
     }
     for (let ability in abilities) {
-        abilities[ability].name = abilities[ability].name.replace("&#039;", "'");
-        let name = abilities[ability].name;
+        if (abilities[ability].ix == "s1" || ability == "Affliction Arrow") continue;
+        if (!abilityIcons[ability]) console.log(ability);
+        let name = ability;
         aOptoins.push({
             label: name,
             metatags: [ability]
         });
-        if (aliases[name]) {
-            aOptoins[aOptoins.length - 1].metatags.push(...aliases[name]);
+        if (alias = (aliases[name])) {
+            aOptoins[aOptoins.length - 1].metatags.push(...alias);
         }
     }
     setupButtonSearch();
+
+    // Make character grid elements draggable
+    InitTeamContainer()
+
+    // Make summon grid elements draggable
+    InitSummonsContainer();
+
+    // Make weapon grid elements draggable
+    InitWeaponsContainer()
 };
 
 const optionSets = {
@@ -334,11 +361,45 @@ function setupButtonSearch() {
     document.querySelectorAll('.grid-input').forEach(button => {
         button.addEventListener('click', (event) => gridInputClick(event));
 
-        //middle clicks - opens wiki page
-        //button.addEventListener("auxclick", e => console.log("middle"));
+        // middle clicks - opens wiki page
+        button.addEventListener("auxclick", (event) => {
+            event.preventDefault();
+
+            const itemId = button.dataset.itemId;
+            if (!itemId) return;
+            const option = button.dataset.options;
+            let url = "https://gbf.wiki/";
+
+            // 1 represents the middle mouse button
+            if (event.button === 1) {
+                switch (option) {
+                    case "classes":
+                        url += teamData.mc;
+                        break;
+
+                    case "characters":
+                        url += characters[itemId].pageName;
+                        break;
+
+                    case "weapons":
+                        url += weapons[itemId].pageName;
+                        break;
+
+                    case "summons":
+                        url += summons[itemId].pageName;
+                        break;
+
+                    default:
+                        break;
+                }
+                if (!url) return;
+                window.open(url, "_blank");
+            }
+        });
 
         //right click - clears content
         button.oncontextmenu = (e) => gridInputContextMenu(e);
+        if (button.classList.contains("skill")) [...button.children].forEach(e=>e.oncontextmenu = (e) => gridInputContextMenu(e, button));
 
         //janky workaround for searching on any key press
         button.onkeydown = (e) => {
@@ -411,11 +472,12 @@ function setupButtonSearch() {
 /// Input Handling
 ///
 
-function gridInputClick(event, sort = true) {
-    button = event.target;
+function gridInputClick(event, sort = true, button = null) {
+    if (!button) button = event.target;
     event.preventDefault();
     event.stopPropagation();
-    const cat = button.dataset.options;
+    let cat = button.dataset.options;
+    if (!cat) cat = button.parentElement.dataset.options;
     let options = optionSets[cat].filter(option => {
         switch (cat) {
             case 'weapons':
@@ -541,6 +603,8 @@ function updateActiveOption() {
 /// 
 
 function setButtonToItem(button, optionSet, selectedOption, uncap = null, options = {}) {
+    Object.keys(teamData)?.filter(key => key.includes(button.id)).forEach(key => delete teamData[key]);
+
     let itemName = selectedOption.label;
     let id = selectedOption.metatags[0];
     if (id == button.dataset.itemId && !button.id == "s-main") {
@@ -571,7 +635,7 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
             addWeaponSkills(button, id);
             break;
         case 'summons':
-            if (!button.parentElement.classList.contains("team-summon") && !button.id.includes("sub")) addQuickSummonButton(button);
+            if (!button.parentElement.classList.contains("team-summon")) addQuickSummonButton(button);
             break;
         case 'mino':
         case 'shield':
@@ -603,7 +667,7 @@ function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
     let backgroundUrl = '';
     switch (optionSet) {
         case 'skills':
-            backgroundUrl = `https://gbf.wiki/thumb.php?f=${abilities[selectedOption.label].icon}&w=25`;
+            backgroundUrl = `https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/ability/m/${abilityIcons[selectedOption.label]}.png`;
             button.querySelector("img").src = backgroundUrl;
             button.querySelector("span").textContent = selectedOption.label;
             teamData[button.id] = selectedOption.label;
@@ -814,14 +878,14 @@ function addUncapButton(button, optionSet, selectedOption, uncap, id) {
                 case "summons": uncap = uncapButton.dataset.toggled === "true" ? summons[summonIDs[selectedOption.label]].maxUncap : 0; break;
             }
             if (button.id == "s-main") Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].querySelector(".uncap").dataset.toggled = uncapButton.dataset.toggled;
-            setButtonToItem(button, optionSet, selectedOption, uncap);
+            setButtonBackground(button, selectedOption, optionSet, uncap, button.dataset.itemId);
             teamData[button.id + "Uncap"] = uncap;
         }
         button.appendChild(uncapButton);
     }
     else if (maxUncap === 6) {
         teamData[button.id + "Trans"] = uncap == 6 ? "t5" : uncap;
-        teamData[button.id + "Uncap"] = 6
+        teamData[button.id + "Uncap"] = uncap;
         uncapButton = document.createElement("button");
         uncapButton.classList.add("uncap-select");
         uncapButton.classList.add("uncap");
@@ -858,7 +922,7 @@ function addUncapButton(button, optionSet, selectedOption, uncap, id) {
                     }
                     uncapButton.style.backgroundImage = li.style.backgroundImage;
                     if (button.id == "s-main") Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].querySelector(".uncap").style.backgroundImage = li.style.backgroundImage;
-                    setButtonToItem(button, optionSet, selectedOption, li.dataset.trans, { skipWeaponSkills: true });
+                    setButtonBackground(button, selectedOption, optionSet, li.dataset.trans, button.dataset.itemId);
                     uncapButton.querySelector("#uncap-dropdown")?.remove();
                     uncapButton.onclick = openTransDropdown;
                 }
@@ -1071,7 +1135,7 @@ function getWeaponInfo(weaponSlot) {
     let awk = teamData[weaponSlot + "Awk"];
     if (!weapon) return "";
     if (index != "mh") weapon = weapon.split("(")[0].trim();
-    if (trans === "t5" || (uncap !== 6 && uncap === weapons[weaponIDs[weapon]].maxUncap) || (weapons[weaponIDs[weapon]].series == "dark opus" && uncap == 5)) {
+    if ((uncap !== 6 && uncap === weapons[weaponIDs[weapon]].maxUncap) || (weapons[weaponIDs[weapon]].series == "dark opus" && uncap == 5)) {
         uncap = null;
     }
     return `${weapon}${uncap != null ? `|u${index}=${trans ? trans : uncap}` : ""}${awk && awk != "empty" ? `|awk${index}=${awk}` : ""}`;
@@ -1179,7 +1243,7 @@ function importData(data) {
         let value = summons[key];
         setGridData(`s-sub${i}`, value, { uncap: summons[`u${key}`] });
     }
-    if (summons["quick"]) document.querySelector(`.summon-grid button[id*="${summons["quick"]}"] .quick-summon-toggle`).click()
+    if (summons["quick"]) document.querySelector(`.summon-grid div[id*="${summons["quick"]}"] .quick-summon-toggle`).click()
 
     function setGridData(key, value, options = {}) {
         let button = document.querySelector(`#${key}`);
