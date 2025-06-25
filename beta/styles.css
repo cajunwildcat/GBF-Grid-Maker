@@ -367,6 +367,10 @@ ul {
         grid-template-columns: repeat(2, 0fr);
         grid-column-gap: 8px;
         width:fit-content;
+
+        .quick-summon-toggle {
+            display: none;
+        }
     }
 
     div:not(.main-summon)>div {
