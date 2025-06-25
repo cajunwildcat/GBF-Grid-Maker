@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <title>Granblue Grid Maker</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="aliases.js"></script> 
+    <script src="sortable.js"></script> 
+    <script src="main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+</head>
+
+<body>
+    <div id="team-spread">
+        <div class="team-container">
+            <div class="team-members" style="left:10px;">
+                <div id="mc" class="grid-input no-drag" data-options="classes" tabindex="1"></div>
+                <div id="char1" class="grid-input" data-options="characters" tabindex="2"></div>
+                <div id="char2" class="grid-input" data-options="characters" tabindex="3"></div>
+                <div id="char3" class="grid-input" data-options="characters" tabindex="4"></div>
+            </div>
+            <div class="team-members sub-members" style="right:10px;">
+                <div id="char4" class="grid-input" data-options="characters" tabindex="5"></div>
+                <div id="char5" class="grid-input" data-options="characters" tabindex="6"></div>
+            </div>
+            <div class="team-summon">
+                <div id="s-main" class="grid-input" data-options="summons" tabindex="7"></div>
+                <div id="s-support" class="grid-input" data-options="summons" tabindex="8"></div>
+            </div>
+            <div class="skill-box">
+                <div id="skill1" class="skill grid-input" data-options="skills" tabindex="9">
+                    <img src="assets/empty-skill.png">
+                    <span class="skill name"></span>
+                </div>
+                <div style="top: 29px;" class="skill-line"></div>
+                <div id="skill2" class="skill grid-input" data-options="skills" tabindex="10">
+                    <img src="assets/empty-skill.png">
+                    <span class="skill name"></span>
+                </div>
+                <div style="top: 57px;" class="skill-line"></div>
+                <div id="skill3" class="skill grid-input" data-options="skills" tabindex="11">
+                    <img src="assets/empty-skill.png">
+                    <span class="skill name"></span>
+                </div>
+            </div>
+        </div>
+        <div id="weapon-grid">
+            <div class="w-grid-main">
+                <div id="mh" class="grid-input" data-options="weapons" tabindex="12"></div>
+                <span class="w-skills"></span>
+            </div>
+            <div class="w-grid-sub">
+                <div id="slot1" class="w">
+                    <div id="wp1" class="grid-input" data-options="weapons" tabindex="13"></div>
+                    <span class="w-skills"></span>
+                </div>
+                <div id="slot2" class="w">
+                    <div id="wp2" class="grid-input" data-options="weapons" tabindex="14"></div>
+                    <span class="w-skills"></span>
+                </div>
+                <div id="slot3" class="w">
+                    <div id="wp3" class="grid-input" data-options="weapons" tabindex="15"></div>
+                    <span class="w-skills"></span>
+                </div>
+                <div id="slot4" class="w">
+                    <div id="wp4" class="grid-input" data-options="weapons" tabindex="16"></div>
+                    <span class="w-skills"></span>
+                </div>
+                <div id="slot5" class="w">
+                    <div id="wp5" class="grid-input" data-options="weapons" tabindex="17"></div>
+                    <span class="w-skills"></span>
+                </div>
+                <div id="slot6" class="w">
+                    <div id="wp6" class="grid-input" data-options="weapons" tabindex=18></div>
+                    <span class="w-skills"></span>
+                </div>
+                <div id="slot7" class="w">
+                    <div id="wp7" class="grid-input" data-options="weapons" tabindex="19"></div>
+                    <span class="w-skills"></span>
+                </div>
+                <div id="slot8" class="w">
+                    <div id="wp8" class="grid-input" data-options="weapons" tabindex="20"></div>
+                    <span class="w-skills"></span>
+                </div>
+                <div id="slot9" class="w">
+                    <div id="wp9" class="grid-input" data-options="weapons" tabindex="21"></div>
+                    <span class="w-skills"></span>
+                </div>
+            </div>
+        </div>
+        <div id="weapon-grid-extra">
+            <div class="w-grid-sub">
+                <div id="slot10" class="w">
+                    <div id="wp10" class="grid-input" data-options="weapons" tabindex="29"></div>
+                    <span class="w-skills"></span>
+                </div>
+                <div id="slot11" class="w">
+                    <div id="wp11" class="grid-input" data-options="weapons" tabindex="30"></div>
+                    <span class="w-skills"></span>
+                </div>
+                <div id="slot12" class="w">
+                    <div id="wp12" class="grid-input" data-options="weapons" tabindex="31"></div>
+                    <span class="w-skills"></span>
+                </div>
+            </div>
+        </div>
+        <div class="summon-grid">
+            <div class="main-summon">
+                <div id="s-main" class="grid-input" data-options="summons" tabindex="22"></div>
+            </div>
+            <div class="callable-summons">
+                <div id="s1" class="grid-input" data-options="summons" tabindex="23"></div>
+                <div id="s2" class="grid-input" data-options="summons" tabindex="24"></div>
+                <div id="s3" class="grid-input" data-options="summons" tabindex="25"></div>
+                <div id="s4" class="grid-input" data-options="summons" tabindex="26"></div>
+            </div>
+            <div class="sub-summons">
+                <div id="s-sub1" class="grid-input" data-options="summons" tabindex="27"></div>
+                <div id="s-sub2" class="grid-input" data-options="summons" tabindex="28"></div>
+            </div>
+        </div>
+    </div>
+    <div id="controls">
+        <div>
+            <button id="export-button" class="ui-button">Export to<br>Wikitext</button>
+            <button id="import-button" class="ui-button">Import from<br>Wikitext</button>
+        </div>
+        <textarea id="import-export-text"></textarea>
+    </div>
+    <div id="filters">
+        <div id="weapons-filters">
+            <span>Weapons</span>
+            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="n"
+                data-filter-enabled="false"><img src="assets/Label_Rarity_N.png"></button>
+            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="r"
+                data-filter-enabled="false"><img src="assets/Label_Rarity_R.png"></button>
+            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="sr"
+                data-filter-enabled="false"><img src="assets/Label_Rarity_SR.png"></button>
+            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="ssr"
+                data-filter-enabled="true"><img src="assets/Label_Rarity_SSR.png"></button>
+            <span class="spacer">|</span>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="fire"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Fire.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="water"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Water.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="earth"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Earth.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="wind"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Wind.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="light"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Light.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="dark"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Dark.png"></button>
+        </div>
+        <div id="characters-filters">
+            <span>Characters</span>
+            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="n"
+                data-filter-enabled="false"><img src="assets/Label_Rarity_N.png"></button>
+            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="r"
+                data-filter-enabled="false"><img src="assets/Label_Rarity_R.png"></button>
+            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="sr"
+                data-filter-enabled="false"><img src="assets/Label_Rarity_SR.png"></button>
+            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="ssr"
+                data-filter-enabled="true"><img src="assets/Label_Rarity_SSR.png"></button>
+            <span class="spacer">|</span>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="fire"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Fire.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="water"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Water.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="earth"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Earth.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="wind"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Wind.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="light"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Light.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="dark"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Dark.png"></button>
+        </div>
+        <div id="summons-filters">
+            <span>Summons</span>
+            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="n"
+                data-filter-enabled="false"><img src="assets/Label_Rarity_N.png"></button>
+            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="r"
+                data-filter-enabled="false"><img src="assets/Label_Rarity_R.png"></button>
+            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="sr"
+                data-filter-enabled="false"><img src="assets/Label_Rarity_SR.png"></button>
+            <button class="ui-button filter-button" data-filter-type="rarity" data-filter="ssr"
+                data-filter-enabled="true"><img src="assets/Label_Rarity_SSR.png"></button>
+            <span class="spacer">|</span>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="fire"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Fire.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="water"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Water.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="earth"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Earth.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="wind"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Wind.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="light"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Light.png"></button>
+            <button class="ui-button filter-button" data-filter-type="element" data-filter="dark"
+                data-filter-enabled="true"><img src="assets/Icon_Element_Dark.png"></button>
+        </div>
+        <span>Shift+Click: Toggle Column<br>Ctrl+Click: Disable All But Clicked</span>
+    </div>
+
+
+    <div id="dropdown" class="dropdown">
+        <input type="text" id="searchInput" placeholder="Search...">
+        <ul id="optionsList"></ul>
+    </div>
+</body>
+
+
+
+</html>
