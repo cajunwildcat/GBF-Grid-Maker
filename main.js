@@ -259,8 +259,10 @@ window.onload = async (e) => {
             wOptions[wOptions.length - 1].metatags.push(...alias);
         }
     }
+    //Abilities that sub options from a selectable ability or otherwise not settable
+    let abilityExclusions = ["Affliction Arrow", "Sweeping Arrow", "Deepshot Arrow", "Ensemble of Heroes", "Ensemble of Warriors", "Sky Splitter", "Salt of Cleansing Spirits", "Combat Spirit Infusion", "Spirit Suppression"]
     for (let ability in abilities) {
-        if (abilities[ability].ix == "s1" || ability == "Affliction Arrow") continue;
+        if (abilities[ability].ix == "s1" || abilityExclusions.includes(ability)) continue;
         if (!abilityIcons[ability]) console.log(ability);
         let name = ability;
         aOptoins.push({
