@@ -28,16 +28,16 @@ const uncapToArt = (uncap) => {
     }
 }
 window.onload = async (e) => {
-    await fetch("https://raw.githubusercontent.com/cajunwildcat/GBF-Party-Parser/main/characters.json", { next: 43200 })
+    await fetch("https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/characters.json", { next: 43200 })
         .then(function (response) { return response.json(); })
         .then((response) => characters = response);
-    await fetch("https://raw.githubusercontent.com/cajunwildcat/GBF-Party-Parser/main/summons.json", { next: 43200 })
+    await fetch("https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/summons.json", { next: 43200 })
         .then(function (response) { return response.json(); })
         .then((response) => summons = response);
-    await fetch("https://raw.githubusercontent.com/cajunwildcat/GBF-Party-Parser/main/weapons.json", { next: 43200 })
+    await fetch("https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/weapons.json", { next: 43200 })
         .then(function (response) { return response.json(); })
         .then((response) => weapons = response);
-    await fetch("https://raw.githubusercontent.com/cajunwildcat/GBF-Party-Parser/main/abilities.json", { next: 43200 })
+    await fetch("https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/abilities.json", { next: 43200 })
         .then(function (response) { return response.json(); })
         .then((response) => abilities = response);
 
