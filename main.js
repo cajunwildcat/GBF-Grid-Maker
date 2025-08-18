@@ -1112,6 +1112,7 @@ function importData(data) {
         if (selectedOption == null) {
             selectedOption = optionSets[optionSet].find(option => option.metatags.includes(value.toLowerCase()));
         }
+        if (!selectedOption) alert(`There was an issue reading the value for ${key}. Please double check it is spelled and capitalized correctly.`)
         setButtonToItem(button, optionSet, selectedOption, options.uncap ? options.uncap : null, options);
     }
 }
