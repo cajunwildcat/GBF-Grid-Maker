@@ -1,6 +1,7 @@
 const clOptions = [
     { label: "Berserker", metatags: ["100301_sw"] },
     { label: "Viking", metatags: ["100401_sw"] },
+    { label: "Fighter Origin", metatags: ["100580_sw"] },
     { label: "Spartan", metatags: ["110301_sw"] },
     { label: "Paladin", metatags: ["110401_sw"] },
     { label: "Sage", metatags: ["120301_wa"] },
