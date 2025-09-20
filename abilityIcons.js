@@ -302,5 +302,8 @@ const abilityIcons = {
     "Lock 'n' Load": "154_3",
     "Resounding Rhythm": "409_4",
     "Retaliation Reprise": "191_3",
-    "Two to Tango": "470_3"
+    "Two to Tango": "470_3",
+    "Dawnbreak": "2709_1",
+    "Charge Conversion": "2708_3",
+    "Unlimited Boost": "2712_3"
 };
