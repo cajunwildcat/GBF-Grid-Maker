@@ -6,6 +6,7 @@ let elements = { "fire": 1, "water": 2, "earth": 3, "wind": 4, "light": 5, "dark
 let weaponTypes = { "sabre": 1, "dagger": 2, "spear": 3, "axe": 4, "staff": 5, "gun": 6, "melee": 7, "bow": 8, "harp": 9, "katana": 10 };
 let worldHarps = [1040815000, 1040815100, 1040815200, 1040815300, 1040815400];
 let teamData = {};
+let calcData = { wSkillls: [], boosts: {} };
 let characters, summons, weapons, abilities;
 let characterIDs = {}, summonIDs = {}, weaponIDs = {};
 let filters = {
@@ -28,16 +29,16 @@ const uncapToArt = (uncap) => {
     }
 }
 window.onload = async (e) => {
-    await fetch("https://raw.githubusercontent.com/cajunwildcat/GBF-Party-Parser/main/characters.json", { next: 43200 })
+    await fetch("test data/characters.json", { next: 43200 })
         .then(function (response) { return response.json(); })
         .then((response) => characters = response);
-    await fetch("https://raw.githubusercontent.com/cajunwildcat/GBF-Party-Parser/main/summons.json", { next: 43200 })
+    await fetch("test data/summons.json", { next: 43200 })
         .then(function (response) { return response.json(); })
         .then((response) => summons = response);
-    await fetch("https://raw.githubusercontent.com/cajunwildcat/GBF-Party-Parser/main/weapons.json", { next: 43200 })
+    await fetch("test data/weapons.json", { next: 43200 })
         .then(function (response) { return response.json(); })
         .then((response) => weapons = response);
-    await fetch("https://raw.githubusercontent.com/cajunwildcat/GBF-Party-Parser/main/abilities.json", { next: 43200 })
+    await fetch("test data/abilities.json", { next: 43200 })
         .then(function (response) { return response.json(); })
         .then((response) => abilities = response);
 
@@ -89,47 +90,54 @@ window.onload = async (e) => {
         else if (summons[id].series == "optimus") weight = 1;
         else if (summons[id].series == "collab") weight = -1;
 
+        let metas = [id.toString()];
+        if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id])) {
+            metas.push(...alias);
+        }
+
         sOptions.push({
             label: name,
-            metatags: [id],
+            metatags: metas,
             weight: weight
         });
-        if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id])) {
-            sOptions[sOptions.length - 1].metatags.push(...alias);
-        }
     }
     for (let id in weapons) {
-        let name = weapons[id].pageName;
+        let weapon = weapons[id];
+        let name = weapon.pageName;
         weaponIDs[name] = id;
 
         let weight = 0;
         if (weights[name]) weight = weights[name];
-        else if (weapons[id].series == "dark opus") weight = 10;
-        else if (weapons[id].series == "collab") weight = -1;
+        else if (weapon.series == "dark opus") weight = 10;
+        else if (weapon.series == "collab") weight = -1;
+
+        let metas = [id.toString()];
+        if (weapon.character) metas.push(`${weapon.character.split(" (")[0]} ${weapon.type}`);
+        if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id])) {
+            metas.push(...alias);
+        }
 
         wOptions.push({
             label: name,
-            metatags: [id],
+            metatags: metas,
             weight: weight
         });
-        if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id])) {
-            wOptions[wOptions.length - 1].metatags.push(...alias);
-        }
     }
     //Abilities that sub options from a selectable ability or otherwise not settable
     let abilityExclusions = ["Affliction Arrow", "Sweeping Arrow", "Deepshot Arrow", "Ensemble of Heroes", "Ensemble of Warriors", "Sky Splitter", "Salt of Cleansing Spirits", "Combat Spirit Infusion", "Spirit Suppression"]
     for (let ability in abilities) {
         if (abilities[ability].ix == "s1" || abilityExclusions.includes(ability)) continue;
-        if (!abilityIcons[ability]) console.log(ability);
-        let name = ability;
-        aOptoins.push({
-            label: name,
-            metatags: [ability],
-            weight: weights[name]? weights[name] : 0
-        });
-        if (alias = (aliases[name])) {
-            aOptoins[aOptoins.length - 1].metatags.push(...alias);
+
+        let metas = [ability];
+        if (alias = (aliases[ability])) {
+            metas.push(...alias);
         }
+
+        aOptoins.push({
+            label: ability,
+            metatags: metas,
+            weight: weights[ability] ? weights[ability] : 0
+        });
     }
     setupButtonSearch();
 
@@ -258,7 +266,7 @@ function setupButtonSearch() {
 
         //right click - clears content
         button.oncontextmenu = (e) => gridInputContextMenu(e);
-        if (button.classList.contains("skill")) [...button.children].forEach(e=>e.oncontextmenu = (e) => gridInputContextMenu(e, button));
+        if (button.classList.contains("skill")) [...button.children].forEach(e => e.oncontextmenu = (e) => gridInputContextMenu(e, button));
 
         //janky workaround for searching on any key press
         button.onkeydown = (e) => {
@@ -398,6 +406,7 @@ function gridInputContextMenu(event, button = null) {
         button.querySelector(".class-gear").remove();
     }
 
+    calcData.wSkillls = calcData.wSkillls.filter(s => s.addedBy != button.id);
     delete teamData[button.id];
     delete teamData[button.id + "Uncap"];
     delete teamData[button.id + "Trans"];
@@ -484,7 +493,13 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
             }
             if (["Manadiver", "Paladin", "Shieldsworn"].includes(itemName)) addClassGear(button, itemName);
             break;
-        case 'characters': break;
+        case 'characters':
+            let char = characters[selectedOption.metatags[0]];
+            calcData[button.id] = {
+                tags: [`element:${char.element}`, ...char.weapon.map(w => `weapon:${w}`), ...char.race.map(r => `race:${r}`)]
+
+            }
+            break;
         case 'weapons':
             if (button.querySelector(".w-awakening")) {
                 delete teamData[button.querySelector(".w-awakening").id];
@@ -495,6 +510,7 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
             break;
         case 'summons':
             if (!button.parentElement.classList.contains("team-summon")) addQuickSummonButton(button);
+            addSummonAura(button.id, id);
             break;
         case 'mino':
         case 'shield':
@@ -625,11 +641,15 @@ function addQuickSummonButton(button) {
     button.appendChild(qsButton);
 }
 
-function addWeaponSkills(button, id) {
+function addSummonAuraCalc(summmonSlot, summonID) {
+
+}
+
+function addWeaponSkills(button, weaponID) {
     let skills = button.parentElement.querySelector(".w-skills");
-    let weapon = weapons[id];
+    let weapon = weapons[weaponID];
     while (skills.firstChild) skills.firstChild.remove();
-    if (weapon["s1 icon"]) {
+    if (weapon.skill1.name) {
         let skill;
         if (weapon.series === "ultima") {
             skill = document.createElement("button");
@@ -638,11 +658,12 @@ function addWeaponSkills(button, id) {
         }
         else {
             skill = document.createElement("img");
-            skill.src = `https://gbf.wiki/thumb.php?f=${weapon["s1 icon"]}&w=33`;
+            skill.src = `https://gbf.wiki/thumb.php?f=${weapon.skill1.icon}&w=33`;
         }
         skills.appendChild(skill);
+        addWeaponSkillCalcData(weapon.skill1, button.id);
     }
-    if (weapon["s2 icon"]) {
+    if (weapon.skill2.name) {
         let skill;
         if (weapon.series === "dark opus") {
             skill = document.createElement("button");
@@ -662,11 +683,12 @@ function addWeaponSkills(button, id) {
         }
         else {
             skill = document.createElement("img");
-            skill.src = `https://gbf.wiki/thumb.php?f=${weapon["s2 icon"]}&w=33`;
+            skill.src = `https://gbf.wiki/thumb.php?f=${weapon.skill2.icon}&w=33`;
         }
         skills.appendChild(skill);
+        addWeaponSkillCalcData(weapon.skill2, button.id);
     }
-    if (weapon["s3 icon"]) {
+    if (weapon.skill3.name) {
         let skill;
         if (weapon.series === "dark opus") {
             skill = document.createElement("button");
@@ -684,9 +706,65 @@ function addWeaponSkills(button, id) {
         }
         else {
             skill = document.createElement("img");
-            skill.src = `https://gbf.wiki/thumb.php?f=${weapon["s3 icon"]}&w=33`;
+            skill.src = `https://gbf.wiki/thumb.php?f=${weapon.skill3.icon}&w=33`;
         }
         skills.appendChild(skill);
+        addWeaponSkillCalcData(weapon.skill3, button.id);
+    }
+
+}
+
+function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
+    calcData.wSkillls.filter(s => s.addedBy != weaponSlot);
+    let skillLevel = teamData[weaponSlot + "Trans"] == "t5" ? "t5" : teamData[weaponSlot + "Uncap"];
+    switch (skillLevel) {
+        case 3: skillLevel = 10; break;
+        case 4: skillLevel = 15; break;
+        case 5: skillLevel = 20; break;
+        case "t5": skillLevel = 25; break;
+    }
+    let skillName = wSkillInfo.name;
+    let size, boost, element, skill;
+    //unboostable unique mods
+    if (Object.keys(wSkillInfo).includes(wSkillInfo.name)) {
+        console.log("special mod");
+    }
+    else if (omegaMods[skillName.split(" ")[0]]) {
+        boost = skillName.split(" ")[0];
+        element = omegaMods[boost];
+        size = !skillName.split(" ")[2] ? "small" : skillName.split(" ")[2] == "II" ? "medium" : "big";
+        skill = skillName.split(" ")[1].toLowerCase();
+        if (!skillData[skill]) { console.log(`${skill} does not have skill data.`); return; }
+        skill = skillData[skill];
+        skill = [...skill[size][skillLevel]];
+        skill = skill.map(stat => {
+            let affects;
+            switch (stat.affects) {
+                case "<element>": affects = `element:${element}`; break;
+            }
+            return { ...stat, affects, addedBy: weaponSlot, boostedBy: boost };
+        });
+        calcData.wSkillls.push(...skill);
+    }
+    else if (primalMods[skillName.split(" ")[0]]) {
+        boost = skillName.split(" ")[0];
+        element = primalMods[boost];
+        size = primalMods[boost];
+        skill = skillName.split(" ")[1].toLowerCase();
+        if (!skillData[skill]) { console.log(`${skill} does not have skill data.`); return; }
+        skill = skillData[skill];
+        skill = [...skill[size][skillLevel]];
+        skill = skill.map(stat => {
+            let affects;
+            switch (stat.affects) {
+                case "<element>": affects = `element:${element}`; break;
+            }
+            return { ...stat, affects, addedBy: weaponSlot, boostedBy: boost };
+        });
+        calcData.wSkillls.push(...skill);
+    }
+    else {
+        console.log("unboosted mod");
     }
 }
 
@@ -804,7 +882,6 @@ function addAwakeningButton(button, id, iAwk) {
     if (worldHarps.includes(id)) {
         let awkType;
         switch (id) {
-            //moros
             case 1040815000: awkType = "ca"; break;
             case 1040815100: awkType = "attack"; break;
             case 1040815200: awkType = "skill"; break;
