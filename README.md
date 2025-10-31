@@ -14,26 +14,15 @@ once the action is done it updates the branch after which the automatic github a
 
 # TODO:
 ## High Priority:
-- Add aliases in `aliases.json` that gets loaded instead of alias object
-    - every farmable raid weapon
-        - \<raid name or "series" name\> \<weapon type\>
-            - Abu Simbel as Ra Fist
-            - Tiamat Bolt Credo as M3 Gun
-    - character nicknames that are not a part of their name already
-        - Zodiacs as their animal
-            - Vicky as Rat/Mouse, Khumbhir as Boar/Pig
-        - Estariolla as Sleepy, Charlotta as Box
+- Add aliases to `aliases.js` and `weights.js`
+    - aliases should only be names that are not already part of the name
+        - e.g. "Colo" is not an acceptable alias for "Colossus Omega" since it is already part of the name
+
 
 ## Medium Priority
-- Search Weights
-    - similar to aliases used in metatags, an optional weight value for items to be used when sorting optionsets, higher values are placed higher when *searching* (should not affect anything when there is no search input), default to 0 for items with no specific weight
-        - high weights: primal, magna, providence summons; dark opuses
-        - negative weights: demi-primal summons
-
 - Redesign filters
     - save filter options to local storage
-    - move to pull out drawer absolutely positioned at the bottom of the screen
-        - could be moved somewhere else
+    - style drawer button
 
 
 
