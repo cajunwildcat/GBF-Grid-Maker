@@ -61,12 +61,15 @@ ul {
 
 #filters {
     position: absolute;
-    top: 510px;
+    bottom: 0px;
     left: 530px;
     color: white;
     display: flex;
     flex-direction: column;
     gap: 4px;
+    height: 20px;
+    overflow: clip;
+    transition: height 0.5s;
 
     >div {
         display: flex;
@@ -78,11 +81,6 @@ ul {
             font-size: 22px;
             width: 90px;
         }
-    }
-
-    #hide-filters-button {
-        width: fit-content;
-        display: inline-block;
     }
 
     button {
@@ -97,6 +95,10 @@ ul {
     button[data-filter-enabled="false"] {
         box-shadow: inset 0 0 2px 1px #0c0b0b, inset 0 6px 6px 1px #344c4d, inset 0 -6px 7px 0px #0f2022, 1px 4px 4px #443e38;
     }
+}
+
+.filter-transition {
+    height: 200px !important;
 }
 
 .team-container {

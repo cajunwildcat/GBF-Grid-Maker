@@ -2730,7 +2730,7 @@
   "2040376000": {
     "pageName": "Zhuque",
     "name": "Zhuque",
-    "maxUncap": 4,
+    "maxUncap": 5,
     "rarity": "SSR",
     "element": "fire",
     "series": null
@@ -2738,7 +2738,7 @@
   "2040377000": {
     "pageName": "Xuanwu",
     "name": "Xuanwu",
-    "maxUncap": 4,
+    "maxUncap": 5,
     "rarity": "SSR",
     "element": "water",
     "series": null
@@ -2746,7 +2746,7 @@
   "2040378000": {
     "pageName": "Baihu",
     "name": "Baihu",
-    "maxUncap": 4,
+    "maxUncap": 5,
     "rarity": "SSR",
     "element": "earth",
     "series": null
@@ -2754,7 +2754,7 @@
   "2040379000": {
     "pageName": "Qinglong",
     "name": "Qinglong",
-    "maxUncap": 4,
+    "maxUncap": 5,
     "rarity": "SSR",
     "element": "wind",
     "series": null
@@ -3162,7 +3162,7 @@
   "2040430000": {
     "pageName": "Wedges of the Sky",
     "name": "Wedges of the Sky",
-    "maxUncap": 3,
+    "maxUncap": 4,
     "rarity": "SSR",
     "element": "wind",
     "series": null
@@ -3213,6 +3213,54 @@
     "maxUncap": 3,
     "rarity": "SSR",
     "element": "fire",
+    "series": "robur"
+  },
+  "2040437000": {
+    "pageName": "Bastet (Summer)",
+    "name": "Bastet",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "element": "wind",
+    "series": "summer"
+  },
+  "2040438000": {
+    "pageName": "Commander of Destruction",
+    "name": "Commander of Destruction",
+    "maxUncap": 3,
+    "rarity": "SSR",
+    "element": "earth",
+    "series": "robur"
+  },
+  "2040439000": {
+    "pageName": "Nobunaga, Feitan, Machi, and Uvogin",
+    "name": "Nobunaga, Feitan, Machi, and Uvogin",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "element": "dark",
+    "series": "collab"
+  },
+  "2040440000": {
+    "pageName": "Hisoka",
+    "name": "Hisoka",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "element": "water",
+    "series": "collab"
+  },
+  "2040441000": {
+    "pageName": "Vepar",
+    "name": "Vepar",
+    "maxUncap": 3,
+    "rarity": "SSR",
+    "element": "dark",
+    "series": "robur"
+  },
+  "2040442000": {
+    "pageName": "Fairy Princess",
+    "name": "Fairy Princess",
+    "maxUncap": 3,
+    "rarity": "SSR",
+    "element": "light",
     "series": "robur"
   }
 }

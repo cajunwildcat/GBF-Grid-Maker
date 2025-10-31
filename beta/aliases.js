@@ -14,6 +14,18 @@ const aliases = {
     "Vikala": ["rat","mouse"],
     ///weapons
     "Abu Simbel": ["ra fist"],
+
+    "Gateway-Star Sword": ["celestial sword"],
+    "Twinfall-Sky Blade": ["celestial dagger"],
+    "Selfless-Rift Spear": ["celestial spear"],
+    "Demolition-Tiger Axe": ["celestial axe"],
+    "Altruism-Soul Staff": ["celestial staff"],
+    "Twinpain-Wolf Gun": ["celestial gun"],
+    "Covenant-Ruin Fist": ["celestial fist"],
+    "Desolation-Crown Bow": ["celestial bow"],
+    "Fantasia-Realm Harp": ["celestial harp"],
+    "Oration-Life Katana": ["celestial katana"],
+
     ///summons
     "Yggdrasil": ["yggy", "yugu"],
 

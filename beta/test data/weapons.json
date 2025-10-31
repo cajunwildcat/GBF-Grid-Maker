@@ -8951,6 +8951,30 @@
     "awakeningType1": null,
     "awakeningType2": null
   },
+  "1030010500": {
+    "pageName": "Beak Slasher",
+    "maxUncap": 3,
+    "rarity": "SR",
+    "series": null,
+    "element": "dark",
+    "character": null,
+    "skill1": {
+      "name": "Clawed Shadow",
+      "icon": "ws_skill_atk_a_6_2.png"
+    },
+    "skill2": {
+      "name": null,
+      "icon": null
+    },
+    "skill3": {
+      "name": null,
+      "icon": null
+    },
+    "type": "sabre",
+    "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
   "1030099000": {
     "pageName": "Archangel Sword",
     "maxUncap": 3,
@@ -11025,6 +11049,30 @@
     "skill1": {
       "name": "Willed Flood",
       "icon": "ws_skill_hp_a_2_2.png"
+    },
+    "skill2": {
+      "name": null,
+      "icon": null
+    },
+    "skill3": {
+      "name": null,
+      "icon": null
+    },
+    "type": "dagger",
+    "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1030109300": {
+    "pageName": "Indestructible Plume",
+    "maxUncap": 3,
+    "rarity": "SR",
+    "series": null,
+    "element": "earth",
+    "character": null,
+    "skill1": {
+      "name": "Clawed Grounds",
+      "icon": "ws_skill_atk_a_3_2.png"
     },
     "skill2": {
       "name": null,
@@ -19305,6 +19353,30 @@
     "skill1": {
       "name": "Clawed Blaze",
       "icon": "ws_skill_atk_a_1_2.png"
+    },
+    "skill2": {
+      "name": null,
+      "icon": null
+    },
+    "skill3": {
+      "name": null,
+      "icon": null
+    },
+    "type": "melee",
+    "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1030610000": {
+    "pageName": "Gauntlet of Bewilderment",
+    "maxUncap": 3,
+    "rarity": "SR",
+    "series": null,
+    "element": "wind",
+    "character": null,
+    "skill1": {
+      "name": "Clawed Gale",
+      "icon": "ws_skill_atk_a_4_2.png"
     },
     "skill2": {
       "name": null,
@@ -28583,6 +28655,54 @@
     "awakeningType1": null,
     "awakeningType2": null
   },
+  "1040028600": {
+    "pageName": "Epee Scintillante",
+    "maxUncap": 3,
+    "rarity": "SSR",
+    "series": null,
+    "element": "earth",
+    "character": "Berceau",
+    "skill1": {
+      "name": "Mountain's Aegis",
+      "icon": "ws_skill_hp_3_2.png"
+    },
+    "skill2": {
+      "name": "Mountain's Healing",
+      "icon": "ws_skill_heal_limit_3_2.png"
+    },
+    "skill3": {
+      "name": null,
+      "icon": null
+    },
+    "type": "sabre",
+    "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040028700": {
+    "pageName": "Blade of Remorse",
+    "maxUncap": 3,
+    "rarity": "SSR",
+    "series": null,
+    "element": "wind",
+    "character": null,
+    "skill1": {
+      "name": "Armed Gale",
+      "icon": "ws_skill_atk_a_4_3.png"
+    },
+    "skill2": {
+      "name": "Synchronized Artistry",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": null,
+      "icon": null
+    },
+    "type": "sabre",
+    "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
   "1040100000": {
     "pageName": "Azoth",
     "maxUncap": 3,
@@ -31349,7 +31469,7 @@
     "rarity": "SSR",
     "series": null,
     "element": "light",
-    "character": "Danua (SSR)",
+    "character": "Danua (Light)",
     "skill1": {
       "name": "Zion's Enmity",
       "icon": "ws_skill_backwater_5_3.png"
@@ -33329,6 +33449,78 @@
     "skill3": {
       "name": "Water's Might",
       "icon": "ws_skill_atk_2_1.png"
+    },
+    "type": "dagger",
+    "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040122000": {
+    "pageName": "Quill of Happy Endings",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "series": null,
+    "element": "light",
+    "character": "Korwa (Yukata)",
+    "skill1": {
+      "name": "Thunder's Trium",
+      "icon": "ws_skill_ta_5_2.png"
+    },
+    "skill2": {
+      "name": "Strike: Light",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": "Thunder's Might",
+      "icon": "ws_skill_atk_5_2.png"
+    },
+    "type": "dagger",
+    "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040122100": {
+    "pageName": "Lagoon's Edge",
+    "maxUncap": 3,
+    "rarity": "SSR",
+    "series": null,
+    "element": "water",
+    "character": "Joel (SSR)",
+    "skill1": {
+      "name": "Tsunami's Restraint",
+      "icon": "ws_skill_coki_2_2.png"
+    },
+    "skill2": {
+      "name": "Tsunami's Healing",
+      "icon": "ws_skill_heal_limit_2_2.png"
+    },
+    "skill3": {
+      "name": null,
+      "icon": null
+    },
+    "type": "dagger",
+    "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040122200": {
+    "pageName": "Marionette Machete",
+    "maxUncap": 3,
+    "rarity": "SSR",
+    "series": null,
+    "element": "dark",
+    "character": "Danua (SSR)",
+    "skill1": {
+      "name": "Oblivion's Insignia",
+      "icon": "ws_skill_noroi_6.png"
+    },
+    "skill2": {
+      "name": "Hatred's Aegis",
+      "icon": "ws_skill_hp_6_2.png"
+    },
+    "skill3": {
+      "name": null,
+      "icon": null
     },
     "type": "dagger",
     "awakening": null,
@@ -37871,6 +38063,30 @@
     "awakeningType1": null,
     "awakeningType2": null
   },
+  "1040220200": {
+    "pageName": "Giant Octo Leg on a Stick",
+    "maxUncap": 3,
+    "rarity": "SSR",
+    "series": null,
+    "element": "dark",
+    "character": null,
+    "skill1": {
+      "name": "Resilient Shadow",
+      "icon": "ws_skill_hp_a_6_3.png"
+    },
+    "skill2": {
+      "name": "Synchronized Artistry",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": null,
+      "icon": null
+    },
+    "type": "spear",
+    "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
   "1040300000": {
     "pageName": "Ukonvasara",
     "maxUncap": 4,
@@ -42349,6 +42565,30 @@
     "skill2": {
       "name": "Thunder's Garrison",
       "icon": "ws_skill_guard_5_2.png"
+    },
+    "skill3": {
+      "name": null,
+      "icon": null
+    },
+    "type": "axe",
+    "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040319500": {
+    "pageName": "Mega Metallic Yo-Yo",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "series": "collab",
+    "element": "wind",
+    "character": null,
+    "skill1": {
+      "name": "Heavy-Metal Body",
+      "icon": "ws_skill_atk_a_4_3.png"
+    },
+    "skill2": {
+      "name": "Made For Killua",
+      "icon": "ws_skill_job_weapon.png"
     },
     "skill3": {
       "name": null,
@@ -48095,6 +48335,102 @@
     "awakeningType1": null,
     "awakeningType2": null
   },
+  "1040425000": {
+    "pageName": "Shade and Suffering",
+    "maxUncap": 3,
+    "rarity": "SSR",
+    "series": null,
+    "element": "earth",
+    "character": "Lich (Summer)",
+    "skill1": {
+      "name": "Staff Wrath",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill2": {
+      "name": "Staff Voltage II",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": null,
+      "icon": null
+    },
+    "type": "staff",
+    "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040425100": {
+    "pageName": "Bandit's Secret",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "series": "collab",
+    "element": "dark",
+    "character": "Chrollo",
+    "skill1": {
+      "name": "Oblivion's Mystery",
+      "icon": "ws_skill_sp_atk_6_3.png"
+    },
+    "skill2": {
+      "name": "Graphite Arts",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": "Caliginis Excelsior",
+      "icon": "ws_skill_sp_limit_6.png"
+    },
+    "type": "staff",
+    "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040425200": {
+    "pageName": "Precipian Staff",
+    "maxUncap": 3,
+    "rarity": "SSR",
+    "series": null,
+    "element": "light",
+    "character": null,
+    "skill1": {
+      "name": "Armed Shine",
+      "icon": "ws_skill_atk_a_5_3.png"
+    },
+    "skill2": {
+      "name": "Covert Artistry",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": null,
+      "icon": null
+    },
+    "type": "staff",
+    "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040425300": {
+    "pageName": "Feder des Zugvogels",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "series": null,
+    "element": "wind",
+    "character": "Lamorak",
+    "skill1": {
+      "name": "Preemptive Gale Blade",
+      "icon": "ws_skill_atk_4.png"
+    },
+    "skill2": {
+      "name": "Jade Arts",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": "Whirlwind's Majesty",
+      "icon": "ws_skill_god_4_2.png"
+    },
+    "type": "staff",
+    "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
   "1040500000": {
     "pageName": "Gastraphetes",
     "maxUncap": 4,
@@ -52055,6 +52391,150 @@
     "awakeningType1": null,
     "awakeningType2": null
   },
+  "1040517400": {
+    "pageName": "Lux in Tenebris (Fire)",
+    "maxUncap": 5,
+    "rarity": "SSR",
+    "series": "ccw",
+    "element": "fire",
+    "character": null,
+    "skill1": {
+      "name": "Revenger's Calling",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill2": {
+      "name": "Revenger's Pride",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": "Revenger's Genius",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "type": "gun",
+    "awakening": "rowv",
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040517500": {
+    "pageName": "Lux in Tenebris (Water)",
+    "maxUncap": 5,
+    "rarity": "SSR",
+    "series": "ccw",
+    "element": "water",
+    "character": null,
+    "skill1": {
+      "name": "Revenger's Calling",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill2": {
+      "name": "Revenger's Pride",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": "Revenger's Genius",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "type": "gun",
+    "awakening": "rowv",
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040517600": {
+    "pageName": "Lux in Tenebris (Earth)",
+    "maxUncap": 5,
+    "rarity": "SSR",
+    "series": "ccw",
+    "element": "earth",
+    "character": null,
+    "skill1": {
+      "name": "Revenger's Calling",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill2": {
+      "name": "Revenger's Pride",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": "Revenger's Genius",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "type": "gun",
+    "awakening": "rowv",
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040517700": {
+    "pageName": "Lux in Tenebris (Wind)",
+    "maxUncap": 5,
+    "rarity": "SSR",
+    "series": "ccw",
+    "element": "wind",
+    "character": null,
+    "skill1": {
+      "name": "Revenger's Calling",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill2": {
+      "name": "Revenger's Pride",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": "Revenger's Genius",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "type": "gun",
+    "awakening": "rowv",
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040517800": {
+    "pageName": "Lux in Tenebris (Light)",
+    "maxUncap": 5,
+    "rarity": "SSR",
+    "series": "ccw",
+    "element": "light",
+    "character": null,
+    "skill1": {
+      "name": "Revenger's Calling",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill2": {
+      "name": "Revenger's Pride",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": "Revenger's Genius",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "type": "gun",
+    "awakening": "rowv",
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040517900": {
+    "pageName": "Lux in Tenebris (Dark)",
+    "maxUncap": 5,
+    "rarity": "SSR",
+    "series": "ccw",
+    "element": "dark",
+    "character": null,
+    "skill1": {
+      "name": "Revenger's Calling",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill2": {
+      "name": "Revenger's Pride",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": "Revenger's Genius",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "type": "gun",
+    "awakening": "rowv",
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
   "1040518000": {
     "pageName": "Sweet Surprise",
     "maxUncap": 4,
@@ -52076,6 +52556,54 @@
     },
     "type": "gun",
     "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040518100": {
+    "pageName": "Bridekeeper",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "series": null,
+    "element": "water",
+    "character": "Ilsa (Formal)",
+    "skill1": {
+      "name": "Tsunami's Fandango",
+      "icon": "ws_skill_ranbu_2_2.png"
+    },
+    "skill2": {
+      "name": "Strike: Water",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": "Snowfall's Maneuver",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "type": "gun",
+    "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040518200": {
+    "pageName": "Exo Evilenes",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "series": "exo",
+    "element": "dark",
+    "character": null,
+    "skill1": {
+      "name": "Phantom's Supremacy",
+      "icon": "ws_skill_atk_a_6_4.png"
+    },
+    "skill2": {
+      "name": "Baneful Hellbringer's Jurisdiction",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": null,
+      "icon": null
+    },
+    "type": "gun",
+    "awakening": "exo",
     "awakeningType1": null,
     "awakeningType2": null
   },
@@ -56471,6 +56999,246 @@
     "awakeningType1": null,
     "awakeningType2": null
   },
+  "1040620100": {
+    "pageName": "Scheherazade",
+    "maxUncap": 3,
+    "rarity": "SSR",
+    "series": null,
+    "element": "earth",
+    "character": "Fraux (Formal)",
+    "skill1": {
+      "name": "Mountain's Tempering",
+      "icon": "ws_skill_train_3_2.png"
+    },
+    "skill2": {
+      "name": "Earth's Healing",
+      "icon": "ws_skill_heal_limit_3_1.png"
+    },
+    "skill3": {
+      "name": null,
+      "icon": null
+    },
+    "type": "melee",
+    "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040620200": {
+    "pageName": "Iron Fist of Severed Chains (Fire)",
+    "maxUncap": 5,
+    "rarity": "SSR",
+    "series": "ccw",
+    "element": "fire",
+    "character": null,
+    "skill1": {
+      "name": "Rikishi's Calling",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill2": {
+      "name": "Rikishi's Pride",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": "Rikishi's Genius",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "type": "melee",
+    "awakening": "rowv",
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040620300": {
+    "pageName": "Iron Fist of Severed Chains (Water)",
+    "maxUncap": 5,
+    "rarity": "SSR",
+    "series": "ccw",
+    "element": "water",
+    "character": null,
+    "skill1": {
+      "name": "Rikishi's Calling",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill2": {
+      "name": "Rikishi's Pride",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": "Rikishi's Genius",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "type": "melee",
+    "awakening": "rowv",
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040620400": {
+    "pageName": "Iron Fist of Severed Chains (Earth)",
+    "maxUncap": 5,
+    "rarity": "SSR",
+    "series": "ccw",
+    "element": "earth",
+    "character": null,
+    "skill1": {
+      "name": "Rikishi's Calling",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill2": {
+      "name": "Rikishi's Pride",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": "Rikishi's Genius",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "type": "melee",
+    "awakening": "rowv",
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040620500": {
+    "pageName": "Iron Fist of Severed Chains (Wind)",
+    "maxUncap": 5,
+    "rarity": "SSR",
+    "series": "ccw",
+    "element": "wind",
+    "character": null,
+    "skill1": {
+      "name": "Rikishi's Calling",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill2": {
+      "name": "Rikishi's Pride",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": "Rikishi's Genius",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "type": "melee",
+    "awakening": "rowv",
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040620600": {
+    "pageName": "Iron Fist of Severed Chains (Light)",
+    "maxUncap": 5,
+    "rarity": "SSR",
+    "series": "ccw",
+    "element": "light",
+    "character": null,
+    "skill1": {
+      "name": "Rikishi's Calling",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill2": {
+      "name": "Rikishi's Pride",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": "Rikishi's Genius",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "type": "melee",
+    "awakening": "rowv",
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040620700": {
+    "pageName": "Iron Fist of Severed Chains (Dark)",
+    "maxUncap": 5,
+    "rarity": "SSR",
+    "series": "ccw",
+    "element": "dark",
+    "character": null,
+    "skill1": {
+      "name": "Rikishi's Calling",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill2": {
+      "name": "Rikishi's Pride",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": "Rikishi's Genius",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "type": "melee",
+    "awakening": "rowv",
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040620800": {
+    "pageName": "Beach House Ramen",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "series": null,
+    "element": "wind",
+    "character": "Cassius (Summer)",
+    "skill1": {
+      "name": "Ventosus's Trium",
+      "icon": "ws_skill_ta_4_3.png"
+    },
+    "skill2": {
+      "name": "Wind's Healing",
+      "icon": "ws_skill_heal_limit_4_1.png"
+    },
+    "skill3": {
+      "name": "Whirlwind's Stamina",
+      "icon": "ws_skill_whole_4_2.png"
+    },
+    "type": "melee",
+    "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040620900": {
+    "pageName": "Ko-Focused Fist",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "series": "collab",
+    "element": "earth",
+    "character": null,
+    "skill1": {
+      "name": "Boulder Breaker",
+      "icon": "ws_skill_atk_a_3_3.png"
+    },
+    "skill2": {
+      "name": "First Comes Rock",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": null,
+      "icon": null
+    },
+    "type": "melee",
+    "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040621000": {
+    "pageName": "Five-Finger Chain",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "series": "collab",
+    "element": "fire",
+    "character": "Kurapika",
+    "skill1": {
+      "name": "Inferno's Enmity",
+      "icon": "ws_skill_backwater_1_3.png"
+    },
+    "skill2": {
+      "name": "Fire's Verity",
+      "icon": "ws_skill_tec_1_1.png"
+    },
+    "skill3": {
+      "name": "Hellfire's Garrison",
+      "icon": "ws_skill_guard_1_2.png"
+    },
+    "type": "melee",
+    "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
   "1040700000": {
     "pageName": "Eurytos Bow",
     "maxUncap": 4,
@@ -59819,12 +60587,36 @@
       "icon": "ws_skill_atk_a_2_3.png"
     },
     "skill2": {
-      "name": null,
-      "icon": null
+      "name": "Technical Artistry",
+      "icon": "ws_skill_job_weapon.png"
     },
     "skill3": {
       "name": null,
       "icon": null
+    },
+    "type": "bow",
+    "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040714600": {
+    "pageName": "Second Float of the Herd",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "series": null,
+    "element": "dark",
+    "character": "Catura (Summer)",
+    "skill1": {
+      "name": "Hatred's Garrison",
+      "icon": "ws_skill_guard_6_2.png"
+    },
+    "skill2": {
+      "name": "Hatred's Trium",
+      "icon": "ws_skill_ta_6_2.png"
+    },
+    "skill3": {
+      "name": "Dark's Majesty",
+      "icon": "ws_skill_god_6.png"
     },
     "type": "bow",
     "awakening": null,
@@ -63791,6 +64583,174 @@
     "awakeningType1": null,
     "awakeningType2": null
   },
+  "1040817200": {
+    "pageName": "Shati Hariq",
+    "maxUncap": 3,
+    "rarity": "SSR",
+    "series": null,
+    "element": "fire",
+    "character": "Atum (Summer)",
+    "skill1": {
+      "name": "Hellfire's Progression",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill2": {
+      "name": "Hellfire's Garrison",
+      "icon": "ws_skill_guard_1_2.png"
+    },
+    "skill3": {
+      "name": null,
+      "icon": null
+    },
+    "type": "harp",
+    "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040817300": {
+    "pageName": "Guitarron del Maestro (Fire)",
+    "maxUncap": 5,
+    "rarity": "SSR",
+    "series": "ccw",
+    "element": "fire",
+    "character": null,
+    "skill1": {
+      "name": "Trovador's Calling",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill2": {
+      "name": "Trovador's Pride",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": "Trovador's Genius",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "type": "Harp",
+    "awakening": "rowv",
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040817400": {
+    "pageName": "Guitarron del Maestro (Water)",
+    "maxUncap": 5,
+    "rarity": "SSR",
+    "series": "ccw",
+    "element": "water",
+    "character": null,
+    "skill1": {
+      "name": "Trovador's Calling",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill2": {
+      "name": "Trovador's Pride",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": "Trovador's Genius",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "type": "Harp",
+    "awakening": "rowv",
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040817500": {
+    "pageName": "Guitarron del Maestro (Earth)",
+    "maxUncap": 5,
+    "rarity": "SSR",
+    "series": "ccw",
+    "element": "earth",
+    "character": null,
+    "skill1": {
+      "name": "Trovador's Calling",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill2": {
+      "name": "Trovador's Pride",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": "Trovador's Genius",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "type": "Harp",
+    "awakening": "rowv",
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040817600": {
+    "pageName": "Guitarron del Maestro (Wind)",
+    "maxUncap": 5,
+    "rarity": "SSR",
+    "series": "ccw",
+    "element": "wind",
+    "character": null,
+    "skill1": {
+      "name": "Trovador's Calling",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill2": {
+      "name": "Trovador's Pride",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": "Trovador's Genius",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "type": "Harp",
+    "awakening": "rowv",
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040817700": {
+    "pageName": "Guitarron del Maestro (Light)",
+    "maxUncap": 5,
+    "rarity": "SSR",
+    "series": "ccw",
+    "element": "light",
+    "character": null,
+    "skill1": {
+      "name": "Trovador's Calling",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill2": {
+      "name": "Trovador's Pride",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": "Trovador's Genius",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "type": "Harp",
+    "awakening": "rowv",
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040817800": {
+    "pageName": "Guitarron del Maestro (Dark)",
+    "maxUncap": 5,
+    "rarity": "SSR",
+    "series": "ccw",
+    "element": "dark",
+    "character": null,
+    "skill1": {
+      "name": "Trovador's Calling",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill2": {
+      "name": "Trovador's Pride",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": "Trovador's Genius",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "type": "Harp",
+    "awakening": "rowv",
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
   "1040900000": {
     "pageName": "Asura",
     "maxUncap": 4,
@@ -67735,7 +68695,7 @@
     "element": "light",
     "character": "Basara",
     "skill1": {
-      "name": "Glimmer's Prowess",
+      "name": "Glimmer's Maneuver",
       "icon": "ws_skill_job_weapon.png"
     },
     "skill2": {
@@ -67913,6 +68873,78 @@
     "skill3": {
       "name": null,
       "icon": null
+    },
+    "type": "katana",
+    "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040918000": {
+    "pageName": "Moon Shotel",
+    "maxUncap": 3,
+    "rarity": "SSR",
+    "series": null,
+    "element": "wind",
+    "character": "Haaselia (Summer)",
+    "skill1": {
+      "name": "Whirlwind's Progression",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill2": {
+      "name": "Whirlwind's Garrison",
+      "icon": "ws_skill_guard_4_2.png"
+    },
+    "skill3": {
+      "name": null,
+      "icon": null
+    },
+    "type": "katana",
+    "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040918100": {
+    "pageName": "Executioner",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "series": "grand",
+    "element": "dark",
+    "character": "Sariel",
+    "skill1": {
+      "name": "Purgatory's Maneuver",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill2": {
+      "name": "Oblivion's Impalement",
+      "icon": "ws_skill_penetrate_defense_6_3.png"
+    },
+    "skill3": {
+      "name": "Graphite Athos",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "type": "katana",
+    "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040918200": {
+    "pageName": "Ebony Retribution",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "series": "grand",
+    "element": "water",
+    "character": "Sylvia",
+    "skill1": {
+      "name": "Hoarfrost's Onslaught",
+      "icon": "ws_skill_special_skill_concurrent_attack_2_3.png"
+    },
+    "skill2": {
+      "name": "Hoarfrost's Impalement",
+      "icon": "ws_skill_penetrate_defense_2_3.png"
+    },
+    "skill3": {
+      "name": "Cobalt Porthos",
+      "icon": "ws_skill_job_weapon.png"
     },
     "type": "katana",
     "awakening": null,
@@ -69311,6 +70343,30 @@
     "awakeningType1": null,
     "awakeningType2": null
   },
+  "1040517400_note": {
+    "pageName": "Lux in Tenebris",
+    "maxUncap": 5,
+    "rarity": "SSR",
+    "series": "ccw",
+    "element": "any",
+    "character": null,
+    "skill1": {
+      "name": "Revenger's Calling",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill2": {
+      "name": "Revenger's Pride",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": "Revenger's Genius",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "type": "gun",
+    "awakening": "rowv",
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
   "1040603300_note": {
     "pageName": "Hellion Gauntlet (Element)",
     "maxUncap": 4,
@@ -69452,6 +70508,30 @@
     },
     "type": "melee",
     "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040620200_note": {
+    "pageName": "Iron Fist of Severed Chains",
+    "maxUncap": 5,
+    "rarity": "SSR",
+    "series": "ccw",
+    "element": "any",
+    "character": null,
+    "skill1": {
+      "name": "Rikishi's Calling",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill2": {
+      "name": "Rikishi's Pride",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": "Rikishi's Genius",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "type": "melee",
+    "awakening": "rowv",
     "awakeningType1": null,
     "awakeningType2": null
   },
@@ -69788,6 +70868,30 @@
     },
     "type": "harp",
     "awakening": null,
+    "awakeningType1": null,
+    "awakeningType2": null
+  },
+  "1040817300_note": {
+    "pageName": "Guitarron del Maestro",
+    "maxUncap": 5,
+    "rarity": "SSR",
+    "series": "ccw",
+    "element": "any",
+    "character": null,
+    "skill1": {
+      "name": "Trovador's Calling",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill2": {
+      "name": "Trovador's Pride",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "skill3": {
+      "name": "Trovador's Genius",
+      "icon": "ws_skill_job_weapon.png"
+    },
+    "type": "harp",
+    "awakening": "rowv",
     "awakeningType1": null,
     "awakeningType2": null
   },

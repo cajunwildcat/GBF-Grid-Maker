@@ -7,7 +7,7 @@ let weaponTypes = { "sabre": 1, "dagger": 2, "spear": 3, "axe": 4, "staff": 5, "
 let worldHarps = [1040815000, 1040815100, 1040815200, 1040815300, 1040815400];
 let beastSummons = [2040376000, 2040377000, 2040378000, 2040379000]
 let teamData = {};
-let calcData = { wSkillls: [], boosts: {} };
+let calcData = { wSkillls: [], chars: {}, auraBoosts: {} };
 let characters, summons, weapons, abilities;
 let characterIDs = {}, summonIDs = {}, weaponIDs = {};
 let filters = {
@@ -29,17 +29,18 @@ const uncapToArt = (uncap) => {
         default: return "A";
     }
 }
+useTestData = false;
 window.onload = async (e) => {
-    await fetch("https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/characters.json", { next: 43200 })
+    await fetch(useTestData ? "./test data/characters.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/characters.json", { next: 43200 })
         .then(function (response) { return response.json(); })
         .then((response) => characters = response);
-    await fetch("https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/summons.json", { next: 43200 })
+    await fetch(useTestData ? "./test data/summons.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/summons.json", { next: 43200 })
         .then(function (response) { return response.json(); })
         .then((response) => summons = response);
-    await fetch("https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/weapons.json", { next: 43200 })
+    await fetch(useTestData ? "./test data/weapons.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/weapons.json", { next: 43200 })
         .then(function (response) { return response.json(); })
         .then((response) => weapons = response);
-    await fetch("https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/abilities.json", { next: 43200 })
+    await fetch(useTestData ? "./test data/abilities.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/abilities.json", { next: 43200 })
         .then(function (response) { return response.json(); })
         .then((response) => abilities = response);
 
@@ -334,6 +335,10 @@ function setupButtonSearch() {
             }
         };
     });
+    document.querySelector("#show-filters-button").onclick = e => {
+        e.target.textContent = e.target.textContent == "/\\"? "\\/" : "/\\";
+        document.querySelector("#filters").classList.toggle("filter-transition");
+    }
 }
 
 ///
@@ -496,9 +501,8 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
             break;
         case 'characters':
             let char = characters[selectedOption.metatags[0]];
-            calcData[button.id] = {
+            calcData.chars[button.id] = {
                 tags: [`element:${char.element}`, ...char.weapon.map(w => `weapon:${w}`), ...char.race.map(r => `race:${r}`)]
-
             }
             break;
         case 'weapons':
@@ -511,7 +515,7 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
             break;
         case 'summons':
             if (!button.parentElement.classList.contains("team-summon")) addQuickSummonButton(button);
-            addSummonAura(button.id, id);
+            addSummonAuraCalc(button.id, id);
             break;
         case 'mino':
         case 'shield':
@@ -726,10 +730,11 @@ function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
     }
     let skillName = wSkillInfo.name;
     let size, boost, element, skill;
-    //unboostable unique mods
-    if (Object.keys(wSkillInfo).includes(wSkillInfo.name)) {
-        console.log("special mod");
+    //unboostable unique mods e.g. celestial weapons
+    if (Object.keys(skillData).includes(wSkillInfo.name)) {
+        calcData.wSkillls.push(...skillData[wSkillInfo.name]);
     }
+    //magna boostable mods
     else if (omegaMods[skillName.split(" ")[0]]) {
         boost = skillName.split(" ")[0];
         element = omegaMods[boost];
@@ -739,18 +744,21 @@ function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
         skill = skillData[skill];
         skill = [...skill[size][skillLevel]];
         skill = skill.map(stat => {
+            let statName = stat.statName;
+            if (statName == "might" || statName == "stamina" || statName == "emnity") statName = "omega " + statName;
             let affects;
             switch (stat.affects) {
                 case "<element>": affects = `element:${element}`; break;
             }
-            return { ...stat, affects, addedBy: weaponSlot, boostedBy: boost };
+            return { ...stat, statName: statName, affects, addedBy: weaponSlot, boostedBy: boost };
         });
         calcData.wSkillls.push(...skill);
     }
+    //primal boostable mods
     else if (primalMods[skillName.split(" ")[0]]) {
         boost = skillName.split(" ")[0];
-        element = primalMods[boost];
-        size = primalMods[boost];
+        element = primalMods[boost].element;
+        size = primalMods[boost].size;
         skill = skillName.split(" ")[1].toLowerCase();
         if (!skillData[skill]) { console.log(`${skill} does not have skill data.`); return; }
         skill = skillData[skill];
@@ -764,9 +772,11 @@ function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
         });
         calcData.wSkillls.push(...skill);
     }
+    //unboosted non-unique mod e.g. ancestral weapons, Crux
     else {
         console.log("unboosted mod");
     }
+    console.log(calcData)
 }
 
 function addSelectableWeaponSkill(skill, optionSet) {

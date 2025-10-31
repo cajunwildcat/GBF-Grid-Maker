@@ -1664,7 +1664,7 @@
     "releaseDate": "2019-01-31",
     "gender": "m",
     "obtain": [
-      "event,The Many Lives of Cats"
+      "side_story,The Many Lives of Cats"
     ],
     "flbDate": null,
     "expeditionType": null,
@@ -7989,7 +7989,7 @@
     "releaseDate": "2018-11-30",
     "gender": "m",
     "obtain": [
-      "event,Reflections for a White Clover"
+      "side_story,Reflections for a White Clover"
     ],
     "flbDate": null,
     "expeditionType": null,
@@ -10358,7 +10358,7 @@
   },
   "3040066000": {
     "pageName": "Lilele",
-    "maxUncap": 4,
+    "maxUncap": 5,
     "rarity": "SSR",
     "element": "Water",
     "series": null,
@@ -10370,7 +10370,7 @@
     "obtain": [
       "classic"
     ],
-    "flbDate": null,
+    "flbDate": "2025-09-25",
     "expeditionType": null,
     "type": "Special",
     "race": [
@@ -10458,7 +10458,7 @@
   },
   "3040070000": {
     "pageName": "Beatrix",
-    "maxUncap": 4,
+    "maxUncap": 5,
     "rarity": "SSR",
     "element": "Dark",
     "series": null,
@@ -10470,7 +10470,7 @@
     "obtain": [
       "classic"
     ],
-    "flbDate": null,
+    "flbDate": "2025-08-21",
     "expeditionType": null,
     "type": "Special",
     "race": [
@@ -11650,7 +11650,7 @@
   },
   "3040119000": {
     "pageName": "Drang (Grand)",
-    "maxUncap": 4,
+    "maxUncap": 5,
     "rarity": "SSR",
     "element": "Water",
     "series": "grand",
@@ -11662,7 +11662,7 @@
     "obtain": [
       "premium,grand,flash"
     ],
-    "flbDate": null,
+    "flbDate": "2025-07-22",
     "expeditionType": "mercenary/skyfarer",
     "type": "Special",
     "race": [
@@ -15131,7 +15131,7 @@
     ]
   },
   "3040256000": {
-    "pageName": "Danua (SSR)",
+    "pageName": "Danua (Light)",
     "maxUncap": 4,
     "rarity": "SSR",
     "element": "Light",
@@ -15560,8 +15560,8 @@
     ],
     "recruitWeapon": "Acid Bolt Shooter",
     "weapon": [
-      "Gun",
-      "Bow"
+      "Bow",
+      "Gun"
     ]
   },
   "3040273000": {
@@ -15815,8 +15815,8 @@
     ],
     "recruitWeapon": "Hard Knuckle",
     "weapon": [
-      "Gun",
-      "Melee"
+      "Melee",
+      "Gun"
     ]
   },
   "3040283000": {
@@ -16323,7 +16323,7 @@
     "recruitWeapon": "Innocent Doll",
     "weapon": [
       "Dagger",
-      " Melee"
+      "Melee"
     ]
   },
   "3040303000": {
@@ -23497,7 +23497,7 @@
       "premium,swimsuit"
     ],
     "flbDate": null,
-    "expeditionType": "???",
+    "expeditionType": null,
     "type": "Attack",
     "race": [
       "Human"
@@ -23600,7 +23600,7 @@
       "premium,normal"
     ],
     "flbDate": null,
-    "expeditionType": "???",
+    "expeditionType": null,
     "type": "Attack",
     "race": [
       "Erune"
@@ -23702,7 +23702,7 @@
       "premium,normal"
     ],
     "flbDate": null,
-    "expeditionType": "???",
+    "expeditionType": null,
     "type": "Balanced",
     "race": [
       "Erune"
@@ -23754,7 +23754,7 @@
       "premium,normal"
     ],
     "flbDate": null,
-    "expeditionType": "???",
+    "expeditionType": null,
     "type": "Attack",
     "race": [
       "Other"
@@ -23780,7 +23780,7 @@
       "premium,normal"
     ],
     "flbDate": null,
-    "expeditionType": "???",
+    "expeditionType": "Bloodhound",
     "type": "Special",
     "race": [
       "Other"
@@ -23814,6 +23814,465 @@
     "weapon": [
       "Spear",
       "Staff"
+    ]
+  },
+  "3040599000": {
+    "pageName": "Ilsa (Formal)",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "element": "Water",
+    "series": "formal",
+    "styleName": null,
+    "styleId": null,
+    "jpname": "イルザ",
+    "releaseDate": "2025-06-30",
+    "gender": "f",
+    "obtain": [
+      "premium,formal"
+    ],
+    "flbDate": null,
+    "expeditionType": null,
+    "type": "Attack",
+    "race": [
+      "Erune"
+    ],
+    "recruitWeapon": "Bridekeeper",
+    "weapon": [
+      "Gun",
+      "Bow"
+    ]
+  },
+  "3040600000": {
+    "pageName": "Fraux (Formal)",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "element": "Earth",
+    "series": "evokers,formal",
+    "styleName": null,
+    "styleId": null,
+    "jpname": "フラウ",
+    "releaseDate": "2025-06-30",
+    "gender": "f",
+    "obtain": [
+      "premium,formal"
+    ],
+    "flbDate": null,
+    "expeditionType": "evokers",
+    "type": "Attack",
+    "race": [
+      "Erune"
+    ],
+    "recruitWeapon": "Scheherazade",
+    "weapon": [
+      "Melee"
+    ]
+  },
+  "3040601000": {
+    "pageName": "Atum (Summer)",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "element": "Fire",
+    "series": "summer",
+    "styleName": null,
+    "styleId": null,
+    "jpname": "アトゥム",
+    "releaseDate": "2025-07-15",
+    "gender": "m",
+    "obtain": [
+      "premium,swimsuit"
+    ],
+    "flbDate": null,
+    "expeditionType": null,
+    "type": "Attack",
+    "race": [
+      "Primal"
+    ],
+    "recruitWeapon": "Shati Hariq",
+    "weapon": [
+      "Staff"
+    ]
+  },
+  "3040602000": {
+    "pageName": "Korwa (Yukata)",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "element": "Light",
+    "series": "yukata",
+    "styleName": null,
+    "styleId": null,
+    "jpname": "コルワ",
+    "releaseDate": "2025-07-15",
+    "gender": "f",
+    "obtain": [
+      "premium,swimsuit"
+    ],
+    "flbDate": null,
+    "expeditionType": null,
+    "type": "Special",
+    "race": [
+      "Erune"
+    ],
+    "recruitWeapon": "Quill of Happy Endings",
+    "weapon": [
+      "Staff"
+    ]
+  },
+  "3040603000": {
+    "pageName": "Lich (Summer)",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "element": "Earth",
+    "series": "summer",
+    "styleName": null,
+    "styleId": null,
+    "jpname": "リッチ",
+    "releaseDate": "2025-07-31",
+    "gender": "f",
+    "obtain": [
+      "premium,swimsuit"
+    ],
+    "flbDate": null,
+    "expeditionType": null,
+    "type": "Special",
+    "race": [
+      "Primal"
+    ],
+    "recruitWeapon": "Shade and Suffering",
+    "weapon": [
+      "Staff"
+    ]
+  },
+  "3040604000": {
+    "pageName": "Cassius (Summer)",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "element": "Wind",
+    "series": "summer",
+    "styleName": null,
+    "styleId": null,
+    "jpname": "カシウス",
+    "releaseDate": "2025-07-31",
+    "gender": "m",
+    "obtain": [
+      "premium,swimsuit"
+    ],
+    "flbDate": null,
+    "expeditionType": null,
+    "type": "Balanced",
+    "race": [
+      "Other"
+    ],
+    "recruitWeapon": "Beach House Ramen",
+    "weapon": [
+      "Melee",
+      "Spear"
+    ]
+  },
+  "3040605000": {
+    "pageName": "Gon",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "element": "Earth",
+    "series": "tie-in",
+    "styleName": null,
+    "styleId": null,
+    "jpname": "ゴン",
+    "releaseDate": "2025-08-07",
+    "gender": "m",
+    "obtain": [
+      "collab"
+    ],
+    "flbDate": null,
+    "expeditionType": null,
+    "type": "Balanced",
+    "race": [
+      "Human"
+    ],
+    "recruitWeapon": null,
+    "weapon": [
+      "Melee"
+    ]
+  },
+  "3040606000": {
+    "pageName": "Killua",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "element": "Wind",
+    "series": "tie-in",
+    "styleName": null,
+    "styleId": null,
+    "jpname": "キルア",
+    "releaseDate": "2025-08-12",
+    "gender": "m",
+    "obtain": [
+      "collab"
+    ],
+    "flbDate": null,
+    "expeditionType": null,
+    "type": "Special",
+    "race": [
+      "Human"
+    ],
+    "recruitWeapon": null,
+    "weapon": [
+      "Melee",
+      "Dagger"
+    ]
+  },
+  "3040607000": {
+    "pageName": "Kurapika",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "element": "Fire",
+    "series": "tie-in",
+    "styleName": null,
+    "styleId": null,
+    "jpname": "クラピカ",
+    "releaseDate": "2025-08-07",
+    "gender": "o",
+    "obtain": [
+      "collab"
+    ],
+    "flbDate": null,
+    "expeditionType": null,
+    "type": "Balanced",
+    "race": [
+      "Human"
+    ],
+    "recruitWeapon": "Five-Finger Chain",
+    "weapon": [
+      "Dagger",
+      "Melee"
+    ]
+  },
+  "3040608000": {
+    "pageName": "Chrollo",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "element": "Dark",
+    "series": "tie-in",
+    "styleName": null,
+    "styleId": null,
+    "jpname": "クロロ",
+    "releaseDate": "2025-08-07",
+    "gender": "m",
+    "obtain": [
+      "collab"
+    ],
+    "flbDate": null,
+    "expeditionType": null,
+    "type": "Special",
+    "race": [
+      "Human"
+    ],
+    "recruitWeapon": "Bandit's Secret",
+    "weapon": [
+      "Staff",
+      "Dagger"
+    ]
+  },
+  "3040609000": {
+    "pageName": "Haaselia (Summer)",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "element": "Wind",
+    "series": "evokers,summer",
+    "styleName": null,
+    "styleId": null,
+    "jpname": "ハーゼリーラ",
+    "releaseDate": "2025-08-15",
+    "gender": "f",
+    "obtain": [
+      "premium,swimsuit"
+    ],
+    "flbDate": null,
+    "expeditionType": "Evokers",
+    "type": "Balanced",
+    "race": [
+      "Harvin"
+    ],
+    "recruitWeapon": "Moon Shotel",
+    "weapon": [
+      "Staff",
+      "Melee"
+    ]
+  },
+  "3040610000": {
+    "pageName": "Catura (Summer)",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "element": "Dark",
+    "series": "12generals,summer",
+    "styleName": null,
+    "styleId": null,
+    "jpname": "シャトラ",
+    "releaseDate": "2025-08-15",
+    "gender": "f",
+    "obtain": [
+      "premium,swimsuit"
+    ],
+    "flbDate": null,
+    "expeditionType": null,
+    "type": "Defense",
+    "race": [
+      "Draph"
+    ],
+    "recruitWeapon": "Second Float of the Herd",
+    "weapon": [
+      "Spear",
+      "Melee"
+    ]
+  },
+  "3040611000": {
+    "pageName": "Sariel",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "element": "Dark",
+    "series": "grand",
+    "styleName": null,
+    "styleId": null,
+    "jpname": "サリエル",
+    "releaseDate": "2025-08-31",
+    "gender": "m",
+    "obtain": [
+      "premium,grand,gala"
+    ],
+    "flbDate": null,
+    "expeditionType": "Detective",
+    "type": "Attack",
+    "race": [
+      "Primal"
+    ],
+    "recruitWeapon": "Executioner",
+    "weapon": [
+      "Axe"
+    ]
+  },
+  "3040612000": {
+    "pageName": "Berceau",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "element": "Earth",
+    "series": null,
+    "styleName": null,
+    "styleId": null,
+    "jpname": "ベルソー",
+    "releaseDate": "2025-08-31",
+    "gender": "f",
+    "obtain": [
+      "premium,normal"
+    ],
+    "flbDate": null,
+    "expeditionType": "???",
+    "type": "Special",
+    "race": [
+      "Primal"
+    ],
+    "recruitWeapon": "Epee Scintillante",
+    "weapon": [
+      "Staff"
+    ]
+  },
+  "3040613000": {
+    "pageName": "Sylvia",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "element": "Water",
+    "series": "grand",
+    "styleName": null,
+    "styleId": null,
+    "jpname": "シルヴィア",
+    "releaseDate": "2025-09-19",
+    "gender": "f",
+    "obtain": [
+      "premium,grand,flash"
+    ],
+    "flbDate": null,
+    "expeditionType": null,
+    "type": "Balanced",
+    "race": [
+      "Primal"
+    ],
+    "recruitWeapon": "Ebony Retribution",
+    "weapon": [
+      "Sabre"
+    ]
+  },
+  "3040614000": {
+    "pageName": "Joel (SSR)",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "element": "Water",
+    "series": null,
+    "styleName": null,
+    "styleId": null,
+    "jpname": "ジョエル",
+    "releaseDate": "2025-09-19",
+    "gender": "m",
+    "obtain": [
+      "premium,normal"
+    ],
+    "flbDate": null,
+    "expeditionType": "???",
+    "type": "Heal",
+    "race": [
+      "Human"
+    ],
+    "recruitWeapon": "Lagoon's Edge",
+    "weapon": [
+      "Melee",
+      "Dagger"
+    ]
+  },
+  "3040615000": {
+    "pageName": "Lamorak",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "element": "Wind",
+    "series": null,
+    "styleName": null,
+    "styleId": null,
+    "jpname": "ラモラック",
+    "releaseDate": "2025-09-30",
+    "gender": "m",
+    "obtain": [
+      "premium,normal"
+    ],
+    "flbDate": null,
+    "expeditionType": null,
+    "type": "Special",
+    "race": [
+      "Human"
+    ],
+    "recruitWeapon": "Feder des Zugvogels",
+    "weapon": [
+      "Staff"
+    ]
+  },
+  "3040616000": {
+    "pageName": "Danua (SSR)",
+    "maxUncap": 4,
+    "rarity": "SSR",
+    "element": "Dark",
+    "series": null,
+    "styleName": null,
+    "styleId": null,
+    "jpname": "ダヌア",
+    "releaseDate": "2025-09-30",
+    "gender": "f",
+    "obtain": [
+      "premium,normal"
+    ],
+    "flbDate": null,
+    "expeditionType": "???",
+    "type": "Attack",
+    "race": [
+      "Draph"
+    ],
+    "recruitWeapon": "Marionette Machete",
+    "weapon": [
+      "Dagger",
+      "Axe"
     ]
   }
 }
