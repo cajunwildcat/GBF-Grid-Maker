@@ -33,3 +33,4 @@ once the action is done it updates the branch after which the automatic github a
  - Fill out skill data in `skillData.js`
  - Match skills to applicable characters
  - Apply aura boosts
+ - Re-calc weapon skills and summon auras when changing uncap

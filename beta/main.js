@@ -323,7 +323,7 @@ function setupButtonSearch() {
             }
         };
     });
-    
+
 }
 
 function setupStaticButtons() {
@@ -342,16 +342,16 @@ function setupStaticButtons() {
     }
 
     document.querySelector("#show-filters-button").onclick = e => {
-            let collapsed = document.querySelector("#filters").classList.toggle("filter-transition");
-            e.target.textContent = collapsed? "\\/" : "/\\";
+        let collapsed = document.querySelector("#filters").classList.toggle("filter-transition");
+        e.target.textContent = collapsed ? "\\/" : "/\\";
     }
 
     document.querySelector("#collapse-extra-grid-button").onclick = e => {
         let collapsed = e.target.parentElement.classList.toggle("collapsed");
-        e.target.textContent = collapsed? "\\/" : "/\\";
+        e.target.textContent = collapsed ? "\\/" : "/\\";
         getSetLocalStorage("extra-collapsed", collapsed);
     }
-    if (!getSetLocalStorage("extra-collapsed")) { 
+    if (!getSetLocalStorage("extra-collapsed")) {
         document.querySelector("#collapse-extra-grid-button").click();
     }
 }
@@ -437,6 +437,8 @@ function gridInputContextMenu(event, button = null) {
     delete teamData[button.id + "Uncap"];
     delete teamData[button.id + "Trans"];
     delete teamData[button.id + "Awk"];
+
+    delete calcData.auraBoosts[button.id];
     if (button.dataset.itemId) button.dataset.itemId = "";
     hideDropdown();
 }
@@ -526,7 +528,7 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
             }
             break;
         case 'weapons':
-            if (parseInt(button.id.replace("wp","")) >= 11) {
+            if (parseInt(button.id.replace("wp", "")) >= 11) {
                 if (getSetLocalStorage("extra-collapsed")) {
                     document.querySelector("#collapse-extra-grid-button").click();
                 }
@@ -536,11 +538,11 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
                 button.querySelector(".w-awakening").remove();
             }
             if (weapons[id].awakening) addAwakeningButton(button, id, options.awk);
-            addWeaponSkills(button, id);
+            addWeaponSkills(button, id, uncap);
             break;
         case 'summons':
             if (!button.parentElement.classList.contains("team-summon")) addQuickSummonButton(button);
-            addSummonAuraCalc(button.id, id);
+            addSummonAuraCalc(button.id, id, uncap);
             break;
         case 'mino':
         case 'shield':
@@ -671,11 +673,61 @@ function addQuickSummonButton(button) {
     button.appendChild(qsButton);
 }
 
-function addSummonAuraCalc(summmonSlot, summonID) {
+function addSummonAuraCalc(summonSlot, summonID, uncap) {
+    if (summonSlot == "s-main" || summonSlot == "s-support") {
+        if (uncap == 6) uncap = teamData[`${summonSlot}Trans`];
+        let aura;
+        let boosts = {
+            2040034000: ["Ironflame's"],
+            2040028000: ["Oceansoul's"],
+            2040027000: ["Lifetree's"],
+            2040020000: ["Stormwyrm's"],
+            2040047000: ["Knightcode's"],
+            2040046000: ["Mistfall's"],
 
+            2040094000: ["Fire's", "Hellfire's", "Inferno's"],
+            2040100000: ["Water's", "Tsunami's", "Hoarfrost's"],
+            2040084000: ["Earth's", "Mountain's", "Terra's"],
+            2040098000: ["Wind's", "Whirlwind's", "Ventosus's"],
+            2040080000: ["Light's", "Thunder's", "Zion's"],
+            2040090000: ["Dark's", "Hatred's", "Oblivion's"],
+        }[summonID];
+        if (boosts && ["Ironflame's", "Oceansoul's", "Lifetree's", "Stormwyrm's", "Knightcode's", "Mistfall's"].includes(boosts[0])) {
+            switch (uncap) {
+                case 0: aura = 0.5; break;
+                case 3: aura = 1; break;
+                case 4: aura = 1.2; break;
+                case 5: aura = 1.4; break;
+                case "t1": aura = 1.5; break;
+                case "t2": aura = 1.5; break;
+                case "t3": aura = 1.5; break;
+                case "t4": aura = 1.6; break;
+                case "t5": aura = 1.7; break;
+            }
+        }
+        else if (boosts && ["Fire's", "Water's", "Earth's", "Wind's", "Light's", "Dark's"].includes(boosts[0])) {
+            switch (uncap) {
+                case 0: aura = 0.8; break;
+                case 3: aura = 1.2; break;
+                case 4: aura = 1.4; break;
+                case 5: aura = 1.5; break;
+                case "t1": aura = 1.5; break;
+                case "t2": aura = 1.5; break;
+                case "t3": aura = 1.6; break;
+                case "t4": aura = 1.6; break;
+                case "t5": aura = 1.7; break;
+            }
+        }
+        else {
+            console.log("Unsupposed main summon aura");
+        }
+        boosts.forEach(b => {
+            if (!calcData.auraBoosts[b]) calcData.auraBoosts[summonSlot] = {aura, boosts}
+        })
+    }
 }
 
-function addWeaponSkills(button, weaponID) {
+function addWeaponSkills(button, weaponID, uncap) {
     let skills = button.parentElement.querySelector(".w-skills");
     let weapon = weapons[weaponID];
     while (skills.firstChild) skills.firstChild.remove();
@@ -688,6 +740,7 @@ function addWeaponSkills(button, weaponID) {
         }
         else {
             skill = document.createElement("img");
+            skill.title = weapon.skill1.name;
             skill.src = `https://gbf.wiki/thumb.php?f=${weapon.skill1.icon}&w=33`;
         }
         skills.appendChild(skill);
@@ -713,6 +766,7 @@ function addWeaponSkills(button, weaponID) {
         }
         else {
             skill = document.createElement("img");
+            skill.title = weapon.skill2.name;
             skill.src = `https://gbf.wiki/thumb.php?f=${weapon.skill2.icon}&w=33`;
         }
         skills.appendChild(skill);
@@ -736,6 +790,7 @@ function addWeaponSkills(button, weaponID) {
         }
         else {
             skill = document.createElement("img");
+            skill.title = weapon.skill3.name;
             skill.src = `https://gbf.wiki/thumb.php?f=${weapon.skill3.icon}&w=33`;
         }
         skills.appendChild(skill);
@@ -745,6 +800,15 @@ function addWeaponSkills(button, weaponID) {
 }
 
 function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
+    const missingSkill = () => {
+        let weap = document.querySelector(`#${weaponSlot}`);
+        let warn = document.createElement("img");
+        warn.src = "assets/warning.png";
+        warn.style = `width: 20px; height: 20px; position: absolute; top: 0px; right: 0px;`;
+        warn.title = "Skill data for one or more skill on this weapon is missing."
+        weap.appendChild(warn);
+        console.log(`${skill} does not have skill data.`);
+    }
     calcData.wSkillls.filter(s => s.addedBy != weaponSlot);
     let skillLevel = teamData[weaponSlot + "Trans"] == "t5" ? "t5" : teamData[weaponSlot + "Uncap"];
     switch (skillLevel) {
@@ -765,7 +829,7 @@ function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
         element = omegaMods[boost];
         size = !skillName.split(" ")[2] ? "small" : skillName.split(" ")[2] == "II" ? "medium" : "big";
         skill = skillName.split(" ")[1].toLowerCase();
-        if (!skillData[skill]) { console.log(`${skill} does not have skill data.`); return; }
+        if (!skillData[skill]) { missingSkill(); return; }
         skill = skillData[skill];
         skill = [...skill[size][skillLevel]];
         skill = skill.map(stat => {
@@ -785,7 +849,7 @@ function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
         element = primalMods[boost].element;
         size = primalMods[boost].size;
         skill = skillName.split(" ")[1].toLowerCase();
-        if (!skillData[skill]) { console.log(`${skill} does not have skill data.`); return; }
+        if (!skillData[skill]) { missingSkill(); return; }
         skill = skillData[skill];
         skill = [...skill[size][skillLevel]];
         skill = skill.map(stat => {
