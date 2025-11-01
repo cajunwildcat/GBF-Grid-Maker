@@ -31,6 +31,8 @@ const uncapToArt = (uncap) => {
 }
 useTestData = false;
 window.onload = async (e) => {
+    setupStaticButtons();
+
     await fetch(useTestData ? "./test data/characters.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/characters.json", { next: 43200 })
         .then(function (response) { return response.json(); })
         .then((response) => characters = response);
@@ -287,20 +289,6 @@ function setupButtonSearch() {
         }
     });
 
-    document.querySelector("#export-button").onclick = () => {
-        document.querySelector("#import-export-text").value = wikiTemplateText();
-    }
-
-    document.querySelector("#import-button").onclick = () => {
-        importData(document.querySelector("#import-export-text").value);
-    }
-
-    document.querySelector("#import-export-text").onkeydown = (e) => {
-        if (e.key == "Escape") {
-            document.querySelector("#import-export-text").value = "";
-        }
-    }
-
     document.querySelectorAll(".filter-button").forEach(button => {
         let cat = button.parentElement.id.replace("-filters", "");
         if (button.dataset.filterEnabled == "true") {
@@ -335,9 +323,36 @@ function setupButtonSearch() {
             }
         };
     });
+    
+}
+
+function setupStaticButtons() {
+    document.querySelector("#export-button").onclick = () => {
+        document.querySelector("#import-export-text").value = wikiTemplateText();
+    }
+
+    document.querySelector("#import-button").onclick = () => {
+        importData(document.querySelector("#import-export-text").value);
+    }
+
+    document.querySelector("#import-export-text").onkeydown = (e) => {
+        if (e.key == "Escape") {
+            document.querySelector("#import-export-text").value = "";
+        }
+    }
+
     document.querySelector("#show-filters-button").onclick = e => {
-        e.target.textContent = e.target.textContent == "/\\"? "\\/" : "/\\";
-        document.querySelector("#filters").classList.toggle("filter-transition");
+            let collapsed = document.querySelector("#filters").classList.toggle("filter-transition");
+            e.target.textContent = collapsed? "\\/" : "/\\";
+    }
+
+    document.querySelector("#collapse-extra-grid-button").onclick = e => {
+        let collapsed = e.target.parentElement.classList.toggle("collapsed");
+        e.target.textContent = collapsed? "\\/" : "/\\";
+        localStorage.setItem("extra-collapsed", collapsed);
+    }
+    if (!JSON.parse(localStorage.getItem("extra-collapsed"))) { 
+        document.querySelector("#collapse-extra-grid-button").click();
     }
 }
 
@@ -682,7 +697,7 @@ function addWeaponSkills(button, weaponID) {
             skill = document.createElement("button");
             skill = addSelectableWeaponSkill(skill, "ultimaSkill2");
         }
-        else if (weapon.series === "ccw" && weapon["s2 icon"].includes("blank")) {
+        else if (weapon.series === "ccw" && weapon.skill2.icon.includes("blank")) {
             skill = document.createElement("button");
             skill = addSelectableWeaponSkill(skill, "ccwSkill2");
         }
