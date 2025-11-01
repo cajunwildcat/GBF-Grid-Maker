@@ -20,10 +20,16 @@ ul {
 }
 
 #team-spread {
-    width: 981px;
+    width: fit-content;
+    height: fit-content;
     margin-top: 5px;
-    height: 791px;
     margin-left: 10px;
+    display: grid;
+    grid-template: 
+        "a b" auto 
+        "c b" auto 
+        "d e" auto / 504px auto;
+    gap: 0 2px;
 }
 
 .ui-button {
@@ -102,6 +108,7 @@ ul {
 }
 
 .team-container {
+    grid-area: a;
     position: relative;
     width: 504px;
     height: 277px;
@@ -179,33 +186,58 @@ ul {
 }
 
 #weapon-grid {
+    grid-area: c;
     background-image: url("assets/weapons-grid-background.png");
-    background-size: 523px;
+    background-size: contain;
     position: relative;
-    top: -5px;
-    width: 523px;
-    height: 391px;
-    left: -10px;
+    top: -2px;
+    width: 508px;
+    height: 385px;
+    left: -2px;
 }
 
 #weapon-grid-extra {
+    grid-area: d;
     background-image: url("assets/extra-weapon-grid-background.png");
-    background-size: 514px;
+    background-size: 511px;
     position: relative;
-    top: -11px;
-    width: 514px;
-    left: -5px;
+    margin-top: -5px;
+    width: 511px;
+    left: -4px;
     height: 133px;
+    transition: height 0.5s, margin-top 0.5s;
 
-    >.w-grid-sub {
+    .overflow-wrapper {
+        overflow: hidden;
+        height: 100%;
+    }
+
+    .w-grid-sub {
+        position: relative;
+        width: fit-content;
         left: 152px;
         top: 8px;
         grid-column-gap: 11px;
         grid-template-rows: repeat(1, 1fr);
 
-        >.w>div {
+        .w>div {
             width: 105px;
             background-size: 105px 63px;
+        }
+    }
+
+    >#collapse-extra-grid-button {
+        position: absolute;
+        bottom: -18px;
+        left: 4px;
+        width: 100px;
+    }
+
+    &.collapsed {
+        height: 0;
+        margin-top: unset;
+        >.w-grid-sub>w {
+            height: 0;
         }
     }
 }
@@ -214,7 +246,7 @@ ul {
     background-image: url("assets/w-main-border.png");
     position: absolute;
     top: 15px;
-    left: 15px;
+    left: 7px;
     width: 138px;
     height: 305px;
 
@@ -238,7 +270,7 @@ ul {
 .w-grid-sub {
     position: absolute;
     top: 23px;
-    left: 160px;
+    left: 152px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
@@ -347,13 +379,13 @@ ul {
 }
 
 .summon-grid {
+    grid-area: b;
     background-image: url("assets/summon-grid-background.png");
     background-size: 470px 509px;
     width: 470px;
     height: 509px;
-    position: absolute;
-    top: 9px;
-    left: 521px;
+    position: relative;
+    top: -2px;
 
     .main-summon {
         position: absolute;
