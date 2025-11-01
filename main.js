@@ -349,11 +349,16 @@ function setupStaticButtons() {
     document.querySelector("#collapse-extra-grid-button").onclick = e => {
         let collapsed = e.target.parentElement.classList.toggle("collapsed");
         e.target.textContent = collapsed? "\\/" : "/\\";
-        localStorage.setItem("extra-collapsed", collapsed);
+        getSetLocalStorage("extra-collapsed", collapsed);
     }
-    if (!JSON.parse(localStorage.getItem("extra-collapsed"))) { 
+    if (!getSetLocalStorage("extra-collapsed")) { 
         document.querySelector("#collapse-extra-grid-button").click();
     }
+}
+
+function getSetLocalStorage(key, value = null) {
+    if (value === null) return JSON.parse(localStorage.getItem(key));
+    localStorage.setItem(key, JSON.stringify(value));
 }
 
 ///
@@ -521,6 +526,11 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
             }
             break;
         case 'weapons':
+            if (parseInt(button.id.replace("wp","")) >= 11) {
+                if (getSetLocalStorage("extra-collapsed")) {
+                    document.querySelector("#collapse-extra-grid-button").click();
+                }
+            }
             if (button.querySelector(".w-awakening")) {
                 delete teamData[button.querySelector(".w-awakening").id];
                 button.querySelector(".w-awakening").remove();
