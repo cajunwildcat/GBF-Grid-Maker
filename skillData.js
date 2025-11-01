@@ -19,6 +19,20 @@ const skillData = {
             15: [{ value: 4.2, statName: "ta", affects: "<element>" }, { value: 18, statName: "might", affects: "<element>" }]
         }
     },
+    "tempering": {
+        "small": {
+            10: [{value: 2.5, statName: "skillDmgCap", affects: "<element>"}, {value: 10000, statName: "skillDmgSupp", affects: "<element>"}],
+            15: [{value: 3.5, statName: "skillDmgCap", affects: "<element>"}, {value: 12500, statName: "skillDmgSupp", affects: "<element>"}]
+        },
+        "medium": {
+            10: [{value: 3.2, statName: "skillDmgCap", affects: "<element>"}, {value: 15000, statName: "skillDmgSupp", affects: "<element>"}],
+            15: [{value: 4.5, statName: "skillDmgCap", affects: "<element>"}, {value: 18000, statName: "skillDmgSupp", affects: "<element>"}]
+        },
+        "big": {
+            10: [{value: 4.0, statName: "skillDmgCap", affects: "<element>"}, {value: 20000, statName: "skillDmgSupp", affects: "<element>"}],
+            15: [{value: 5.5, statName: "skillDmgCap", affects: "<element>"}, {value: 25000, statName: "skillDmgSupp", affects: "<element>"}]
+        }
+    },
     "trium": {
         "small": {
             10: [{ value: 2.5, statName: "ta", affects: "<element>" }],
@@ -41,6 +55,31 @@ const skillData = {
         "massive": {
             10: [{ value: 10, statName: "ta", affects: "<element>" }],
             15: [{ value: 14, statName: "ta", affects: "<element>" }],
+        },
+    },
+    "verity": {
+        "small": {
+            10: [{ value: 2.0, statName: "crit", affects: "<element>" }],
+            15: [{ value: 3.0, statName: "crit", affects: "<element>" }],
+            20: [{ value: 4.0, statName: "crit", affects: "<element>" }]
+        },
+        "medium": {
+            10: [{ value: 5.0, statName: "crit", affects: "<element>" }],
+            15: [{ value: 6.5, statName: "crit", affects: "<element>" }],
+            20: [{ value: 7.5, statName: "crit", affects: "<element>" }],
+        },
+        "big": {
+            10: [{ value: 8.0, statName: "crit", affects: "<element>" }],
+            15: [{ value: 10.0, statName: "crit", affects: "<element>" }],
+            20: [{ value: 11.0, statName: "crit", affects: "<element>" }],
+        },
+        "big ii": {
+            10: [{ value: 10.0, statName: "crit", affects: "<element>" }],
+            15: [{ value: 12.0, statName: "crit", affects: "<element>" }],
+        },
+        "massive": {
+            10: [{ value: 16.0, statName: "crit", affects: "<element>" }],
+            15: [{ value: 20.0, statName: "crit", affects: "<element>" }],
         },
     },
     "Guiding Star's Splendor": [
