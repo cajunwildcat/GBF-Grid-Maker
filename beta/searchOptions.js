@@ -115,7 +115,6 @@ const draconicSkillOptions = {
     skill3: [
         { label: "Optimus Teluma", metatags: ["primal", "optimus"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_god_<element>_3.png" },
         { label: "Omega Teluma", metatags: ["magna", "omega"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_god_m_<element>_3.png" },
-
     ]
 }
 const minoOptions = [
@@ -132,7 +131,9 @@ const minoOptions = [
     { label: "Agastia Simulacrum", metatags: ["11", "agastia", "agatura"] },
     { label: "Dark Rapture Simulacrum", metatags: ["12", "faa", "blue"] },
     { label: "Chachazero", metatags: ["13", "chachazero", "evangeline"] },
-    { label: "Perfida", metatags: ["14", "ccw"] }
+    { label: "Perfida", metatags: ["14", "ccw"] },
+    { label: "Qilin Simulacrum", metatags: ["15"] },
+    { label: "Coco and Mimi", metatags: ["16", "cerberus", "cocomimi"] },
 ]
 const shieldOptions = [
     { label: "Round Shield", metatags: ["2001", "round shield", "round", "hp1"] },
@@ -161,5 +162,7 @@ const shieldOptions = [
     { label: "Eth Ldog Ldeysh", metatags: ["4016", "galleon", "eth ldog ldeysh"] },
     { label: "Eth Ckalb Ldeysh", metatags: ["4017", "fediel", "eth ckalb ldeysh"] },
     { label: "Moonhill", metatags: ["4018", "dias", "diaspora", "moonhill"] },
-    { label: "Shield of Tenets", metatags: ["4019", "subhl", "subbie", "tenets", "shield of tenets"] }
+    { label: "Shield of Tenets", metatags: ["4019", "subhl", "subbie", "tenets", "shield of tenets"] },
+    { label: "Shield of Tenets", metatags: ["4020", "world"] },
+    { label: "Shield of Tenets", metatags: ["4021", "anima animus", "aniani"] },
 ]
