@@ -7,7 +7,7 @@ let weaponTypes = { "sabre": 1, "dagger": 2, "spear": 3, "axe": 4, "staff": 5, "
 let worldHarps = [1040815000, 1040815100, 1040815200, 1040815300, 1040815400];
 let beastSummons = [2040376000, 2040377000, 2040378000, 2040379000]
 let teamData = {};
-let calcData = { wSkillls: [], chars: {}, auraBoosts: {} };
+let calcData = { wSkills: [], chars: {}, auraBoosts: {} };
 let characters, summons, weapons, abilities;
 let characterIDs = {}, summonIDs = {}, weaponIDs = {};
 let filters = {
@@ -432,7 +432,7 @@ function gridInputContextMenu(event, button = null) {
         button.querySelector(".class-gear").remove();
     }
 
-    calcData.wSkillls = calcData.wSkillls.filter(s => s.addedBy != button.id);
+    calcData.wSkills = calcData.wSkills.filter(s => s.addedBy != button.id);
     delete teamData[button.id];
     delete teamData[button.id + "Uncap"];
     delete teamData[button.id + "Trans"];
@@ -673,57 +673,36 @@ function addQuickSummonButton(button) {
     button.appendChild(qsButton);
 }
 
+function calcCharStats(charSlot) {
+    let char = calcData.chars[charSlot];
+    let stats = calcData.wSkills.filter(s=>char.tags.includes(s.affects) || s.affects == "all");
+    stats = stats.map(s => {return {...s}});
+    stats.forEach(s => {
+        if (!s.boostedBy) return;
+        s.value = s.value * (1 + calcData.wSkills.filter(m => m.aura == s.boostedBy).reduce((sum,cur) => sum+=cur.value,0))
+    });
+    stats = Object.values(stats.reduce((acc, obj) => {
+        const key = `${obj.frame || "noframe"}-${obj.statName}`;
+        if (!acc[key]) acc[key] = {value: obj.value, statName: obj.statName, frame: obj.frame};
+        else acc[key].value += obj.value;
+        return acc;
+    }, {}));
+    stats.forEach(s => {
+        if (s.frame !== "grid") return;
+        s.value = Math.min(s.value, gridSkillCaps[s.statName]);
+    });
+    console.log(stats);
+}
+
 function addSummonAuraCalc(summonSlot, summonID, uncap) {
+    calcData.wSkills = calcData.wSkills.filter(s => s.addedBy != summonSlot);
     if (summonSlot == "s-main" || summonSlot == "s-support") {
         if (uncap == 6) uncap = teamData[`${summonSlot}Trans`];
-        let aura;
-        let boosts = {
-            2040034000: ["Ironflame's"],
-            2040028000: ["Oceansoul's"],
-            2040027000: ["Lifetree's"],
-            2040020000: ["Stormwyrm's"],
-            2040047000: ["Knightcode's"],
-            2040046000: ["Mistfall's"],
-
-            2040094000: ["Fire's", "Hellfire's", "Inferno's"],
-            2040100000: ["Water's", "Tsunami's", "Hoarfrost's"],
-            2040084000: ["Earth's", "Mountain's", "Terra's"],
-            2040098000: ["Wind's", "Whirlwind's", "Ventosus's"],
-            2040080000: ["Light's", "Thunder's", "Zion's"],
-            2040090000: ["Dark's", "Hatred's", "Oblivion's"],
-        }[summonID];
-        if (boosts && ["Ironflame's", "Oceansoul's", "Lifetree's", "Stormwyrm's", "Knightcode's", "Mistfall's"].includes(boosts[0])) {
-            switch (uncap) {
-                case 0: aura = 0.5; break;
-                case 3: aura = 1; break;
-                case 4: aura = 1.2; break;
-                case 5: aura = 1.4; break;
-                case "t1": aura = 1.5; break;
-                case "t2": aura = 1.5; break;
-                case "t3": aura = 1.5; break;
-                case "t4": aura = 1.6; break;
-                case "t5": aura = 1.7; break;
-            }
-        }
-        else if (boosts && ["Fire's", "Water's", "Earth's", "Wind's", "Light's", "Dark's"].includes(boosts[0])) {
-            switch (uncap) {
-                case 0: aura = 0.8; break;
-                case 3: aura = 1.2; break;
-                case 4: aura = 1.4; break;
-                case 5: aura = 1.5; break;
-                case "t1": aura = 1.5; break;
-                case "t2": aura = 1.5; break;
-                case "t3": aura = 1.6; break;
-                case "t4": aura = 1.6; break;
-                case "t5": aura = 1.7; break;
-            }
-        }
-        else {
-            console.log("Unsupposed main summon aura");
-        }
-        boosts.forEach(b => {
-            if (!calcData.auraBoosts[b]) calcData.auraBoosts[summonSlot] = {aura, boosts}
+        let boosts = summonAuraData[summonID][uncap];
+        boosts = boosts.map(b => {
+            return {...b, addedBy: summonSlot, frame: "summon"}
         })
+        calcData.wSkills.push(...boosts);
     }
 }
 
@@ -731,6 +710,7 @@ function addWeaponSkills(button, weaponID, uncap) {
     let skills = button.parentElement.querySelector(".w-skills");
     let weapon = weapons[weaponID];
     while (skills.firstChild) skills.firstChild.remove();
+    calcData.wSkills = calcData.wSkills.filter(s => s.addedBy != button.id);
     if (weapon.skill1.name) {
         let skill;
         if (weapon.series === "ultima") {
@@ -809,19 +789,24 @@ function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
         weap.appendChild(warn);
         console.log(`${skill} does not have skill data.`);
     }
-    calcData.wSkillls.filter(s => s.addedBy != weaponSlot);
     let skillLevel = teamData[weaponSlot + "Trans"] == "t5" ? "t5" : teamData[weaponSlot + "Uncap"];
     switch (skillLevel) {
         case 3: skillLevel = 10; break;
         case 4: skillLevel = 15; break;
+        case "t1":
+        case "t2":
+        case "t3":
+        case "t4":
         case 5: skillLevel = 20; break;
         case "t5": skillLevel = 25; break;
     }
     let skillName = wSkillInfo.name;
     let size, boost, element, skill;
     //unboostable unique mods e.g. celestial weapons
-    if (Object.keys(skillData).includes(wSkillInfo.name)) {
-        calcData.wSkillls.push(...skillData[wSkillInfo.name]);
+    if (Object.keys(weaponSkillData).includes(wSkillInfo.name)) {
+        let skill = weaponSkillData[wSkillInfo.name];
+        skill = skill.map(stat => {return {...stat, addedBy: weaponSlot, frame: "grid"}})
+        calcData.wSkills.push(...skill);
     }
     //magna boostable mods
     else if (omegaMods[skillName.split(" ")[0]]) {
@@ -829,9 +814,10 @@ function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
         element = omegaMods[boost];
         size = !skillName.split(" ")[2] ? "small" : skillName.split(" ")[2] == "II" ? "medium" : "big";
         skill = skillName.split(" ")[1].toLowerCase();
-        if (!skillData[skill]) { missingSkill(); return; }
-        skill = skillData[skill];
-        skill = [...skill[size][skillLevel]];
+        if (!weaponSkillData[skill]) { missingSkill(); return; }
+        skill = weaponSkillData[skill];
+        try { skill = [...skill[size][skillLevel]];
+        } catch (e) { missingSkill(); return; }
         skill = skill.map(stat => {
             let statName = stat.statName;
             if (statName == "might" || statName == "stamina" || statName == "emnity") statName = "omega " + statName;
@@ -839,9 +825,9 @@ function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
             switch (stat.affects) {
                 case "<element>": affects = `element:${element}`; break;
             }
-            return { ...stat, statName: statName, affects, addedBy: weaponSlot, boostedBy: boost };
+            return { ...stat, statName: statName, affects, addedBy: weaponSlot, boostedBy: boost, frame: "grid"};
         });
-        calcData.wSkillls.push(...skill);
+        calcData.wSkills.push(...skill);
     }
     //primal boostable mods
     else if (primalMods[skillName.split(" ")[0]]) {
@@ -849,17 +835,17 @@ function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
         element = primalMods[boost].element;
         size = primalMods[boost].size;
         skill = skillName.split(" ")[1].toLowerCase();
-        if (!skillData[skill]) { missingSkill(); return; }
-        skill = skillData[skill];
+        if (!weaponSkillData[skill]) { missingSkill(); return; }
+        skill = weaponSkillData[skill];
         skill = [...skill[size][skillLevel]];
         skill = skill.map(stat => {
             let affects;
             switch (stat.affects) {
                 case "<element>": affects = `element:${element}`; break;
             }
-            return { ...stat, affects, addedBy: weaponSlot, boostedBy: boost };
+            return { ...stat, affects, addedBy: weaponSlot, boostedBy: boost, frame: "grid" };
         });
-        calcData.wSkillls.push(...skill);
+        calcData.wSkills.push(...skill);
     }
     //unboosted non-unique mod e.g. ancestral weapons, Crux
     else {
