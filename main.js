@@ -696,6 +696,7 @@ function calcCharStats(charSlot) {
 
 function addSummonAuraCalc(summonSlot, summonID, uncap) {
     calcData.wSkills = calcData.wSkills.filter(s => s.addedBy != summonSlot);
+    if (!summonAuraData[summonID]) return;
     if (summonSlot == "s-main" || summonSlot == "s-support") {
         if (uncap == 6) uncap = teamData[`${summonSlot}Trans`];
         let boosts = summonAuraData[summonID][uncap];
