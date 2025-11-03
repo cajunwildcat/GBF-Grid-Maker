@@ -438,7 +438,6 @@ function gridInputContextMenu(event, button = null) {
     delete teamData[button.id + "Trans"];
     delete teamData[button.id + "Awk"];
 
-    delete calcData.auraBoosts[button.id];
     if (button.dataset.itemId) button.dataset.itemId = "";
     hideDropdown();
 }
@@ -500,6 +499,7 @@ function updateActiveOption() {
 
 function setButtonToItem(button, optionSet, selectedOption, uncap = null, options = {}) {
     Object.keys(teamData)?.filter(key => key.includes(button.id)).forEach(key => delete teamData[key]);
+    calcData.wSkills = calcData.wSkills.filter(s => s.addedBy != button.id);
 
     let itemName = selectedOption.label;
     let id = selectedOption.metatags[0];
@@ -524,7 +524,7 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
         case 'characters':
             let char = characters[selectedOption.metatags[0]];
             calcData.chars[button.id] = {
-                tags: [`element:${char.element}`, ...char.weapon.map(w => `weapon:${w}`), ...char.race.map(r => `race:${r}`)]
+                tags: [`element:${char.element}`, ...char.weapon.map(w => `weapon:${w}`), ...char.race.map(r => `race:${r}`)].map(e=>e.toLowerCase())
             }
             break;
         case 'weapons':
@@ -675,21 +675,24 @@ function addQuickSummonButton(button) {
 
 function calcCharStats(charSlot) {
     let char = calcData.chars[charSlot];
-    let stats = calcData.wSkills.filter(s=>char.tags.includes(s.affects) || s.affects == "all");
-    stats = stats.map(s => {return {...s}});
+    let stats = calcData.wSkills.filter(s => char.tags.includes(s.affects) || s.affects == "all");
+    stats = stats.map(s => { return { ...s } });
     stats.forEach(s => {
         if (!s.boostedBy) return;
-        s.value = s.value * (1 + calcData.wSkills.filter(m => m.aura == s.boostedBy).reduce((sum,cur) => sum+=cur.value,0))
+        s.value = s.value * (1 + calcData.wSkills.filter(m => m.aura == s.boostedBy).reduce((sum, cur) => sum += cur.value, 0));
     });
     stats = Object.values(stats.reduce((acc, obj) => {
         const key = `${obj.frame || "noframe"}-${obj.statName}`;
-        if (!acc[key]) acc[key] = {value: obj.value, statName: obj.statName, frame: obj.frame};
+        if (!acc[key]) acc[key] = { value: obj.value, statName: obj.statName, frame: obj.frame };
         else acc[key].value += obj.value;
         return acc;
     }, {}));
     stats.forEach(s => {
         if (s.frame !== "grid") return;
-        s.value = Math.min(s.value, gridSkillCaps[s.statName]);
+        let overcap = s.value;
+        s.value = truncToDigit(Math.min(s.value, gridSkillCaps[s.statName].cap), 5);
+        overcap -= s.value;
+        //TODO: handle overcap
     });
     console.log(stats);
 }
@@ -701,7 +704,7 @@ function addSummonAuraCalc(summonSlot, summonID, uncap) {
         if (uncap == 6) uncap = teamData[`${summonSlot}Trans`];
         let boosts = summonAuraData[summonID][uncap];
         boosts = boosts.map(b => {
-            return {...b, addedBy: summonSlot, frame: "summon"}
+            return { ...b, addedBy: summonSlot, frame: "summon" }
         })
         calcData.wSkills.push(...boosts);
     }
@@ -803,22 +806,23 @@ function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
     }
     let skillName = wSkillInfo.name;
     let size, boost, element, skill;
-    //unboostable unique mods e.g. celestial weapons
+    //unboostable unique mods e.g. celestial weapons, exalto
     if (Object.keys(weaponSkillData).includes(wSkillInfo.name)) {
         let skill = weaponSkillData[wSkillInfo.name];
-        skill = skill.map(stat => {return {...stat, addedBy: weaponSlot, frame: "grid"}})
+        skill = skill.map(stat => { return { ...stat, addedBy: weaponSlot, frame: "grid" } })
         calcData.wSkills.push(...skill);
     }
     //magna boostable mods
     else if (omegaMods[skillName.split(" ")[0]]) {
         boost = skillName.split(" ")[0];
-        element = omegaMods[boost];
+        element = omegaMods[boost].toLowerCase();
         size = !skillName.split(" ")[2] ? "small" : skillName.split(" ")[2] == "II" ? "medium" : "big";
         skill = skillName.split(" ")[1].toLowerCase();
         if (!weaponSkillData[skill]) { missingSkill(); return; }
         skill = weaponSkillData[skill];
-        try { skill = [...skill[size][skillLevel]];
-        } catch (e) { missingSkill(); return; }
+        try {
+            skill = [...skill[`${size} omega`][skillLevel]];
+        } catch (e) { try { skill = [...skill[size][skillLevel]] } catch (e) { missingSkill(); return; } }
         skill = skill.map(stat => {
             let statName = stat.statName;
             if (statName == "might" || statName == "stamina" || statName == "emnity") statName = "omega " + statName;
@@ -826,14 +830,14 @@ function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
             switch (stat.affects) {
                 case "<element>": affects = `element:${element}`; break;
             }
-            return { ...stat, statName: statName, affects, addedBy: weaponSlot, boostedBy: boost, frame: "grid"};
+            return { ...stat, statName: statName, affects, addedBy: weaponSlot, boostedBy: boost, frame: "grid" };
         });
         calcData.wSkills.push(...skill);
     }
     //primal boostable mods
     else if (primalMods[skillName.split(" ")[0]]) {
         boost = skillName.split(" ")[0];
-        element = primalMods[boost].element;
+        element = primalMods[boost].element.toLowerCase();
         size = primalMods[boost].size;
         skill = skillName.split(" ")[1].toLowerCase();
         if (!weaponSkillData[skill]) { missingSkill(); return; }
@@ -1030,8 +1034,8 @@ function addAwakeningButton(button, id, iAwk) {
                 e.stopPropagation();
                 teamData[awkButton.id] = li.dataset.awk;
                 awkButton.style.backgroundImage = li.style.backgroundImage;
-                awkButton.querySelector("#awakening-dropdown")?.remove();
-                awkButton.onclick = openAwakeningDropdown;
+                closeAwakeningDropdown(e);
+                addAwakeningStats(button, weapons[id], li.dataset.awk);
             }
         });
         awkButton.appendChild(dropdown);
@@ -1044,8 +1048,39 @@ function addAwakeningButton(button, id, iAwk) {
     if (iAwk) {
         awkButton.style.backgroundImage = `url('assets/Awakening_${iAwk}.png')`;
         teamData[awkButton.id] = iAwk;
+        addAwakeningStats(button, weapons[id], iAwk)
     }
     button.appendChild(awkButton);
+}
+
+function addAwakeningStats(button, weapon, awk) {
+    calcData.wSkills = calcData.wSkills.filter(s=>s.addedBy != `${button.id}Awk`);
+    let stats;
+    switch (awk) {
+        case "attack":
+            switch (weapon.awakening) {
+                case "revansmkII": stats = [{ value: 35, statName: "might", affects: "<element>" }, { value: 15, statName: "ele atk", affects: "<element>" }, { value: 10, statName: "ex might", affects: "<element>" }]
+                    break;
+                default: break;
+            }
+            break;
+        case "defense": break;
+        case "special": break;
+        case "skill dmg":
+        case "skill": break;
+        case "ca": break;
+        case "healing": break;
+        case "multiattack": break;
+    }
+    if (!stats) return;
+    stats.forEach(s => {
+        s.addedBy = `${button.id}Awk`;
+        s.frame = "grid";
+        switch (s.affects) {
+            case "<element>": s.affects = `element:${weapon.element}`; break;
+        }
+    });
+    calcData.wSkills.push(...stats);
 }
 
 ///
