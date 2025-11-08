@@ -795,7 +795,7 @@ function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
     }
     let skillLevel = teamData[weaponSlot + "Trans"] == "t5" ? "t5" : teamData[weaponSlot + "Uncap"];
     switch (skillLevel) {
-        case 3: skillLevel = 10; break;
+        default: skillLevel = 10; break;
         case 4: skillLevel = 15; break;
         case "t1":
         case "t2":
