@@ -19,7 +19,8 @@ const gridSkillCaps = {
     "ta": { cap: 75, sortOrder: 12},
     "crit": { cap: 100, sortOrder: 13},
     "crit (sp)": { cap: 100, sortOrder: 14},
-    "counter": { cap: 20, sortOrder: 15},
+    "counter rate": { cap: 20, sortOrder: 15},
+    "counter dmg": { cap: Number.POSITIVE_INFINITY, sortOrder: 15},
     "fire optimus": { cap: 90, sortOrder: 16},
     "water optimus": { cap: 90, sortOrder: 17},
     "earth optimus": { cap: 90, sortOrder: 18},
@@ -42,6 +43,7 @@ const gridSkillCaps = {
     "heal cap": { cap: 100, sortOrder: 34},
     //blue
     "def": { cap: 400, sortOrder: 35},
+    "hit to def": { cap: Number.POSITIVE_INFINITY, sortOrder: 35},
     "debuff res": { cap: 30, sortOrder: 36},
     "fire reduction": { cap: 30, sortOrder: 37},
     "water reduction": { cap: 30, sortOrder: 38},
@@ -77,6 +79,7 @@ const gridSkillCaps = {
     "ca dmg amp (arc)": { cap: 20, sortOrder: 67},
     "na dmg amp (arc)": { cap: 15, sortOrder: 68},
     "skill dmg amp (arc)": { cap: 10, sortOrder: 69},
+    "dmg amp": { cap: Number.POSITIVE_INFINITY, sortOrder: 70}
 }
 const weaponSkillData = {
     "bloodshed": {
