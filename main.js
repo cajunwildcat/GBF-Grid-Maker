@@ -7,7 +7,7 @@ let weaponTypes = { "sabre": 1, "dagger": 2, "spear": 3, "axe": 4, "staff": 5, "
 let worldHarps = [1040815000, 1040815100, 1040815200, 1040815300, 1040815400];
 let beastSummons = [2040376000, 2040377000, 2040378000, 2040379000]
 let teamData = {};
-let calcData = { wSkillls: [], chars: {}, auraBoosts: {} };
+let calcData = { wSkills: [], chars: {}, auraBoosts: {} };
 let characters, summons, weapons, abilities;
 let characterIDs = {}, summonIDs = {}, weaponIDs = {};
 let filters = {
@@ -31,6 +31,8 @@ const uncapToArt = (uncap) => {
 }
 useTestData = false;
 window.onload = async (e) => {
+    setupStaticButtons();
+
     await fetch(useTestData ? "./test data/characters.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/characters.json", { next: 43200 })
         .then(function (response) { return response.json(); })
         .then((response) => characters = response);
@@ -287,20 +289,6 @@ function setupButtonSearch() {
         }
     });
 
-    document.querySelector("#export-button").onclick = () => {
-        document.querySelector("#import-export-text").value = wikiTemplateText();
-    }
-
-    document.querySelector("#import-button").onclick = () => {
-        importData(document.querySelector("#import-export-text").value);
-    }
-
-    document.querySelector("#import-export-text").onkeydown = (e) => {
-        if (e.key == "Escape") {
-            document.querySelector("#import-export-text").value = "";
-        }
-    }
-
     document.querySelectorAll(".filter-button").forEach(button => {
         let cat = button.parentElement.id.replace("-filters", "");
         if (button.dataset.filterEnabled == "true") {
@@ -335,10 +323,42 @@ function setupButtonSearch() {
             }
         };
     });
-    document.querySelector("#show-filters-button").onclick = e => {
-        e.target.textContent = e.target.textContent == "/\\"? "\\/" : "/\\";
-        document.querySelector("#filters").classList.toggle("filter-transition");
+
+}
+
+function setupStaticButtons() {
+    document.querySelector("#export-button").onclick = () => {
+        document.querySelector("#import-export-text").value = wikiTemplateText();
     }
+
+    document.querySelector("#import-button").onclick = () => {
+        importData(document.querySelector("#import-export-text").value);
+    }
+
+    document.querySelector("#import-export-text").onkeydown = (e) => {
+        if (e.key == "Escape") {
+            document.querySelector("#import-export-text").value = "";
+        }
+    }
+
+    document.querySelector("#show-filters-button").onclick = e => {
+        let collapsed = document.querySelector("#filters").classList.toggle("filter-transition");
+        e.target.textContent = collapsed ? "\\/" : "/\\";
+    }
+
+    document.querySelector("#collapse-extra-grid-button").onclick = e => {
+        let collapsed = e.target.parentElement.classList.toggle("collapsed");
+        e.target.textContent = collapsed ? "\\/" : "/\\";
+        getSetLocalStorage("extra-collapsed", collapsed);
+    }
+    if (!getSetLocalStorage("extra-collapsed")) {
+        document.querySelector("#collapse-extra-grid-button").click();
+    }
+}
+
+function getSetLocalStorage(key, value = null) {
+    if (value === null) return JSON.parse(localStorage.getItem(key));
+    localStorage.setItem(key, JSON.stringify(value));
 }
 
 ///
@@ -412,11 +432,12 @@ function gridInputContextMenu(event, button = null) {
         button.querySelector(".class-gear").remove();
     }
 
-    calcData.wSkillls = calcData.wSkillls.filter(s => s.addedBy != button.id);
+    calcData.wSkills = calcData.wSkills.filter(s => s.addedBy != button.id);
     delete teamData[button.id];
     delete teamData[button.id + "Uncap"];
     delete teamData[button.id + "Trans"];
     delete teamData[button.id + "Awk"];
+
     if (button.dataset.itemId) button.dataset.itemId = "";
     hideDropdown();
 }
@@ -478,6 +499,7 @@ function updateActiveOption() {
 
 function setButtonToItem(button, optionSet, selectedOption, uncap = null, options = {}) {
     Object.keys(teamData)?.filter(key => key.includes(button.id)).forEach(key => delete teamData[key]);
+    calcData.wSkills = calcData.wSkills.filter(s => s.addedBy != button.id);
 
     let itemName = selectedOption.label;
     let id = selectedOption.metatags[0];
@@ -502,20 +524,25 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
         case 'characters':
             let char = characters[selectedOption.metatags[0]];
             calcData.chars[button.id] = {
-                tags: [`element:${char.element}`, ...char.weapon.map(w => `weapon:${w}`), ...char.race.map(r => `race:${r}`)]
+                tags: [`element:${char.element}`, ...char.weapon.map(w => `weapon:${w}`), ...char.race.map(r => `race:${r}`)].map(e=>e.toLowerCase())
             }
             break;
         case 'weapons':
+            if (parseInt(button.id.replace("wp", "")) >= 11) {
+                if (getSetLocalStorage("extra-collapsed")) {
+                    document.querySelector("#collapse-extra-grid-button").click();
+                }
+            }
             if (button.querySelector(".w-awakening")) {
                 delete teamData[button.querySelector(".w-awakening").id];
                 button.querySelector(".w-awakening").remove();
             }
             if (weapons[id].awakening) addAwakeningButton(button, id, options.awk);
-            addWeaponSkills(button, id);
+            addWeaponSkills(button, id, uncap);
             break;
         case 'summons':
             if (!button.parentElement.classList.contains("team-summon")) addQuickSummonButton(button);
-            addSummonAuraCalc(button.id, id);
+            addSummonAuraCalc(button.id, id, uncap);
             break;
         case 'mino':
         case 'shield':
@@ -646,14 +673,48 @@ function addQuickSummonButton(button) {
     button.appendChild(qsButton);
 }
 
-function addSummonAuraCalc(summmonSlot, summonID) {
-
+function calcCharStats(charSlot) {
+    let char = calcData.chars[charSlot];
+    let stats = calcData.wSkills.filter(s => char.tags.includes(s.affects) || s.affects == "all");
+    stats = stats.map(s => { return { ...s } });
+    stats.forEach(s => {
+        if (!s.boostedBy) return;
+        s.value = s.value * (1 + calcData.wSkills.filter(m => m.aura == s.boostedBy).reduce((sum, cur) => sum += cur.value, 0));
+    });
+    stats = Object.values(stats.reduce((acc, obj) => {
+        const key = `${obj.frame || "noframe"}-${obj.statName}`;
+        if (!acc[key]) acc[key] = { value: obj.value, statName: obj.statName, frame: obj.frame };
+        else acc[key].value += obj.value;
+        return acc;
+    }, {}));
+    stats.forEach(s => {
+        if (s.frame !== "grid") return;
+        let overcap = s.value;
+        s.value = truncToDigit(Math.min(s.value, gridSkillCaps[s.statName].cap), 5);
+        overcap -= s.value;
+        //TODO: handle overcap
+    });
+    console.log(stats);
 }
 
-function addWeaponSkills(button, weaponID) {
+function addSummonAuraCalc(summonSlot, summonID, uncap) {
+    calcData.wSkills = calcData.wSkills.filter(s => s.addedBy != summonSlot);
+    if (!summonAuraData[summonID]) return;
+    if (summonSlot == "s-main" || summonSlot == "s-support") {
+        if (uncap == 6) uncap = teamData[`${summonSlot}Trans`];
+        let boosts = summonAuraData[summonID][uncap];
+        boosts = boosts.map(b => {
+            return { ...b, addedBy: summonSlot, frame: "summon" }
+        })
+        calcData.wSkills.push(...boosts);
+    }
+}
+
+function addWeaponSkills(button, weaponID, uncap) {
     let skills = button.parentElement.querySelector(".w-skills");
     let weapon = weapons[weaponID];
     while (skills.firstChild) skills.firstChild.remove();
+    calcData.wSkills = calcData.wSkills.filter(s => s.addedBy != button.id);
     if (weapon.skill1.name) {
         let skill;
         if (weapon.series === "ultima") {
@@ -663,6 +724,7 @@ function addWeaponSkills(button, weaponID) {
         }
         else {
             skill = document.createElement("img");
+            skill.title = weapon.skill1.name;
             skill.src = `https://gbf.wiki/thumb.php?f=${weapon.skill1.icon}&w=33`;
         }
         skills.appendChild(skill);
@@ -682,12 +744,13 @@ function addWeaponSkills(button, weaponID) {
             skill = document.createElement("button");
             skill = addSelectableWeaponSkill(skill, "ultimaSkill2");
         }
-        else if (weapon.series === "ccw" && weapon["s2 icon"].includes("blank")) {
+        else if (weapon.series === "ccw" && weapon.skill2.icon.includes("blank")) {
             skill = document.createElement("button");
             skill = addSelectableWeaponSkill(skill, "ccwSkill2");
         }
         else {
             skill = document.createElement("img");
+            skill.title = weapon.skill2.name;
             skill.src = `https://gbf.wiki/thumb.php?f=${weapon.skill2.icon}&w=33`;
         }
         skills.appendChild(skill);
@@ -711,6 +774,7 @@ function addWeaponSkills(button, weaponID) {
         }
         else {
             skill = document.createElement("img");
+            skill.title = weapon.skill3.name;
             skill.src = `https://gbf.wiki/thumb.php?f=${weapon.skill3.icon}&w=33`;
         }
         skills.appendChild(skill);
@@ -720,29 +784,45 @@ function addWeaponSkills(button, weaponID) {
 }
 
 function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
-    calcData.wSkillls.filter(s => s.addedBy != weaponSlot);
+    const missingSkill = () => {
+        let weap = document.querySelector(`#${weaponSlot}`);
+        let warn = document.createElement("img");
+        warn.src = "assets/warning.png";
+        warn.style = `width: 20px; height: 20px; position: absolute; top: 0px; right: 0px;`;
+        warn.title = "Skill data for one or more skill on this weapon is missing."
+        weap.appendChild(warn);
+        console.log(`${skill} does not have skill data.`);
+    }
     let skillLevel = teamData[weaponSlot + "Trans"] == "t5" ? "t5" : teamData[weaponSlot + "Uncap"];
     switch (skillLevel) {
-        case 3: skillLevel = 10; break;
+        default: skillLevel = 10; break;
         case 4: skillLevel = 15; break;
+        case "t1":
+        case "t2":
+        case "t3":
+        case "t4":
         case 5: skillLevel = 20; break;
         case "t5": skillLevel = 25; break;
     }
     let skillName = wSkillInfo.name;
     let size, boost, element, skill;
-    //unboostable unique mods e.g. celestial weapons
-    if (Object.keys(skillData).includes(wSkillInfo.name)) {
-        calcData.wSkillls.push(...skillData[wSkillInfo.name]);
+    //unboostable unique mods e.g. celestial weapons, exalto
+    if (Object.keys(weaponSkillData).includes(wSkillInfo.name)) {
+        let skill = weaponSkillData[wSkillInfo.name];
+        skill = skill.map(stat => { return { ...stat, addedBy: weaponSlot, frame: "grid" } })
+        calcData.wSkills.push(...skill);
     }
     //magna boostable mods
     else if (omegaMods[skillName.split(" ")[0]]) {
         boost = skillName.split(" ")[0];
-        element = omegaMods[boost];
+        element = omegaMods[boost].toLowerCase();
         size = !skillName.split(" ")[2] ? "small" : skillName.split(" ")[2] == "II" ? "medium" : "big";
         skill = skillName.split(" ")[1].toLowerCase();
-        if (!skillData[skill]) { console.log(`${skill} does not have skill data.`); return; }
-        skill = skillData[skill];
-        skill = [...skill[size][skillLevel]];
+        if (!weaponSkillData[skill]) { missingSkill(); return; }
+        skill = weaponSkillData[skill];
+        try {
+            skill = [...skill[`${size} omega`][skillLevel]];
+        } catch (e) { try { skill = [...skill[size][skillLevel]] } catch (e) { missingSkill(); return; } }
         skill = skill.map(stat => {
             let statName = stat.statName;
             if (statName == "might" || statName == "stamina" || statName == "emnity") statName = "omega " + statName;
@@ -750,27 +830,27 @@ function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
             switch (stat.affects) {
                 case "<element>": affects = `element:${element}`; break;
             }
-            return { ...stat, statName: statName, affects, addedBy: weaponSlot, boostedBy: boost };
+            return { ...stat, statName: statName, affects, addedBy: weaponSlot, boostedBy: boost, frame: "grid" };
         });
-        calcData.wSkillls.push(...skill);
+        calcData.wSkills.push(...skill);
     }
     //primal boostable mods
     else if (primalMods[skillName.split(" ")[0]]) {
         boost = skillName.split(" ")[0];
-        element = primalMods[boost].element;
+        element = primalMods[boost].element.toLowerCase();
         size = primalMods[boost].size;
         skill = skillName.split(" ")[1].toLowerCase();
-        if (!skillData[skill]) { console.log(`${skill} does not have skill data.`); return; }
-        skill = skillData[skill];
+        if (!weaponSkillData[skill]) { missingSkill(); return; }
+        skill = weaponSkillData[skill];
         skill = [...skill[size][skillLevel]];
         skill = skill.map(stat => {
             let affects;
             switch (stat.affects) {
                 case "<element>": affects = `element:${element}`; break;
             }
-            return { ...stat, affects, addedBy: weaponSlot, boostedBy: boost };
+            return { ...stat, affects, addedBy: weaponSlot, boostedBy: boost, frame: "grid" };
         });
-        calcData.wSkillls.push(...skill);
+        calcData.wSkills.push(...skill);
     }
     //unboosted non-unique mod e.g. ancestral weapons, Crux
     else {
@@ -954,8 +1034,8 @@ function addAwakeningButton(button, id, iAwk) {
                 e.stopPropagation();
                 teamData[awkButton.id] = li.dataset.awk;
                 awkButton.style.backgroundImage = li.style.backgroundImage;
-                awkButton.querySelector("#awakening-dropdown")?.remove();
-                awkButton.onclick = openAwakeningDropdown;
+                closeAwakeningDropdown(e);
+                addAwakeningStats(button, weapons[id], li.dataset.awk);
             }
         });
         awkButton.appendChild(dropdown);
@@ -968,8 +1048,39 @@ function addAwakeningButton(button, id, iAwk) {
     if (iAwk) {
         awkButton.style.backgroundImage = `url('assets/Awakening_${iAwk}.png')`;
         teamData[awkButton.id] = iAwk;
+        addAwakeningStats(button, weapons[id], iAwk)
     }
     button.appendChild(awkButton);
+}
+
+function addAwakeningStats(button, weapon, awk) {
+    calcData.wSkills = calcData.wSkills.filter(s=>s.addedBy != `${button.id}Awk`);
+    let stats;
+    switch (awk) {
+        case "attack":
+            switch (weapon.awakening) {
+                case "revansmkII": stats = [{ value: 35, statName: "might", affects: "<element>" }, { value: 15, statName: "ele atk", affects: "<element>" }, { value: 10, statName: "ex might", affects: "<element>" }]
+                    break;
+                default: break;
+            }
+            break;
+        case "defense": break;
+        case "special": break;
+        case "skill dmg":
+        case "skill": break;
+        case "ca": break;
+        case "healing": break;
+        case "multiattack": break;
+    }
+    if (!stats) return;
+    stats.forEach(s => {
+        s.addedBy = `${button.id}Awk`;
+        s.frame = "grid";
+        switch (s.affects) {
+            case "<element>": s.affects = `element:${weapon.element}`; break;
+        }
+    });
+    calcData.wSkills.push(...stats);
 }
 
 ///

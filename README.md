@@ -14,6 +14,12 @@ once the action is done it updates the branch after which the automatic github a
 
 # TODO:
 ## High Priority:
+- Pull class, mino, shield data from wiki
+ - GrandCypher update script needs to be updated
+ - Classes should be auto-filtered to row IV/V, EX II, and origin
+  - Other classes should exist for the purpose of importing, just not shown in search list
+ - Shorthand names for class equipment will have to be hard coded, but full name fallbacks should work automatically
+
 - Add aliases to `aliases.js` and `weights.js`
     - aliases should only be names that are not already part of the name
         - e.g. "Colo" is not an acceptable alias for "Colossus Omega" since it is already part of the name
@@ -21,9 +27,10 @@ once the action is done it updates the branch after which the automatic github a
 
 ## Medium Priority
 - Redesign filters
-    - save filter options to local storage
-    - style drawer button
-
-
+    - Save filter options to local storage
 
 - Grid stat calc
+ - Fill out skill data in `skillData.js`
+ - Match skills to applicable characters
+ - Apply aura boosts
+ - Re-calc weapon skills and summon auras when changing uncap
