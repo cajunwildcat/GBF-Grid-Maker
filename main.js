@@ -699,13 +699,16 @@ function calcCharStats(charSlot) {
 
 function addSummonAuraCalc(summonSlot, summonID, uncap) {
     calcData.wSkills = calcData.wSkills.filter(s => s.addedBy != summonSlot);
-    if (!summonAuraData[summonID]) return;
+    let summonAura = summonAuraData[summonID];
+    if (!summonAura) return;
     if (summonSlot == "s-main" || summonSlot == "s-support") {
+        summonAura = summonAura["main"];
+        if (!summonAura) { console.log(`There is no main/support aura data for ${summons[summonID].pageName}`); }
         if (uncap == 6) uncap = teamData[`${summonSlot}Trans`];
-        let boosts = summonAuraData[summonID][uncap];
+        let boosts = summonAura[uncap];
         boosts = boosts.map(b => {
-            return { ...b, addedBy: summonSlot, frame: "summon" }
-        })
+            return { ...b, addedBy: summonSlot, frame: "summon" };
+        });
         calcData.wSkills.push(...boosts);
     }
 }
@@ -809,7 +812,12 @@ function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
     //unboostable unique mods e.g. celestial weapons, exalto
     if (Object.keys(weaponSkillData).includes(wSkillInfo.name)) {
         let skill = weaponSkillData[wSkillInfo.name];
-        skill = skill.map(stat => { return { ...stat, addedBy: weaponSlot, frame: "grid" } })
+        if (Array.isArray(skill)) {
+            skill = skill.map(stat => { return { ...stat, addedBy: weaponSlot, frame: "grid" }; })
+        }
+        else {
+            skill = skill[skillLevel].map(stat => { return { ...stat, addedBy: weaponSlot, frame: "grid" }; })
+        }
         calcData.wSkills.push(...skill);
     }
     //magna boostable mods
