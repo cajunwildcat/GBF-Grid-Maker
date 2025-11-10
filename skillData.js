@@ -768,10 +768,82 @@ const summonAuraData = {
         }
     },
 
-    2040094000: ["Fire's", "Hellfire's", "Inferno's"],
-    2040100000: ["Water's", "Tsunami's", "Hoarfrost's"],
-    2040084000: ["Earth's", "Mountain's", "Terra's"],
-    2040098000: ["Wind's", "Whirlwind's", "Ventosus's"],
-    2040080000: ["Light's", "Thunder's", "Zion's"],
-    2040090000: ["Dark's", "Hatred's", "Oblivion's"],
+    2040094000: {
+        "main": {
+            0: [{ value: 0.8, aura: "Fire's" },{ value: 0.8, aura: "Hellfire's" },{ value: 0.8, aura: "Inferno's" }],
+            3: [{ value: 1.2, aura: "Fire's" },{ value: 1.2, aura: "Hellfire's" },{ value: 1.2, aura: "Inferno's" }],
+            4: [{ value: 1.4, aura: "Fire's" },{ value: 1.4, aura: "Hellfire's" },{ value: 1.4, aura: "Inferno's" }],
+            5: [{ value: 1.5, aura: "Fire's" },{ value: 1.5, aura: "Hellfire's" },{ value: 1.5, aura: "Inferno's" }],
+            "t1": [{ value: 1.5, aura: "Fire's" },{ value: 1.5, aura: "Hellfire's" },{ value: 1.5, aura: "Inferno's" }],
+            "t2": [{ value: 1.5, aura: "Fire's" },{ value: 1.5, aura: "Hellfire's" },{ value: 1.5, aura: "Inferno's" }],
+            "t3": [{ value: 1.6, aura: "Fire's" },{ value: 1.6, aura: "Hellfire's" },{ value: 1.6, aura: "Inferno's" }],
+            "t4": [{ value: 1.6, aura: "Fire's" },{ value: 1.6, aura: "Hellfire's" },{ value: 1.6, aura: "Inferno's" }],
+            "t5": [{ value: 1.7, aura: "Fire's" },{ value: 1.7, aura: "Hellfire's" },{ value: 1.7, aura: "Inferno's" }],
+        }
+    },
+    2040100000: {
+        "main": {
+            0: [{ value: 0.8, aura: "Water's" }, { value: 0.8, aura: "Tsunami's" }, { value: 0.8, aura: "Hoarfrost's" }],
+            3: [{ value: 1.2, aura: "Water's" }, { value: 1.2, aura: "Tsunami's" }, { value: 1.2, aura: "Hoarfrost's" }],
+            4: [{ value: 1.4, aura: "Water's" }, { value: 1.4, aura: "Tsunami's" }, { value: 1.4, aura: "Hoarfrost's" }],
+            5: [{ value: 1.5, aura: "Water's" }, { value: 1.5, aura: "Tsunami's" }, { value: 1.5, aura: "Hoarfrost's" }],
+            "t1": [{ value: 1.5, aura: "Water's" }, { value: 1.5, aura: "Tsunami's" }, { value: 1.5, aura: "Hoarfrost's" }],
+            "t2": [{ value: 1.5, aura: "Water's" }, { value: 1.5, aura: "Tsunami's" }, { value: 1.5, aura: "Hoarfrost's" }],
+            "t3": [{ value: 1.6, aura: "Water's" }, { value: 1.6, aura: "Tsunami's" }, { value: 1.6, aura: "Hoarfrost's" }],
+            "t4": [{ value: 1.6, aura: "Water's" }, { value: 1.6, aura: "Tsunami's" }, { value: 1.6, aura: "Hoarfrost's" }],
+            "t5": [{ value: 1.7, aura: "Water's" }, { value: 1.7, aura: "Tsunami's" }, { value: 1.7, aura: "Hoarfrost's" }],
+        }
+    },
+    2040084000: {
+        "main": {
+            0: [{ value: 0.8, aura: "Earth's" }, { value: 0.8, aura: "Mountain's" }, { value: 0.8, aura: "Terra's" }],
+            3: [{ value: 1.2, aura: "Earth's" }, { value: 1.2, aura: "Mountain's" }, { value: 1.2, aura: "Terra's" }],
+            4: [{ value: 1.4, aura: "Earth's" }, { value: 1.4, aura: "Mountain's" }, { value: 1.4, aura: "Terra's" }],
+            5: [{ value: 1.5, aura: "Earth's" }, { value: 1.5, aura: "Mountain's" }, { value: 1.5, aura: "Terra's" }],
+            "t1": [{ value: 1.5, aura: "Earth's" }, { value: 1.5, aura: "Mountain's" }, { value: 1.5, aura: "Terra's" }],
+            "t2": [{ value: 1.5, aura: "Earth's" }, { value: 1.5, aura: "Mountain's" }, { value: 1.5, aura: "Terra's" }],
+            "t3": [{ value: 1.6, aura: "Earth's" }, { value: 1.6, aura: "Mountain's" }, { value: 1.6, aura: "Terra's" }],
+            "t4": [{ value: 1.6, aura: "Earth's" }, { value: 1.6, aura: "Mountain's" }, { value: 1.6, aura: "Terra's" }],
+            "t5": [{ value: 1.7, aura: "Earth's" }, { value: 1.7, aura: "Mountain's" }, { value: 1.7, aura: "Terra's" }],
+        }
+    },
+    2040098000: {
+        "main": {
+            0: [{ value: 0.8, aura: "Wind's" }, { value: 0.8, aura: "Whirlwind's" }, { value: 0.8, aura: "Ventosus's" }],
+            3: [{ value: 1.2, aura: "Wind's" }, { value: 1.2, aura: "Whirlwind's" }, { value: 1.2, aura: "Ventosus's" }],
+            4: [{ value: 1.4, aura: "Wind's" }, { value: 1.4, aura: "Whirlwind's" }, { value: 1.4, aura: "Ventosus's" }],
+            5: [{ value: 1.5, aura: "Wind's" }, { value: 1.5, aura: "Whirlwind's" }, { value: 1.5, aura: "Ventosus's" }],
+            "t1": [{ value: 1.5, aura: "Wind's" }, { value: 1.5, aura: "Whirlwind's" }, { value: 1.5, aura: "Ventosus's" }],
+            "t2": [{ value: 1.5, aura: "Wind's" }, { value: 1.5, aura: "Whirlwind's" }, { value: 1.5, aura: "Ventosus's" }],
+            "t3": [{ value: 1.6, aura: "Wind's" }, { value: 1.6, aura: "Whirlwind's" }, { value: 1.6, aura: "Ventosus's" }],
+            "t4": [{ value: 1.6, aura: "Wind's" }, { value: 1.6, aura: "Whirlwind's" }, { value: 1.6, aura: "Ventosus's" }],
+            "t5": [{ value: 1.7, aura: "Wind's" }, { value: 1.7, aura: "Whirlwind's" }, { value: 1.7, aura: "Ventosus's" }],
+        }
+    },
+    2040080000: {
+        "main": {
+            0: [{ value: 0.8, aura: "Light's" }, { value: 0.8, aura: "Thunder's" }, { value: 0.8, aura: "Zion's" }],
+            3: [{ value: 1.2, aura: "Light's" }, { value: 1.2, aura: "Thunder's" }, { value: 1.2, aura: "Zion's" }],
+            4: [{ value: 1.4, aura: "Light's" }, { value: 1.4, aura: "Thunder's" }, { value: 1.4, aura: "Zion's" }],
+            5: [{ value: 1.5, aura: "Light's" }, { value: 1.5, aura: "Thunder's" }, { value: 1.5, aura: "Zion's" }],
+            "t1": [{ value: 1.5, aura: "Light's" }, { value: 1.5, aura: "Thunder's" }, { value: 1.5, aura: "Zion's" }],
+            "t2": [{ value: 1.5, aura: "Light's" }, { value: 1.5, aura: "Thunder's" }, { value: 1.5, aura: "Zion's" }],
+            "t3": [{ value: 1.6, aura: "Light's" }, { value: 1.6, aura: "Thunder's" }, { value: 1.6, aura: "Zion's" }],
+            "t4": [{ value: 1.6, aura: "Light's" }, { value: 1.6, aura: "Thunder's" }, { value: 1.6, aura: "Zion's" }],
+            "t5": [{ value: 1.7, aura: "Light's" }, { value: 1.7, aura: "Thunder's" }, { value: 1.7, aura: "Zion's" }],
+        }
+    },
+    2040090000: {
+        "main": {
+            0: [{ value: 0.8, aura: "Dark's" }, { value: 0.8, aura: "Hatred's" }, { value: 0.8, aura: "Oblivion's" }],
+            3: [{ value: 1.2, aura: "Dark's" }, { value: 1.2, aura: "Hatred's" }, { value: 1.2, aura: "Oblivion's" }],
+            4: [{ value: 1.4, aura: "Dark's" }, { value: 1.4, aura: "Hatred's" }, { value: 1.4, aura: "Oblivion's" }],
+            5: [{ value: 1.5, aura: "Dark's" }, { value: 1.5, aura: "Hatred's" }, { value: 1.5, aura: "Oblivion's" }],
+            "t1": [{ value: 1.5, aura: "Dark's" }, { value: 1.5, aura: "Hatred's" }, { value: 1.5, aura: "Oblivion's" }],
+            "t2": [{ value: 1.5, aura: "Dark's" }, { value: 1.5, aura: "Hatred's" }, { value: 1.5, aura: "Oblivion's" }],
+            "t3": [{ value: 1.6, aura: "Dark's" }, { value: 1.6, aura: "Hatred's" }, { value: 1.6, aura: "Oblivion's" }],
+            "t4": [{ value: 1.6, aura: "Dark's" }, { value: 1.6, aura: "Hatred's" }, { value: 1.6, aura: "Oblivion's" }],
+            "t5": [{ value: 1.7, aura: "Dark's" }, { value: 1.7, aura: "Hatred's" }, { value: 1.7, aura: "Oblivion's" }],
+        }
+    },
 }
