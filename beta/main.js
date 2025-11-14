@@ -690,6 +690,7 @@ function calcCharStats(charSlot) {
     stats.forEach(s => {
         if (s.frame !== "grid") return;
         let overcap = s.value;
+        if (s.statName == "hp") console.log(s.value);
         s.value = truncToDigit(Math.min(s.value, gridSkillCaps[s.statName].cap), 5);
         overcap -= s.value;
         //TODO: handle overcap
@@ -698,14 +699,18 @@ function calcCharStats(charSlot) {
 }
 
 function addSummonAuraCalc(summonSlot, summonID, uncap) {
+    return;
     calcData.wSkills = calcData.wSkills.filter(s => s.addedBy != summonSlot);
-    if (!summonAuraData[summonID]) return;
+    let summonAura = summonAuraData[summonID];
+    if (!summonAura) return;
     if (summonSlot == "s-main" || summonSlot == "s-support") {
+        summonAura = summonAura["main"];
+        if (!summonAura) { console.log(`There is no main/support aura data for ${summons[summonID].pageName}`); }
         if (uncap == 6) uncap = teamData[`${summonSlot}Trans`];
-        let boosts = summonAuraData[summonID][uncap];
+        let boosts = summonAura[uncap];
         boosts = boosts.map(b => {
-            return { ...b, addedBy: summonSlot, frame: "summon" }
-        })
+            return { ...b, addedBy: summonSlot, frame: "summon" };
+        });
         calcData.wSkills.push(...boosts);
     }
 }
@@ -783,7 +788,8 @@ function addWeaponSkills(button, weaponID, uncap) {
 
 }
 
-function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
+function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {   
+    return;
     const missingSkill = () => {
         let weap = document.querySelector(`#${weaponSlot}`);
         let warn = document.createElement("img");
@@ -793,7 +799,7 @@ function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
         weap.appendChild(warn);
         console.log(`${skill} does not have skill data.`);
     }
-    let skillLevel = teamData[weaponSlot + "Trans"] == "t5" ? "t5" : teamData[weaponSlot + "Uncap"];
+    let skillLevel = teamData[weaponSlot + "Trans"]? teamData[weaponSlot + "Trans"] : teamData[weaponSlot + "Uncap"];
     switch (skillLevel) {
         default: skillLevel = 10; break;
         case 4: skillLevel = 15; break;
@@ -809,7 +815,12 @@ function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
     //unboostable unique mods e.g. celestial weapons, exalto
     if (Object.keys(weaponSkillData).includes(wSkillInfo.name)) {
         let skill = weaponSkillData[wSkillInfo.name];
-        skill = skill.map(stat => { return { ...stat, addedBy: weaponSlot, frame: "grid" } })
+        if (Array.isArray(skill)) {
+            skill = skill.map(stat => { return { ...stat, addedBy: weaponSlot, frame: "grid" }; })
+        }
+        else {
+            skill = skill[skillLevel].map(stat => { return { ...stat, addedBy: weaponSlot, frame: "grid" }; })
+        }
         calcData.wSkills.push(...skill);
     }
     //magna boostable mods
