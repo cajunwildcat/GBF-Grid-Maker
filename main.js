@@ -85,16 +85,18 @@ window.onload = async (e) => {
         });
     }
     for (let id in summons) {
-        let name = summons[id].pageName;
+        let s = summons[id];
+        let name = s.pageName;
         summonIDs[name] = id;
 
         let weight = 0;
         if (weights[name]) weight = weights[name];
-        else if (summons[id].series == "omega") weight = 1;
-        else if (summons[id].series == "optimus") weight = 1;
-        else if (summons[id].series == "collab") weight = -1;
+        else if (s.series == "omega") weight = 1;
+        else if (s == "optimus") weight = 1;
+        else if (s== "collab") weight = -1;
 
         let metas = [id.toString()];
+        s.jpname ? metas.push(s.jpname) : null;
         if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id])) {
             metas.push(...alias);
         }
@@ -106,17 +108,18 @@ window.onload = async (e) => {
         });
     }
     for (let id in weapons) {
-        let weapon = weapons[id];
-        let name = weapon.pageName;
+        let w = weapons[id];
+        let name = w.pageName;
         weaponIDs[name] = id;
 
         let weight = 0;
         if (weights[name]) weight = weights[name];
-        else if (weapon.series == "dark opus") weight = 10;
-        else if (weapon.series == "collab") weight = -1;
+        else if (w.series == "dark opus") weight = 10;
+        else if (w.series == "collab") weight = -1;
 
         let metas = [id.toString()];
-        if (weapon.character) metas.push(`${weapon.character.split(" (")[0]} ${weapon.type}`);
+        w.jpname ? metas.push(w.jpname) : null;
+        if (w.character) metas.push(`${w.character.split(" (")[0]} ${w.type}`);
         if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id])) {
             metas.push(...alias);
         }
