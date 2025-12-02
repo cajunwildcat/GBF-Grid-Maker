@@ -117,6 +117,13 @@ const draconicSkillOptions = {
         { label: "Omega Teluma", metatags: ["magna", "omega"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_god_m_<element>_3.png" },
     ]
 }
+const destroyerSkillOptions = {
+    skill3: [
+        {label: "Anklet of Oblivion", metatags: ["auto", "na"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/19001.jpg" },
+        {label: "Anklet of Ascendance", metatags: ["skill"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/19002.jpg" },
+        {label: "Anklet of Maximality", metatags: ["ca", "ougi"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/19003.jpg" },
+    ]
+}
 const minoOptions = [
     { label: "Burlona", metatags: ["1", "burlona"] },
     { label: "Schalk", metatags: ["2", "schalk"] },
