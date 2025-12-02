@@ -330,10 +330,16 @@ ul {
     height: 30px;
     background-color: transparent;
     background-image: url("assets/Icon_Blue_Star_Full.png");
+    &[data-max-uncap="3"] {
+        background-image: url("assets/Icon_Yellow_Star_Full.png");
+    }
 }
 
 .uncap-toggle[data-toggled="false"] {
     background-image: url("assets/Icon_Blue_Star.png");
+    &[data-max-uncap="3"] {
+        background-image: url("assets/Icon_Yellow_Star.png");
+    }
 }
 
 .uncap-select {
