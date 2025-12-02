@@ -23,6 +23,7 @@ once the action is done it updates the branch after which the automatic github a
 - Add aliases to `aliases.js` and `weights.js`
     - aliases should only be names that are not already part of the name
         - e.g. "Colo" is not an acceptable alias for "Colossus Omega" since it is already part of the name
+- Enforce single weapon series restriction
 
 
 ## Medium Priority
