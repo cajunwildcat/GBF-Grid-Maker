@@ -80,24 +80,24 @@ const ccwSkillOptions = {
 }
 const ultimaSkillOptions = {
     skill1: [
-        { label: "Guaph Key of Will", metatags: ["atk", "will", "dominion"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_weapon_atk_<weapon type>.png" },
-        { label: "Guaph Key of Strife", metatags: ["ma", "strife", "parity"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_weapon_da_<weapon type>.png" },
-        { label: "Guaph Key of Vitality", metatags: ["hp", "vitality", "utopia"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_weapon_hp_<weapon type>.png" },
-        { label: "Guaph Key of Strength", metatags: ["stamina", "strength", "plenum"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_weapon_whole_<weapon type>.png" },
-        { label: "Guaph Key of Zeal", metatags: ["enmity", "zeal", "ultio"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_weapon_backwater_<weapon type>.png" },
-        { label: "Guaph Key of Courage", metatags: ["crit", "courage", "ars"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_weapon_tech_<weapon type>.png" },
+        { label: "Gauph Key of Will", metatags: ["atk", "will", "dominion"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_weapon_atk_<weapon type>.png" },
+        { label: "Gauph Key of Strife", metatags: ["ma", "strife", "parity"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_weapon_da_<weapon type>.png" },
+        { label: "Gauph Key of Vitality", metatags: ["hp", "vitality", "utopia"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_weapon_hp_<weapon type>.png" },
+        { label: "Gauph Key of Strength", metatags: ["stamina", "strength", "plenum"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_weapon_whole_<weapon type>.png" },
+        { label: "Gauph Key of Zeal", metatags: ["enmity", "zeal", "ultio"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_weapon_backwater_<weapon type>.png" },
+        { label: "Gauph Key of Courage", metatags: ["crit", "courage", "ars"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_weapon_tech_<weapon type>.png" },
     ],
     skill2: [
-        { label: "Guaph Key α", metatags: ["auto", "Guaph Key α", "normal", "alpha"], img: "https://gbf.wiki/images/thumb/f/f6/Ws_skill_normal_limit.png/50px-Ws_skill_normal_limit.png" },
-        { label: "Guaph Key β", metatags: ["skill", "Guaph Key β", "beta"], img: "https://gbf.wiki/images/thumb/6/60/Ws_skill_ability_limit.png/50px-Ws_skill_ability_limit.png" },
-        { label: "Guaph Key γ", metatags: ["ca", "Guaph Key γ", "gamma", "ougi", "charge attack"], img: "https://gbf.wiki/images/thumb/b/b7/Ws_skill_special_limit.png/50px-Ws_skill_special_limit.png" },
-        { label: "Guaph Key Δ", metatags: ["cb", "Guaph Key Δ", "delta", "chain burst"], img: "https://gbf.wiki/images/thumb/1/13/Ws_skill_chain_limit.png/50px-Ws_skill_chain_limit.png" },
+        { label: "Gauph Key α", metatags: ["auto", "Gauph Key α", "normal", "alpha"], img: "https://gbf.wiki/images/thumb/f/f6/Ws_skill_normal_limit.png/50px-Ws_skill_normal_limit.png" },
+        { label: "Gauph Key β", metatags: ["skill", "Gauph Key β", "beta"], img: "https://gbf.wiki/images/thumb/6/60/Ws_skill_ability_limit.png/50px-Ws_skill_ability_limit.png" },
+        { label: "Gauph Key γ", metatags: ["ca", "Gauph Key γ", "gamma", "ougi", "charge attack"], img: "https://gbf.wiki/images/thumb/b/b7/Ws_skill_special_limit.png/50px-Ws_skill_special_limit.png" },
+        { label: "Gauph Key Δ", metatags: ["cb", "Gauph Key Δ", "delta", "chain burst"], img: "https://gbf.wiki/images/thumb/1/13/Ws_skill_chain_limit.png/50px-Ws_skill_chain_limit.png" },
     ],
     skill3: [
-        { label: "Guaph Key Ena", metatags: ["cap", "ena", "fortis"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/17001.jpg" },
-        { label: "Guaph Key Dio", metatags: ["healing", "dio", "sanatio"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/17002.jpg" },
-        { label: "Guaph Key Tria", metatags: ["seraphic", "tria", "impetus"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/17003.jpg" },
-        { label: "Guaph Key Tessera", metatags: ["cbgain", "tessera", "elatio"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/17004.jpg" },
+        { label: "Gauph Key Ena", metatags: ["cap", "ena", "fortis"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/17001.jpg" },
+        { label: "Gauph Key Dio", metatags: ["healing", "dio", "sanatio"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/17002.jpg" },
+        { label: "Gauph Key Tria", metatags: ["seraphic", "tria", "impetus"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/17003.jpg" },
+        { label: "Gauph Key Tessera", metatags: ["cbgain", "tessera", "elatio"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/17004.jpg" },
     ]
 }
 const draconicSkillOptions = {
