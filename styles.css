@@ -185,7 +185,7 @@ ul {
     }
 }
 
-#weapon-container {
+#weapons-container {
     grid-area: c;
     width: fit-content;
     height: fit-content;
