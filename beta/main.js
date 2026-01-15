@@ -1255,7 +1255,7 @@ function calcCharStats(charSlot) {
 }
 
 function addSummonAuraCalc(summonSlot, summonID, uncap) {
-    return;
+    
     calcData.wSkills = calcData.wSkills.filter(s => s.addedBy != summonSlot);
     let summonAura = summonAuraData[summonID];
     if (!summonAura) return;
@@ -1272,7 +1272,7 @@ function addSummonAuraCalc(summonSlot, summonID, uncap) {
 }
 
 function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {   
-    return;
+    
     const missingSkill = () => {
         let weap = document.querySelector(`#${weaponSlot}`);
         let warn = document.createElement("img");
