@@ -97,7 +97,7 @@ window.onload = async (e) => {
 
         let metas = [id.toString()];
         s.jpname ? metas.push(s.jpname) : null;
-        if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id])) {
+        if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id] || aliases[name.split(' Omega')[0]])) {
             metas.push(...alias);
         }
 
@@ -866,7 +866,7 @@ function addUncapButton(button, optionSet, selectedOption, uncap, id) {
 }
 
 function addAwakeningButton(button, id, iAwk) {
-    if (iAwk) iAwk = iAwk.toLowerCase();
+    if (iAwk) iAwk = iAwk.toLowerCase().replaceAll(".","");
     id = parseInt(id);
     if (worldHarps.includes(id)) {
         let awkType;
@@ -905,6 +905,8 @@ function addAwakeningButton(button, id, iAwk) {
         case "grand": awks.push(weapons[id].awakeningType1.replaceAll(".", ""), weapons[id].awakeningType2.replaceAll(".", "")); break;
         //no special
         case "rowv": awks.push("attack", "defense"); break;
+        //atk skill ca
+        case "celestial": awks.push("attack", "skill", "ca"); break;
         //atk def special
         default: awks.push("attack", "defense", "special"); break;
     }
@@ -954,6 +956,7 @@ function addAwakeningButton(button, id, iAwk) {
 function addAwakeningStats(button, weapon, awk) {
     calcData.wSkills = calcData.wSkills.filter(s=>s.addedBy != `${button.id}Awk`);
     let stats;
+    awk = awk.replaceAll(".","");
     switch (awk) {
         case "attack":
             switch (weapon.awakening) {
