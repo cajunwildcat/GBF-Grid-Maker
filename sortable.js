@@ -35,6 +35,10 @@ function swapItems(e) {
     // Swap IDs
     draggedElement.id = swappedID;
     swappedElement.id = draggedID;
+    // Swap tabindex
+    let tempIndex = draggedElement.tabIndex;
+    draggedElement.tabIndex = swappedElement.tabIndex;
+    swappedElement.tabIndex = tempIndex;
 
     if (teamData[draggedID]) {
         const oldData = { ...teamData }

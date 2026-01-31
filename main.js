@@ -97,7 +97,7 @@ window.onload = async (e) => {
 
         let metas = [id.toString()];
         s.jpname ? metas.push(s.jpname) : null;
-        if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id])) {
+        if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id] || aliases[name.split(' Omega')[0]])) {
             metas.push(...alias);
         }
 
