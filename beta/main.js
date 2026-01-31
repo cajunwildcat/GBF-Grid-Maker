@@ -773,21 +773,16 @@ function addSelectableWeaponSkill(skill, optionSet) {
 
 function addUncapButton(button, optionSet, selectedOption, uncap, id) {
     let maxUncap;
-    let dopus = false;
     if (button.querySelector(".uncap")) button.querySelector(".uncap").remove();
     switch (optionSet) {
         case "characters": maxUncap = characters[id].maxUncap; break;
         case "summons": maxUncap = summons[id].maxUncap; break;
         case "weapons":
             maxUncap = weapons[id].maxUncap;
-            if (weapons[id].series == "dark opus") {
-                dopus = true;
-            }
             break;
     }
     if (uncap == null) {
-        if (dopus) uncap = 5;
-        else uncap = maxUncap;
+        uncap = maxUncap;
     }
     teamData[button.id + "Uncap"] = uncap;
     let uncapButton;
@@ -1115,11 +1110,12 @@ function getWeaponInfo(weaponSlot) {
 
 function getCharacterInfo(characterSlot) {
     let character = teamData[characterSlot];
+    if (!character) return "";
     let uncap = teamData[characterSlot + "Uncap"];
     let trans = teamData[characterSlot + "Trans"];
-    if (!character) return "";
     let art = uncapToArt(uncap)
-    return `${character}${art != "A" ? `|art${characterSlot.replace("char", "")}=${art}` : ""}${trans ? `|trans${characterSlot.replace("char", "")}=${trans.replace("t", "")}` : ""}`;
+    let slot = characterSlot.replace("char", "")
+    return `${character}${art != "A" ? `|art${slot}=${art}` : ""}${trans ? `|trans${slot}=${trans.replace("t", "")}` : ""}`;
 }
 
 function getSummonInfo(summonSlot) {
