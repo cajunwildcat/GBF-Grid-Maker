@@ -893,7 +893,7 @@ function addAwakeningButton(button, id, iAwk) {
                 awkButton.style.backgroundImage = `url(assets/Awakening_Empty.png)`;
             }
         }
-        if (iAwk) awkButton.click();
+        awkButton.click();
         button.appendChild(awkButton);
         return;
     }
