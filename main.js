@@ -29,7 +29,10 @@ const uncapToArt = (uncap) => {
         default: return "A";
     }
 }
+
 useTestData = false;
+enableCalcs = false;
+
 window.onload = async (e) => {
     setupStaticButtons();
 
@@ -1233,6 +1236,7 @@ function importData(data) {
 ///
 
 function calcCharStats(charSlot) {
+    if (!enableCalcs) return;
     let char = calcData.chars[charSlot];
     let stats = calcData.wSkills.filter(s => char.tags.includes(s.affects) || s.affects == "all");
     stats = stats.map(s => { return { ...s } });
@@ -1258,7 +1262,7 @@ function calcCharStats(charSlot) {
 }
 
 function addSummonAuraCalc(summonSlot, summonID, uncap) {
-    
+    if (!enableCalcs) return;
     calcData.wSkills = calcData.wSkills.filter(s => s.addedBy != summonSlot);
     let summonAura = summonAuraData[summonID];
     if (!summonAura) return;
@@ -1275,7 +1279,7 @@ function addSummonAuraCalc(summonSlot, summonID, uncap) {
 }
 
 function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {   
-    
+    if (!enableCalcs) return;
     const missingSkill = () => {
         let weap = document.querySelector(`#${weaponSlot}`);
         let warn = document.createElement("img");
