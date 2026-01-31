@@ -350,12 +350,12 @@ function setupStaticButtons() {
 
     document.querySelector("#show-filters-button").onclick = e => {
         let collapsed = document.querySelector("#filters").classList.toggle("filter-transition");
-        e.target.textContent = collapsed ? "\\/" : "/\\";
+        e.target.textContent = collapsed ? "↓ Hide Filters ↓" : "↑ Show Filters ↑";
     }
 
     document.querySelector("#collapse-extra-grid-button").onclick = e => {
         let collapsed = e.target.parentElement.classList.toggle("collapsed");
-        e.target.textContent = collapsed ? "\\/" : "/\\";
+        e.target.textContent = collapsed ? "↓ Show Extra Grid ↓" : "↑ Hide Extra Grid ↑";
         getSetLocalStorage("extra-collapsed", collapsed);
     }
     if (!getSetLocalStorage("extra-collapsed")) {
@@ -455,7 +455,7 @@ function showDropdown(event, options) {
     const { bottom, left } = button.getBoundingClientRect();
     dropdown.style.top = `${bottom + window.scrollY}px`;
     dropdown.style.left = `${left + window.scrollX}px`;
-    dropdown.style.display = 'block';
+    dropdown.style.display = 'flex';
 
     currentOptions = options;
     filteredOptions = options;
