@@ -49,10 +49,10 @@ const clOptions = [
 ];
 const opusSkillOptions = {
     skill2: [
-        { label: "α Revelation", metatags: ["auto", "α Revelation", "normal", "alpha"], img: "https://gbf.wiki/images/thumb/f/f6/Ws_skill_normal_limit.png/50px-Ws_skill_normal_limit.png" },
-        { label: "β Revelation", metatags: ["skill", "β Revelation", "beta"], img: "https://gbf.wiki/images/thumb/6/60/Ws_skill_ability_limit.png/50px-Ws_skill_ability_limit.png" },
-        { label: "γ Revelation", metatags: ["ca", "γ Revelation", "gamma", "ougi", "charge attack"], img: "https://gbf.wiki/images/thumb/b/b7/Ws_skill_special_limit.png/50px-Ws_skill_special_limit.png" },
-        { label: "Δ Revelation", metatags: ["cb", "Δ Revelation", "delta", "chain burst"], img: "https://gbf.wiki/images/thumb/1/13/Ws_skill_chain_limit.png/50px-Ws_skill_chain_limit.png" },
+        { label: "Auto", metatags: ["auto", "α Revelation", "normal", "alpha"], img: "https://gbf.wiki/images/thumb/f/f6/Ws_skill_normal_limit.png/50px-Ws_skill_normal_limit.png" },
+        { label: "Skill", metatags: ["skill", "β Revelation", "beta"], img: "https://gbf.wiki/images/thumb/6/60/Ws_skill_ability_limit.png/50px-Ws_skill_ability_limit.png" },
+        { label: "Charge Attack", metatags: ["ca", "γ Revelation", "gamma", "ougi", "charge attack"], img: "https://gbf.wiki/images/thumb/b/b7/Ws_skill_special_limit.png/50px-Ws_skill_special_limit.png" },
+        { label: "Chain Burst", metatags: ["cb", "Δ Revelation", "delta", "chain burst"], img: "https://gbf.wiki/images/thumb/1/13/Ws_skill_chain_limit.png/50px-Ws_skill_chain_limit.png" },
     ],
     skill3: [
         { label: "Stamina", metatags: ["stamina", "strength"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_whole_m_<element>_3.png" },
@@ -62,13 +62,13 @@ const opusSkillOptions = {
         { label: "Celere", metatags: ["celere", "temperament"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_moment_m_<element>.png" },
         { label: "Majesty", metatags: ["majesty", "restoration"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_god_m_<element>_2.png" },
         { label: "Glory", metatags: ["glory", "glorification"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_hero_m_<element>_3.png" },
-        { label: "Cunning Tempation", metatags: ["freyr", "temptation"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/14014.jpg" },
-        { label: "Forbidden Fruit", metatags: ["apple", "fruit", "forbiddance"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/14015.jpg" },
-        { label: "Wicked Conduct", metatags: ["conduct", "depravity"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/14016.jpg" },
-        { label: "Deceitful Fallacy", metatags: ["echo", "fallacy", "falsehood"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/14017.jpg" },
-        { label: "Divine Ruination", metatags: ["extremity", "ruination"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/14005.jpg" },
-        { label: "Divine Honing", metatags: ["sagacity", "honing"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/14006.jpg" },
-        { label: "Divine Fathoms", metatags: ["supremacy", "fathoms"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/14007.jpg" },
+        { label: "Tempation", metatags: ["freyr", "temptation", "cunning temptation"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/14014.jpg" },
+        { label: "Forbiddance", metatags: ["apple", "fruit", "forbidden fruit"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/14015.jpg" },
+        { label: "Depravity", metatags: ["conduct", "wicked conduct"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/14016.jpg" },
+        { label: "Falsehood", metatags: ["echo", "fallacy", "deceitful fallacy"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/14017.jpg" },
+        { label: "Extremity", metatags: ["ruination", "divine ruination"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/14005.jpg" },
+        { label: "Sagacity", metatags: ["honing", "divine honing"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/14006.jpg" },
+        { label: "Supremacy", metatags: ["fathoms", "divine fathoms"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/14007.jpg" },
     ]
 };
 const ccwSkillOptions = {
@@ -80,24 +80,24 @@ const ccwSkillOptions = {
 }
 const ultimaSkillOptions = {
     skill1: [
-        { label: "Gauph Key of Will", metatags: ["atk", "will", "dominion"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_weapon_atk_<weapon type>.png" },
-        { label: "Gauph Key of Strife", metatags: ["ma", "strife", "parity"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_weapon_da_<weapon type>.png" },
-        { label: "Gauph Key of Vitality", metatags: ["hp", "vitality", "utopia"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_weapon_hp_<weapon type>.png" },
-        { label: "Gauph Key of Strength", metatags: ["stamina", "strength", "plenum"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_weapon_whole_<weapon type>.png" },
-        { label: "Gauph Key of Zeal", metatags: ["enmity", "zeal", "ultio"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_weapon_backwater_<weapon type>.png" },
-        { label: "Gauph Key of Courage", metatags: ["crit", "courage", "ars"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_weapon_tech_<weapon type>.png" },
+        { label: "Will", metatags: ["atk", "will", "dominion"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_weapon_atk_<weapon type>.png" },
+        { label: "Strife", metatags: ["ma", "strife", "parity"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_weapon_da_<weapon type>.png" },
+        { label: "Vitality", metatags: ["hp", "vitality", "utopia"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_weapon_hp_<weapon type>.png" },
+        { label: "Strength", metatags: ["stamina", "strength", "plenum"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_weapon_whole_<weapon type>.png" },
+        { label: "Zeal", metatags: ["enmity", "zeal", "ultio"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_weapon_backwater_<weapon type>.png" },
+        { label: "Courage", metatags: ["crit", "courage", "ars"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_weapon_tech_<weapon type>.png" },
     ],
     skill2: [
-        { label: "Gauph Key α", metatags: ["auto", "Gauph Key α", "normal", "alpha"], img: "https://gbf.wiki/images/thumb/f/f6/Ws_skill_normal_limit.png/50px-Ws_skill_normal_limit.png" },
-        { label: "Gauph Key β", metatags: ["skill", "Gauph Key β", "beta"], img: "https://gbf.wiki/images/thumb/6/60/Ws_skill_ability_limit.png/50px-Ws_skill_ability_limit.png" },
-        { label: "Gauph Key γ", metatags: ["ca", "Gauph Key γ", "gamma", "ougi", "charge attack"], img: "https://gbf.wiki/images/thumb/b/b7/Ws_skill_special_limit.png/50px-Ws_skill_special_limit.png" },
-        { label: "Gauph Key Δ", metatags: ["cb", "Gauph Key Δ", "delta", "chain burst"], img: "https://gbf.wiki/images/thumb/1/13/Ws_skill_chain_limit.png/50px-Ws_skill_chain_limit.png" },
+        { label: "Atuo", metatags: ["auto", "Gauph Key α", "normal", "alpha"], img: "https://gbf.wiki/images/thumb/f/f6/Ws_skill_normal_limit.png/50px-Ws_skill_normal_limit.png" },
+        { label: "Skill", metatags: ["skill", "Gauph Key β", "beta"], img: "https://gbf.wiki/images/thumb/6/60/Ws_skill_ability_limit.png/50px-Ws_skill_ability_limit.png" },
+        { label: "Charge Attack", metatags: ["ca", "Gauph Key γ", "gamma", "ougi", "charge attack"], img: "https://gbf.wiki/images/thumb/b/b7/Ws_skill_special_limit.png/50px-Ws_skill_special_limit.png" },
+        { label: "Chain Burst", metatags: ["cb", "Gauph Key Δ", "delta", "chain burst"], img: "https://gbf.wiki/images/thumb/1/13/Ws_skill_chain_limit.png/50px-Ws_skill_chain_limit.png" },
     ],
     skill3: [
-        { label: "Gauph Key Ena", metatags: ["cap", "ena", "fortis"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/17001.jpg" },
-        { label: "Gauph Key Dio", metatags: ["healing", "dio", "sanatio"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/17002.jpg" },
-        { label: "Gauph Key Tria", metatags: ["seraphic", "tria", "impetus"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/17003.jpg" },
-        { label: "Gauph Key Tessera", metatags: ["cbgain", "tessera", "elatio"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/17004.jpg" },
+        { label: "Damage Cap", metatags: ["cap", "ena", "fortis"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/17001.jpg" },
+        { label: "Healing Cap", metatags: ["healing", "dio", "sanatio"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/17002.jpg" },
+        { label: "Seraphic", metatags: ["seraphic", "tria", "impetus"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/17003.jpg" },
+        { label: "Charge Bar Gain", metatags: ["cbgain", "tessera", "elatio"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/17004.jpg" },
     ]
 }
 const draconicSkillOptions = {
@@ -119,9 +119,9 @@ const draconicSkillOptions = {
 }
 const destroyerSkillOptions = {
     skill3: [
-        {label: "Anklet of Oblivion", metatags: ["auto", "na"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/19001.jpg" },
-        {label: "Anklet of Ascendance", metatags: ["skill"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/19002.jpg" },
-        {label: "Anklet of Maximality", metatags: ["ca", "ougi"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/19003.jpg" },
+        {label: "Auto", metatags: ["auto", "na", "oblivion"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/19001.jpg" },
+        {label: "Skill", metatags: ["skill", "ascendance"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/19002.jpg" },
+        {label: "Charge Attack", metatags: ["ca", "ougi", "maximality"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/item/skillplus/s/19003.jpg" },
     ]
 }
 const minoOptions = [
