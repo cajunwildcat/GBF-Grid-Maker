@@ -516,7 +516,7 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
     }
     button.dataset.itemId = id;
     if (["characters", "summons", "weapons"].includes(optionSet)) {
-        uncap = addUncapButton(button, optionSet, selectedOption, uncap, id);
+        uncap = addUncapButton(button, optionSet, selectedOption, uncap, id, options.trans);
     }
     setButtonBackground(button, selectedOption, optionSet, uncap, id);
     switch (optionSet) {
@@ -771,7 +771,7 @@ function addSelectableWeaponSkill(skill, optionSet) {
     return skill;
 }
 
-function addUncapButton(button, optionSet, selectedOption, uncap, id) {
+function addUncapButton(button, optionSet, selectedOption, uncap, id, trans) {
     let maxUncap;
     if (button.querySelector(".uncap")) button.querySelector(".uncap").remove();
     switch (optionSet) {
@@ -808,12 +808,12 @@ function addUncapButton(button, optionSet, selectedOption, uncap, id) {
         button.appendChild(uncapButton);
     }
     else if (maxUncap === 6) {
-        teamData[button.id + "Trans"] = uncap == 6 ? "t5" : uncap;
+        teamData[button.id + "Trans"] = trans? trans : uncap == 6 ? "t5" : null;
         teamData[button.id + "Uncap"] = uncap;
         uncapButton = document.createElement("button");
         uncapButton.classList.add("uncap-select");
         uncapButton.classList.add("uncap");
-        uncapButton.dataset.trans = uncap == 6 ? "t5" : uncap;
+        uncapButton.dataset.trans = trans? trans : uncap == 6 ? "t5" : null;
         uncapButton.title = "Select Uncap";
         uncapButton.onclick = openTransDropdown;
         function openTransDropdown(e) {
@@ -1171,7 +1171,7 @@ function importData(data) {
         let key = `char${i}`;
         if (!team[key]) continue;
         let value = team[key];
-        setGridData(key, value, { uncap: team[`trans${i}`] ? `t${team[`trans${i}`]}` : artToUncap(team[`art${i}`]) });
+        setGridData(key, value, { uncap: artToUncap(team[`art${i}`]), trans: team[`trans${i}`] ? `t${team[`trans${i}`]}` : null });
     }
     for (let i = 1; i <= 3; i++) {
         let key = `skill${i}`;
@@ -1182,12 +1182,12 @@ function importData(data) {
     //if (team.main) setGridData("s-main", team.main);
     if (team.support) setGridData("s-support", team.support);
 
-    if (weapons.mh) setGridData("mh", weapons.mh, { uncap: weapons.umh, awk: weapons.awkmh });
+    if (weapons.mh) setGridData("mh", weapons.mh, { uncap: weapons.umh, awk: weapons.awkmh, trans: weapons.umh });
     for (let i = 1; i <= 12; i++) {
         let key = `wp${i}`;
         if (!weapons[key]) continue;
         let value = weapons[key];
-        setGridData(key, value, { uncap: weapons[`u${i}`], awk: weapons[`awk${i}`] });
+        setGridData(key, value, { uncap: weapons[`u${i}`], awk: weapons[`awk${i}`], trans: weapons[`u${i}`] });
     }
     if (weapons.opus) setGridData("opusSkill2", weapons.opus.split(",")[0]);
     if (weapons.opus) setGridData("opusSkill3", weapons.opus.split(",")[1]);
