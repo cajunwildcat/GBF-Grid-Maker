@@ -533,6 +533,12 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
             calcData.chars[button.id] = {
                 tags: [`element:${char.element}`, ...char.weapon.map(w => `weapon:${w}`), ...char.race.map(r => `race:${r}`)].map(e=>e.toLowerCase())
             }
+
+            if (button.querySelector(".w-awakening")) {
+                delete teamData[button.querySelector(".w-awakening").id];
+                button.querySelector(".w-awakening").remove();
+            }
+            addAwakeningButton(button, id, options.awk);
             break;
         case 'weapons':
             if (parseInt(button.id.replace("wp", "")) >= 11) {
@@ -864,7 +870,15 @@ function addUncapButton(button, optionSet, selectedOption, uncap, id, trans) {
 }
 
 function addAwakeningButton(button, id, iAwk) {
-    if (iAwk) iAwk = iAwk.toLowerCase().replaceAll(".","");
+    if (iAwk) {
+        iAwk = iAwk.toLowerCase().replaceAll(".","");
+        switch (iAwk) {
+            case "skill dmg": iAwk = "skill"; break;
+            case "ma": iAwk = "multiattack"; break;
+            case "def": iAwk = "defense"; break;
+            case "atk": iAwk = "attack"; break;
+        }
+    }
     id = parseInt(id);
     if (worldHarps.includes(id)) {
         let awkType;
@@ -898,19 +912,28 @@ function addAwakeningButton(button, id, iAwk) {
         return;
     }
     let awks = ["empty"];
-    switch (weapons[id].awakening) {
-        //differnt per weapon
-        case "grand": awks.push(weapons[id].awakeningType1.replaceAll(".", ""), weapons[id].awakeningType2.replaceAll(".", "")); break;
-        //no special
-        case "rowv": awks.push("attack", "defense"); break;
-        //atk skill ca
-        case "celestial": awks.push("attack", "skill", "ca"); break;
-        //atk def special
-        default: awks.push("attack", "defense", "special"); break;
+    let awkType;
+    if (button.id.includes("char")) {
+        awks=["balanced", "attack", "defense", "multiattack"];
+        if (!iAwk) iAwk = "balanced";
+        awkType = "c";
+    }
+    else {
+        awkType = "w";
+        switch (weapons[id].awakening) {
+            //differnt per weapon
+            case "grand": awks.push(weapons[id].awakeningType1.replaceAll(".", ""), weapons[id].awakeningType2.replaceAll(".", "")); break;
+            //no special
+            case "rowv": awks.push("attack", "defense"); break;
+            //atk skill ca
+            case "celestial": awks.push("attack", "skill", "ca"); break;
+            //atk def special
+            default: awks.push("attack", "defense", "special"); break;
+        }
     }
     let awkButton = document.createElement("button");
-    awkButton.classList.add("w-awakening");
-    awkButton.classList.add("w-awakening-select");
+    awkButton.classList.add(`${awkType}-awakening`);
+    awkButton.classList.add(`${awkType}-awakening-select`);
     awkButton.id = button.id + "Awk";
     awkButton.title = "Select Awakening";
     awkButton.onclick = openAwakeningDropdown;
@@ -932,6 +955,7 @@ function addAwakeningButton(button, id, iAwk) {
                 e.stopPropagation();
                 teamData[awkButton.id] = li.dataset.awk;
                 awkButton.style.backgroundImage = li.style.backgroundImage;
+                awkButton.dataset.awk = li.dataset.awk;
                 closeAwakeningDropdown(e);
                 addAwakeningStats(button, weapons[id], li.dataset.awk);
             }
@@ -946,40 +970,10 @@ function addAwakeningButton(button, id, iAwk) {
     if (iAwk) {
         awkButton.style.backgroundImage = `url('assets/Awakening_${iAwk}.png')`;
         teamData[awkButton.id] = iAwk;
+        awkButton.dataset.awk = iAwk;
         addAwakeningStats(button, weapons[id], iAwk)
     }
     button.appendChild(awkButton);
-}
-
-function addAwakeningStats(button, weapon, awk) {
-    calcData.wSkills = calcData.wSkills.filter(s=>s.addedBy != `${button.id}Awk`);
-    let stats;
-    awk = awk.replaceAll(".","");
-    switch (awk) {
-        case "attack":
-            switch (weapon.awakening) {
-                case "revansmkII": stats = [{ value: 35, statName: "might", affects: "<element>" }, { value: 15, statName: "ele atk", affects: "<element>" }, { value: 10, statName: "ex might", affects: "<element>" }]
-                    break;
-                default: break;
-            }
-            break;
-        case "defense": break;
-        case "special": break;
-        case "skill dmg":
-        case "skill": break;
-        case "ca": break;
-        case "healing": break;
-        case "multiattack": break;
-    }
-    if (!stats) return;
-    stats.forEach(s => {
-        s.addedBy = `${button.id}Awk`;
-        s.frame = "grid";
-        switch (s.affects) {
-            case "<element>": s.affects = `element:${weapon.element}`; break;
-        }
-    });
-    calcData.wSkills.push(...stats);
 }
 
 ///
@@ -1113,9 +1107,10 @@ function getCharacterInfo(characterSlot) {
     if (!character) return "";
     let uncap = teamData[characterSlot + "Uncap"];
     let trans = teamData[characterSlot + "Trans"];
-    let art = uncapToArt(uncap)
-    let slot = characterSlot.replace("char", "")
-    return `${character}${art != "A" ? `|art${slot}=${art}` : ""}${trans ? `|trans${slot}=${trans.replace("t", "")}` : ""}`;
+    let art = uncapToArt(uncap);
+    let awk = teamData[characterSlot + "Awk"];
+    let slot = characterSlot.replace("char", "");
+    return `${character}${art != "A" ? `|art${slot}=${art}` : ""}${trans ? `|trans${slot}=${trans.replace("t", "")}` : ""}${awk != "balanced"? `|awk${slot}=${awk}` : ""}`;
 }
 
 function getSummonInfo(summonSlot) {
@@ -1171,7 +1166,7 @@ function importData(data) {
         let key = `char${i}`;
         if (!team[key]) continue;
         let value = team[key];
-        setGridData(key, value, { uncap: artToUncap(team[`art${i}`]), trans: team[`trans${i}`] ? `t${team[`trans${i}`]}` : null });
+        setGridData(key, value, { uncap: artToUncap(team[`art${i}`]), trans: team[`trans${i}`] ? `t${team[`trans${i}`]}` : null, awk: team[`awk${i}`] });
     }
     for (let i = 1; i <= 3; i++) {
         let key = `skill${i}`;
@@ -1354,4 +1349,37 @@ function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
         console.log("unboosted mod");
     }
     console.log(calcData)
+}
+
+function addAwakeningStats(button, weapon, awk) {
+    if (!enableCalcs) return;
+    //TODO: handle character awakening
+    calcData.wSkills = calcData.wSkills.filter(s=>s.addedBy != `${button.id}Awk`);
+    let stats;
+    awk = awk.replaceAll(".","");
+    switch (awk) {
+        case "attack":
+            switch (weapon.awakening) {
+                case "revansmkII": stats = [{ value: 35, statName: "might", affects: "<element>" }, { value: 15, statName: "ele atk", affects: "<element>" }, { value: 10, statName: "ex might", affects: "<element>" }]
+                    break;
+                default: break;
+            }
+            break;
+        case "defense": break;
+        case "special": break;
+        case "skill dmg":
+        case "skill": break;
+        case "ca": break;
+        case "healing": break;
+        case "multiattack": break;
+    }
+    if (!stats) return;
+    stats.forEach(s => {
+        s.addedBy = `${button.id}Awk`;
+        s.frame = "grid";
+        switch (s.affects) {
+            case "<element>": s.affects = `element:${weapon.element}`; break;
+        }
+    });
+    calcData.wSkills.push(...stats);
 }

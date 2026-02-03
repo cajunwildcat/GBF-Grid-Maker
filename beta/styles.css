@@ -467,6 +467,21 @@ ul {
     background-color: transparent;
 }
 
+.c-awakening {
+    width: 32px;
+    height: 32px;
+    position: absolute;
+    left: 0;
+    top: 1%;
+
+    background-image: url("assets/Awakening_empty.png");
+    background-color: transparent;
+
+    &[data-awk="balanced"] {
+        opacity: 0.5;
+    }
+}
+
 .quick-summon-toggle {
     background-image: url("assets/Icon_summon_quick.png");
     opacity: 0.5;
