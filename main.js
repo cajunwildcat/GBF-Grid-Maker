@@ -534,9 +534,9 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
                 tags: [`element:${char.element}`, ...char.weapon.map(w => `weapon:${w}`), ...char.race.map(r => `race:${r}`)].map(e=>e.toLowerCase())
             }
 
-            if (button.querySelector(".w-awakening")) {
-                delete teamData[button.querySelector(".w-awakening").id];
-                button.querySelector(".w-awakening").remove();
+            if (button.querySelector(".c-awakening")) {
+                delete teamData[button.querySelector(".c-awakening").id];
+                button.querySelector(".c-awakening").remove();
             }
             addAwakeningButton(button, id, options.awk);
             break;
