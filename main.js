@@ -335,11 +335,11 @@ function setupButtonSearch() {
 
 function setupStaticButtons() {
     document.querySelector("#export-button").onclick = () => {
-        document.querySelector("#import-export-text").value = wikiTemplateText();
+        document.querySelector("#import-export-text").value = generateWikiTemplate();
     }
 
     document.querySelector("#import-button").onclick = () => {
-        importData(document.querySelector("#import-export-text").value);
+        importWikiTextV2(document.querySelector("#import-export-text").value);
     }
 
     document.querySelector("#import-export-text").onkeydown = (e) => {
@@ -979,9 +979,8 @@ function addAwakeningButton(button, id, iAwk) {
 ///
 /// Export / Import
 ///
-function wikiTemplateText() {
-    return `{{TeamSpread
-|team={{Team
+function generateWikiTemplate() {
+return `{{TeamSpread
 |class=${getTeamData("mc")}${teamData.mino ? `|mino=${teamData.mino}` : ""}${teamData.shield ? `|shield=${teamData.shield}` : ""}
 |char1=${getCharacterInfo("char1")}
 |char2=${getCharacterInfo("char2")}
@@ -991,10 +990,7 @@ function wikiTemplateText() {
 |skill1=${getTeamData("skill1")}
 |skill2=${getTeamData("skill2")}
 |skill3=${getTeamData("skill3")}
-|main=${getTeamSummonInfo("s-main")}
-|support=${getTeamSummonInfo("s-support")}
-}}
-|weapons={{WeaponGridSkills
+
 |mh=${getWeaponInfo("mh")}
 |wp1=${getWeaponInfo("wp1")}
 |wp2=${getWeaponInfo("wp2")}
@@ -1012,9 +1008,9 @@ function wikiTemplateText() {
         }${getDraconicSkillInfo()
         }${getDestroyerSkillInfo()
         }${getCCWSkillInfo()}
-}}
-|summons={{SummonGrid
+
 |main=${getSummonInfo("s-main")}
+|support=${getSummonInfo("s-support")}
 |s1=${getSummonInfo("s1")}
 |s2=${getSummonInfo("s2")}
 |s3=${getSummonInfo("s3")}
@@ -1022,9 +1018,13 @@ function wikiTemplateText() {
 |sub1=${getSummonInfo("s-sub1")}
 |sub2=${getSummonInfo("s-sub2")}
 |quick=${teamData.quickSummon ? teamData.quickSummon : ""}
-}}
+
+|source=
+|comments=
+|rotation=
 }}`
 }
+
 function getTeamData(item) {
     return teamData[item] ? teamData[item] : "";
 }
@@ -1107,13 +1107,13 @@ function getCharacterInfo(characterSlot) {
     if (!character) return "";
     let uncap = teamData[characterSlot + "Uncap"];
     let trans = teamData[characterSlot + "Trans"];
-    let art = uncapToArt(uncap);
     let awk = teamData[characterSlot + "Awk"];
     let slot = characterSlot.replace("char", "");
-    return `${character}${art != "A" ? `|art${slot}=${art}` : ""}${trans ? `|trans${slot}=${trans.replace("t", "")}` : ""}${awk != "balanced"? `|awk${slot}=${awk}` : ""}`;
+    return `${character}${uncap > 4 || trans ? `|uchar${slot}=${trans? trans : uncap}` : ""}${awk != "balanced"? `|awkchar${slot}=${awk}` : ""}`;
 }
 
 function getSummonInfo(summonSlot) {
+    let slot = summonSlot.split("-").slice(-1)[0];
     let summon = teamData[summonSlot];
     let uncap = teamData[summonSlot + "Uncap"];
     let trans = teamData[summonSlot + "Trans"];
@@ -1121,94 +1121,82 @@ function getSummonInfo(summonSlot) {
     if (trans === "t5" || (uncap !== 6 && uncap === summons[summonIDs[summon]].maxUncap)) {
         return `${summon}`;
     }
-    return `${summon}|u${summonSlot.substring(1).replace("-", "")}=${trans ? trans : uncap}`;
+    return `${summon}|u${slot}=${trans ? trans : uncap}`;
 }
 
-function getTeamSummonInfo(summonSlot) {
-    let summon = teamData[summonSlot];
-    let uncap = teamData[summonSlot + "Uncap"];
-    let trans = teamData[summonSlot + "Trans"];
-    let slot = summonSlot.substring(2);
-    if (!summon) return "";
-    let art = uncap == 6 ? trans == "t5" ? "D" : "C" : uncap == 5 ? "B" : undefined;
-    return `${summon}${trans ? `|trans${slot}=${trans.replace("t", "")}` : ""}${art ? `|art${slot}=${art}` : ""}`;
-}
-
-
-function importData(data) {
+function importWikiTextV2(inputData) {
+    //use old importer for old format compatibility
+    if (inputData.includes("|team=")) {
+        importDataV1(inputData);
+        return;
+    }
+    //clear existing data
     document.querySelectorAll(".grid-input").forEach(button => {
         gridInputContextMenu(null, button);
     });
     teamData = {};
-    let team = {}, weapons = {}, summons = {};
-    data = data.replace("{{TeamSpread", "").replace(/(?:\r\n|\r|\n)/g, '');
-    data = data.split("}}").slice(0, -2);
-    let temp = data[0].replace("|team={{Team", "").split("|").slice(1);
-    temp.forEach(item => {
-        let [key, value] = item.split("=");
-        team[key] = value;
-    });
-    temp = data[1].replace("|weapons={{WeaponGridSkills", "").split("|").slice(1);
-    temp.forEach(item => {
-        let [key, value] = item.split("=");
-        weapons[key] = value;
-    });
-    temp = data[2].replace("|summons={{SummonGrid", "").split("|").slice(1);
-    temp.forEach(item => {
-        let [key, value] = item.split("=");
-        summons[key] = value;
-    });
-
-    if (team.class) setGridData("mc", team.class);
-    if (team.class == "Manadiver" && team.mino) setGridData("mino", team.mino);
-    if ((team.class == "Paladin" || team.class == "Shieldsworn") && team.shield) setGridData("shield", team.shield);
-    for (let i = 1; i <= 5; i++) {
-        let key = `char${i}`;
-        if (!team[key]) continue;
-        let value = team[key];
-        setGridData(key, value, { uncap: artToUncap(team[`art${i}`]), trans: team[`trans${i}`] ? `t${team[`trans${i}`]}` : null, awk: team[`awk${i}`] });
+    //strip input data into param
+    let data = {};
+    let temp = inputData.replace("{{TeamSpread", "").replace("}}","").replaceAll("\n","").replace("}}","").split("|").filter(r=>r!="");
+    for (let i = 0; i < temp.length; i++) {
+        let [key,value] = temp[i].split("=");
+        data[key] = value;
     }
+
+    if (data.class) setGridData("mc", data.class);
+    if (data.class == "Manadiver" && data.mino) setGridData("mino", data.mino);
+    if ((data.class == "Paladin" || data.class == "Shieldsworn") && data.shield) setGridData("shield", data.shield);
+    //characters
+    for (let i = 1; i <= 8; i++) {
+        let key = `char${i}`;
+        if (!data[key]) continue;
+        let value = data[key];
+        setGridData(key, value, { uncap: data[`uchar${i}`], awk: data[`awkchar${i}`], trans: data[`uchar${i}`] });
+    }
+    //skills
     for (let i = 1; i <= 3; i++) {
         let key = `skill${i}`;
-        if (!team[key]) continue;
-        let value = team[key];
+        if (!data[key]) continue;
+        let value = data[key];
         setGridData(key, value);
     }
-    //if (team.main) setGridData("s-main", team.main);
-    if (team.support) setGridData("s-support", team.support);
-
-    if (weapons.mh) setGridData("mh", weapons.mh, { uncap: weapons.umh, awk: weapons.awkmh, trans: weapons.umh });
+    //weapons
+    if (data.mh) setGridData("mh", data.mh, { uncap: data.umh, awk: data.awkmh, trans: data.umh });
     for (let i = 1; i <= 12; i++) {
         let key = `wp${i}`;
-        if (!weapons[key]) continue;
-        let value = weapons[key];
-        setGridData(key, value, { uncap: weapons[`u${i}`], awk: weapons[`awk${i}`], trans: weapons[`u${i}`] });
+        if (!data[key]) continue;
+        let value = data[key];
+        setGridData(key, value, { uncap: data[`u${i}`], awk: data[`awk${i}`], trans: data[`u${i}`] });
     }
-    if (weapons.opus) setGridData("opusSkill2", weapons.opus.split(",")[0]);
-    if (weapons.opus) setGridData("opusSkill3", weapons.opus.split(",")[1]);
-    if (weapons.ultima) setGridData("ultimaSkill1", weapons.ultima.split(",")[0]);
-    if (weapons.ultima) setGridData("ultimaSkill2", weapons.ultima.split(",")[1]);
-    if (weapons.ultima) setGridData("ultimaSkill3", weapons.ultima.split(",")[2]);
-    if (weapons.draconic) setGridData("draconicSkill2", weapons.draconic.split(",")[0]);
-    if (weapons.draconic) setGridData("draconicSkill3", weapons.draconic.split(",")[1]);
-    if (weapons.destroyer) setGridData("destroyerSkill3", weapons.destroyer, true);
-    if (weapons.ccw) setGridData("ccwSkill2", weapons.ccw, true);
-
-    if (summons.main) setGridData("s-main", summons.main, { uncap: summons[`umain`] });
+    //selectable weapon skills
+    if (data.opus) setGridData("opusSkill2", data.opus.split(",")[0]);
+    if (data.opus) setGridData("opusSkill3", data.opus.split(",")[1]);
+    if (data.ultima) setGridData("ultimaSkill1", data.ultima.split(",")[0]);
+    if (data.ultima) setGridData("ultimaSkill2", data.ultima.split(",")[1]);
+    if (data.ultima) setGridData("ultimaSkill3", data.ultima.split(",")[2]);
+    if (data.draconic) setGridData("draconicSkill2", data.draconic.split(",")[0]);
+    if (data.draconic) setGridData("draconicSkill3", data.draconic.split(",")[1]);
+    if (data.destroyer) setGridData("destroyerSkill3", data.destroyer, true);
+    if (data.ccw) setGridData("ccwSkill2", data.ccw, true);
+    //summons
+    if (data.main) setGridData("s-main", data.main, { uncap: summons[`umain`] });
+    if (data.main) setGridData("s-support", data.support, { uncap: summons[`usupport`] });
     for (let i = 1; i <= 4; i++) {
         let key = `s${i}`;
-        if (!summons[key]) continue;
-        let value = summons[key];
-        setGridData(key, value, { uncap: summons[`u${i}`] });
+        if (!data[key]) continue;
+        let value = data[key];
+        setGridData(key, value, { uncap: data[`u${key}`] });
     }
+    //subsummons
     for (let i = 1; i <= 2; i++) {
         let key = `sub${i}`;
-        if (!summons[key]) continue;
-        let value = summons[key];
-        setGridData(`s-sub${i}`, value, { uncap: summons[`u${key}`] });
+        if (!data[key]) continue;
+        let value = data[key];
+        setGridData(`s-sub${i}`, value, { uncap: data[`u${key}`] });
     }
-    if (summons["quick"]) document.querySelector(`.summon-grid div[id*="${summons["quick"]}"] .quick-summon-toggle`).click()
+    if (data["quick"]) document.querySelector(`.summon-grid div[id*="${data["quick"]}"] .quick-summon-toggle`).click()
 
+    //helper function to get correct item from optionSet
     function setGridData(key, value, options = {}) {
         let button = document.querySelector(`#${key}`);
         let optionSet = button.dataset.options;
@@ -1221,7 +1209,6 @@ function importData(data) {
         setButtonToItem(button, optionSet, selectedOption, options.uncap ? options.uncap : null, options);
     }
 }
-
 ///
 /// Stat Calcs
 ///
