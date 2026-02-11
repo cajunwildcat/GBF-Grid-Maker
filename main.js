@@ -1213,31 +1213,118 @@ function setGridData(key, value, options = {}) {
 }
 
 function exportURL() {
-    const jsonString = JSON.stringify(generateWikiTemplate());
-    const base64Encoded = btoa(jsonString);
+    let char = [], weap = [], summ = [];
+    for (let i = 1; i <= 8; i++) {
+        key = `char${i}`;
+        if (teamData[key]) {
+            let id = (characterIDs[teamData[key]] - 3000000000) / 1000;
+            char.push(decimalToBase62(id));
+            if (teamData[`${key}Trans`]) char.push(`.${teamData[`${key}Trans`]}`);
+            else if (teamData[`${key}Uncap`] > 4) char.push(`.${teamData[`${key}Uncap`]}`);
+            else char.push(".");
+            if (teamData[`${key}Awk`]) {
+                let awk = teamData[`${key}Awk`];
+                switch (awk) {
+                    case "balanced": awk = 0; break;
+                    case "attack": awk = 1; break;
+                    case "defense": awk = 2; break;
+                    case "multiattack": awk = 3; break;
+                }
+                if (awk > 0) char.push(`.${awk}`);
+            }
+        }
+        if (i < 8) char.push(",")
+    }
+    for (let i = 1; i <= 12; i++) {
+        let key = `wp${i}`;
+        if (teamData[key]) {
+            let id = (weaponIDs[teamData[key]].replace("_note","") - 1000000000) / 100;
+            weap.push(decimalToBase62(id));
+            if (teamData[`${key}Trans`] && teamData[`${key}Trans`] != "t5") weap.push(`.${teamData[`${key}Trans`]}`);
+            else if (teamData[`${key}Uncap`] !== weapons[weaponIDs[teamData[key]]].maxUncap) weap.push(`.${teamData[`${key}Uncap`]}`);
+            else weap.push(".");
+            if (teamData[`${key}Awk`]) {
+                let awk = teamData[`${key}Awk`];
+                switch (awk) {
+                    case "attack": awk = 1; break;
+                    case "defense": awk = 2; break;
+                    case "special": awk = 3; break;
+                    case "skill": awk = 4; break;
+                    case "ca": awk = 5; break;
+                    case "healing": awk = 6; break;
+                }
+                if (awk) weap.push(`.${awk}`);
+            }
+        }
+        if (i < 12) weap.push(",")
+    }
+    for (let i = 1; i <= 8; i++) {
+        let key;
+        if (i < 5) key = `s${i}`;
+        else if (i < 7) key = `s-sub${i-4}`;
+        else if (i == 7) key = `s-main`;
+        else if (i == 8) key = `s-support`;
+        if (teamData[key]) {
+            let id = (summonIDs[teamData[key]] - 2000000000) / 1000;
+            summ.push(decimalToBase62(id));
+            if (teamData[`${key}Trans`] && teamData[`${key}Trans`] != "t5") summ.push(`.${teamData[`${key}Trans`]}`);
+            else if (teamData[`${key}Uncap`] !== summons[summonIDs[teamData[key]]].maxUncap) summ.push(`.${teamData[`${key}Uncap`]}`);
+        }
+        if (i < 8) summ.push(",");
+    }
 
-    const currentUrl = window.location.origin + window.location.pathname;
-    const base64Url = `${currentUrl}?d=${encodeURIComponent(base64Encoded)}`;
-
-    console.log('Export URL:', base64Url);
-
-    return base64Url;
+    return window.location.origin + `?c=${char.join("")}&w=${weap.join("")}&s=${summ.join("")}`;
 }
 
 function importURL() {
+    //clear existing data
+    document.querySelectorAll(".grid-input").forEach(button => {
+        gridInputContextMenu(null, button);
+    });
+    teamData = {};
+
     const params = new URLSearchParams(window.location.search);
-    const encodedData = params.get('d');
+    if (params.size == 0) return;
 
-    if (!encodedData) return; // No query string
-
-    let jsonString;
-    try {
-        jsonString = atob(encodedData).replaceAll(`\\n`,"");
-    } catch (e) {
-        console.error('Failed to decode setup data:', e);
-        return;
+    const charData = params.get('c').split(",");
+    for (let i = 0; i < charData.length; i++) {
+        if (charData[i] == "") continue;
+        let [id, uncap, awk] = charData[i].split(".");
+        id = base62ToDecimal(id) * 1000 + 3000000000;
+        switch (awk) {
+            case "1": awk = "attack"; break;
+            case "2": awk = "defense"; break;
+            case "3": awk = "multiattack"; break;
+        }
+        setGridData(`char${i+1}`, characters[id].pageName, {uncap: uncap, awk: awk, trans: uncap});
     }
-    importWikiTextV2(jsonString);
+    
+    const weapData = params.get('w').split(",");
+    for (let i = 0; i < weapData.length; i++) {
+        if (weapData[i] == "") continue;
+        let [id, uncap, awk] = weapData[i].split(".");
+        id = base62ToDecimal(id) * 100 + 1000000000;
+        switch(awk) {
+            case "1": awk = "attack"; break;
+            case "2": awk = "defense"; break;
+            case "3": awk = "special"; break;
+            case "4": awk = "skill"; break;
+            case "5": awk = "ca"; break;
+            case "6": awk = "healing"; break;
+        }
+        setGridData(`wp${i+1}`, weapons[id].pageName, {uncap: uncap, awk: awk, trans: uncap});
+    }
+
+    const summData = params.get('s').split(",");
+    const summonSlots = ["s1", "s2", "s3", "s4", "s-sub1", "s-sub2", "s-main", "s-support"];    
+    for (let i = 0; i < summData.length && i < summonSlots.length; i++) {
+        if (summData[i] == "") continue;
+        let [id, uncap] = summData[i].split(".");
+        id = base62ToDecimal(id) * 1000 + 2000000000;
+        
+        setGridData(summonSlots[i], summons[id].pageName, {uncap: uncap, trans: uncap});
+    }
+    
 }
 
 // Call on page load after data is fetched
