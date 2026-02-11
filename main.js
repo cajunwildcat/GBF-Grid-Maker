@@ -1327,9 +1327,6 @@ function importURL() {
     
 }
 
-// Call on page load after data is fetched
-// Add this to your window.onload function after the data fetches:
-// importSetup();
 ///
 /// Stat Calcs
 ///
