@@ -158,7 +158,9 @@ window.onload = async (e) => {
     InitSummonsContainer();
 
     // Make weapon grid elements draggable
-    InitWeaponsContainer()
+    InitWeaponsContainer();
+
+    importURL();
 };
 
 const optionSets = {
@@ -1194,21 +1196,53 @@ function importWikiTextV2(inputData) {
         let value = data[key];
         setGridData(`s-sub${i}`, value, { uncap: data[`u${key}`] });
     }
-    if (data["quick"]) document.querySelector(`.summon-grid div[id*="${data["quick"]}"] .quick-summon-toggle`).click()
-
-    //helper function to get correct item from optionSet
-    function setGridData(key, value, options = {}) {
-        let button = document.querySelector(`#${key}`);
-        let optionSet = button.dataset.options;
-        let selectedOption;
-        selectedOption = optionSets[optionSet].find(option => option.label == value);
-        if (selectedOption == null) {
-            selectedOption = optionSets[optionSet].find(option => option.metatags.includes(value.toLowerCase()));
-        }
-        if (!selectedOption) alert(`There was an issue reading the value for ${key}. Please double check it is spelled and capitalized correctly.`)
-        setButtonToItem(button, optionSet, selectedOption, options.uncap ? options.uncap : null, options);
-    }
+    if (data["quick"]) document.querySelector(`.summon-grid div[id*="${data["quick"]}"] .quick-summon-toggle`).click();
 }
+
+//helper function to get correct item from optionSet
+function setGridData(key, value, options = {}) {
+    let button = document.querySelector(`#${key}`);
+    let optionSet = button.dataset.options;
+    let selectedOption;
+    selectedOption = optionSets[optionSet].find(option => option.label == value);
+    if (selectedOption == null) {
+        selectedOption = optionSets[optionSet].find(option => option.metatags.includes(value.toLowerCase()));
+    }
+    if (!selectedOption) alert(`There was an issue reading the value for ${key}. Please double check it is spelled and capitalized correctly.`)
+    setButtonToItem(button, optionSet, selectedOption, options.uncap ? options.uncap : null, options);
+}
+
+function exportURL() {
+    const jsonString = JSON.stringify(generateWikiTemplate());
+    const base64Encoded = btoa(jsonString);
+
+    const currentUrl = window.location.origin + window.location.pathname;
+    const base64Url = `${currentUrl}?d=${encodeURIComponent(base64Encoded)}`;
+
+    console.log('Export URL:', base64Url);
+
+    return base64Url;
+}
+
+function importURL() {
+    const params = new URLSearchParams(window.location.search);
+    const encodedData = params.get('d');
+
+    if (!encodedData) return; // No query string
+
+    let jsonString;
+    try {
+        jsonString = atob(encodedData).replaceAll(`\\n`,"");
+    } catch (e) {
+        console.error('Failed to decode setup data:', e);
+        return;
+    }
+    importWikiTextV2(jsonString);
+}
+
+// Call on page load after data is fetched
+// Add this to your window.onload function after the data fetches:
+// importSetup();
 ///
 /// Stat Calcs
 ///
