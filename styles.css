@@ -212,7 +212,6 @@ ul {
     transition: height 0.5s, margin-top 0.5s;
 
     .overflow-wrapper {
-        overflow: hidden;
         height: 100%;
     }
 
@@ -234,7 +233,7 @@ ul {
         position: absolute;
         bottom: -18px;
         left: 4px;
-        width: 100px;
+        width: 150px;
     }
 
     &.collapsed {
@@ -242,6 +241,10 @@ ul {
         margin-top: unset;
         >.w-grid-sub>w {
             height: 0;
+        }
+        >.overflow-wrapper {
+            transition: overflow 0.5s ease 0.5s;
+            overflow: hidden;
         }
     }
 }
@@ -464,6 +467,21 @@ ul {
     background-color: transparent;
 }
 
+.c-awakening {
+    width: 32px;
+    height: 32px;
+    position: absolute;
+    left: 0;
+    top: 1%;
+
+    background-image: url("assets/Awakening_empty.png");
+    background-color: transparent;
+
+    &[data-awk="balanced"] {
+        opacity: 0.5;
+    }
+}
+
 .quick-summon-toggle {
     background-image: url("assets/Icon_summon_quick.png");
     opacity: 0.5;
@@ -504,8 +522,8 @@ ul {
     background-color: white;
     z-index: 10;
     display: none;
-    overflow: scroll;
-    max-height: 400px;
+    overflow: clip;
+    flex-direction: column;
 }
 
 .dropdown input {
@@ -518,6 +536,8 @@ ul {
     list-style: none;
     margin: 0;
     padding: 0;
+    overflow-y: scroll;
+    max-height: 370px;
 }
 
 .dropdown li {

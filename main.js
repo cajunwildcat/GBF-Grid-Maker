@@ -29,7 +29,10 @@ const uncapToArt = (uncap) => {
         default: return "A";
     }
 }
+
 useTestData = false;
+enableCalcs = false;
+
 window.onload = async (e) => {
     setupStaticButtons();
 
@@ -97,7 +100,7 @@ window.onload = async (e) => {
 
         let metas = [id.toString()];
         s.jpname ? metas.push(s.jpname) : null;
-        if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id])) {
+        if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id] || aliases[name.split(' Omega')[0]])) {
             metas.push(...alias);
         }
 
@@ -332,11 +335,11 @@ function setupButtonSearch() {
 
 function setupStaticButtons() {
     document.querySelector("#export-button").onclick = () => {
-        document.querySelector("#import-export-text").value = wikiTemplateText();
+        document.querySelector("#import-export-text").value = generateWikiTemplate();
     }
 
     document.querySelector("#import-button").onclick = () => {
-        importData(document.querySelector("#import-export-text").value);
+        importWikiTextV2(document.querySelector("#import-export-text").value);
     }
 
     document.querySelector("#import-export-text").onkeydown = (e) => {
@@ -347,12 +350,12 @@ function setupStaticButtons() {
 
     document.querySelector("#show-filters-button").onclick = e => {
         let collapsed = document.querySelector("#filters").classList.toggle("filter-transition");
-        e.target.textContent = collapsed ? "\\/" : "/\\";
+        e.target.textContent = collapsed ? "↓ Hide Filters ↓" : "↑ Show Filters ↑";
     }
 
     document.querySelector("#collapse-extra-grid-button").onclick = e => {
         let collapsed = e.target.parentElement.classList.toggle("collapsed");
-        e.target.textContent = collapsed ? "\\/" : "/\\";
+        e.target.textContent = collapsed ? "↓ Show Extra Grid ↓" : "↑ Hide Extra Grid ↑";
         getSetLocalStorage("extra-collapsed", collapsed);
     }
     if (!getSetLocalStorage("extra-collapsed")) {
@@ -452,7 +455,7 @@ function showDropdown(event, options) {
     const { bottom, left } = button.getBoundingClientRect();
     dropdown.style.top = `${bottom + window.scrollY}px`;
     dropdown.style.left = `${left + window.scrollX}px`;
-    dropdown.style.display = 'block';
+    dropdown.style.display = 'flex';
 
     currentOptions = options;
     filteredOptions = options;
@@ -513,7 +516,7 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
     }
     button.dataset.itemId = id;
     if (["characters", "summons", "weapons"].includes(optionSet)) {
-        uncap = addUncapButton(button, optionSet, selectedOption, uncap, id);
+        uncap = addUncapButton(button, optionSet, selectedOption, uncap, id, options.trans);
     }
     setButtonBackground(button, selectedOption, optionSet, uncap, id);
     switch (optionSet) {
@@ -530,6 +533,12 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
             calcData.chars[button.id] = {
                 tags: [`element:${char.element}`, ...char.weapon.map(w => `weapon:${w}`), ...char.race.map(r => `race:${r}`)].map(e=>e.toLowerCase())
             }
+
+            if (button.querySelector(".c-awakening")) {
+                delete teamData[button.querySelector(".c-awakening").id];
+                button.querySelector(".c-awakening").remove();
+            }
+            addAwakeningButton(button, id, options.awk);
             break;
         case 'weapons':
             if (parseInt(button.id.replace("wp", "")) >= 11) {
@@ -768,23 +777,18 @@ function addSelectableWeaponSkill(skill, optionSet) {
     return skill;
 }
 
-function addUncapButton(button, optionSet, selectedOption, uncap, id) {
+function addUncapButton(button, optionSet, selectedOption, uncap, id, trans) {
     let maxUncap;
-    let dopus = false;
     if (button.querySelector(".uncap")) button.querySelector(".uncap").remove();
     switch (optionSet) {
         case "characters": maxUncap = characters[id].maxUncap; break;
         case "summons": maxUncap = summons[id].maxUncap; break;
         case "weapons":
             maxUncap = weapons[id].maxUncap;
-            if (weapons[id].series == "dark opus") {
-                dopus = true;
-            }
             break;
     }
     if (uncap == null) {
-        if (dopus) uncap = 5;
-        else uncap = maxUncap;
+        uncap = maxUncap;
     }
     teamData[button.id + "Uncap"] = uncap;
     let uncapButton;
@@ -810,12 +814,12 @@ function addUncapButton(button, optionSet, selectedOption, uncap, id) {
         button.appendChild(uncapButton);
     }
     else if (maxUncap === 6) {
-        teamData[button.id + "Trans"] = uncap == 6 ? "t5" : uncap;
+        teamData[button.id + "Trans"] = trans? trans : uncap == 6 ? "t5" : null;
         teamData[button.id + "Uncap"] = uncap;
         uncapButton = document.createElement("button");
         uncapButton.classList.add("uncap-select");
         uncapButton.classList.add("uncap");
-        uncapButton.dataset.trans = uncap == 6 ? "t5" : uncap;
+        uncapButton.dataset.trans = trans? trans : uncap == 6 ? "t5" : null;
         uncapButton.title = "Select Uncap";
         uncapButton.onclick = openTransDropdown;
         function openTransDropdown(e) {
@@ -866,7 +870,15 @@ function addUncapButton(button, optionSet, selectedOption, uncap, id) {
 }
 
 function addAwakeningButton(button, id, iAwk) {
-    if (iAwk) iAwk = iAwk.toLowerCase().replaceAll(".","");
+    if (iAwk) {
+        iAwk = iAwk.toLowerCase().replaceAll(".","");
+        switch (iAwk) {
+            case "skill dmg": iAwk = "skill"; break;
+            case "ma": iAwk = "multiattack"; break;
+            case "def": iAwk = "defense"; break;
+            case "atk": iAwk = "attack"; break;
+        }
+    }
     id = parseInt(id);
     if (worldHarps.includes(id)) {
         let awkType;
@@ -895,24 +907,33 @@ function addAwakeningButton(button, id, iAwk) {
                 awkButton.style.backgroundImage = `url(assets/Awakening_Empty.png)`;
             }
         }
-        if (iAwk) awkButton.click();
+        awkButton.click();
         button.appendChild(awkButton);
         return;
     }
     let awks = ["empty"];
-    switch (weapons[id].awakening) {
-        //differnt per weapon
-        case "grand": awks.push(weapons[id].awakeningType1.replaceAll(".", ""), weapons[id].awakeningType2.replaceAll(".", "")); break;
-        //no special
-        case "rowv": awks.push("attack", "defense"); break;
-        //atk skill ca
-        case "celestial": awks.push("attack", "skill", "ca"); break;
-        //atk def special
-        default: awks.push("attack", "defense", "special"); break;
+    let awkType;
+    if (button.id.includes("char")) {
+        awks=["balanced", "attack", "defense", "multiattack"];
+        if (!iAwk) iAwk = "balanced";
+        awkType = "c";
+    }
+    else {
+        awkType = "w";
+        switch (weapons[id].awakening) {
+            //differnt per weapon
+            case "grand": awks.push(weapons[id].awakeningType1.replaceAll(".", ""), weapons[id].awakeningType2.replaceAll(".", "")); break;
+            //no special
+            case "rowv": awks.push("attack", "defense"); break;
+            //atk skill ca
+            case "celestial": awks.push("attack", "skill", "ca"); break;
+            //atk def special
+            default: awks.push("attack", "defense", "special"); break;
+        }
     }
     let awkButton = document.createElement("button");
-    awkButton.classList.add("w-awakening");
-    awkButton.classList.add("w-awakening-select");
+    awkButton.classList.add(`${awkType}-awakening`);
+    awkButton.classList.add(`${awkType}-awakening-select`);
     awkButton.id = button.id + "Awk";
     awkButton.title = "Select Awakening";
     awkButton.onclick = openAwakeningDropdown;
@@ -934,6 +955,7 @@ function addAwakeningButton(button, id, iAwk) {
                 e.stopPropagation();
                 teamData[awkButton.id] = li.dataset.awk;
                 awkButton.style.backgroundImage = li.style.backgroundImage;
+                awkButton.dataset.awk = li.dataset.awk;
                 closeAwakeningDropdown(e);
                 addAwakeningStats(button, weapons[id], li.dataset.awk);
             }
@@ -948,48 +970,17 @@ function addAwakeningButton(button, id, iAwk) {
     if (iAwk) {
         awkButton.style.backgroundImage = `url('assets/Awakening_${iAwk}.png')`;
         teamData[awkButton.id] = iAwk;
+        awkButton.dataset.awk = iAwk;
         addAwakeningStats(button, weapons[id], iAwk)
     }
     button.appendChild(awkButton);
 }
 
-function addAwakeningStats(button, weapon, awk) {
-    calcData.wSkills = calcData.wSkills.filter(s=>s.addedBy != `${button.id}Awk`);
-    let stats;
-    awk = awk.replaceAll(".","");
-    switch (awk) {
-        case "attack":
-            switch (weapon.awakening) {
-                case "revansmkII": stats = [{ value: 35, statName: "might", affects: "<element>" }, { value: 15, statName: "ele atk", affects: "<element>" }, { value: 10, statName: "ex might", affects: "<element>" }]
-                    break;
-                default: break;
-            }
-            break;
-        case "defense": break;
-        case "special": break;
-        case "skill dmg":
-        case "skill": break;
-        case "ca": break;
-        case "healing": break;
-        case "multiattack": break;
-    }
-    if (!stats) return;
-    stats.forEach(s => {
-        s.addedBy = `${button.id}Awk`;
-        s.frame = "grid";
-        switch (s.affects) {
-            case "<element>": s.affects = `element:${weapon.element}`; break;
-        }
-    });
-    calcData.wSkills.push(...stats);
-}
-
 ///
 /// Export / Import
 ///
-function wikiTemplateText() {
-    return `{{TeamSpread
-|team={{Team
+function generateWikiTemplate() {
+return `{{TeamSpread
 |class=${getTeamData("mc")}${teamData.mino ? `|mino=${teamData.mino}` : ""}${teamData.shield ? `|shield=${teamData.shield}` : ""}
 |char1=${getCharacterInfo("char1")}
 |char2=${getCharacterInfo("char2")}
@@ -999,10 +990,7 @@ function wikiTemplateText() {
 |skill1=${getTeamData("skill1")}
 |skill2=${getTeamData("skill2")}
 |skill3=${getTeamData("skill3")}
-|main=${getTeamSummonInfo("s-main")}
-|support=${getTeamSummonInfo("s-support")}
-}}
-|weapons={{WeaponGridSkills
+
 |mh=${getWeaponInfo("mh")}
 |wp1=${getWeaponInfo("wp1")}
 |wp2=${getWeaponInfo("wp2")}
@@ -1020,9 +1008,9 @@ function wikiTemplateText() {
         }${getDraconicSkillInfo()
         }${getDestroyerSkillInfo()
         }${getCCWSkillInfo()}
-}}
-|summons={{SummonGrid
+
 |main=${getSummonInfo("s-main")}
+|support=${getSummonInfo("s-support")}
 |s1=${getSummonInfo("s1")}
 |s2=${getSummonInfo("s2")}
 |s3=${getSummonInfo("s3")}
@@ -1030,9 +1018,13 @@ function wikiTemplateText() {
 |sub1=${getSummonInfo("s-sub1")}
 |sub2=${getSummonInfo("s-sub2")}
 |quick=${teamData.quickSummon ? teamData.quickSummon : ""}
-}}
+
+|source=
+|comments=
+|rotation=
 }}`
 }
+
 function getTeamData(item) {
     return teamData[item] ? teamData[item] : "";
 }
@@ -1112,14 +1104,16 @@ function getWeaponInfo(weaponSlot) {
 
 function getCharacterInfo(characterSlot) {
     let character = teamData[characterSlot];
+    if (!character) return "";
     let uncap = teamData[characterSlot + "Uncap"];
     let trans = teamData[characterSlot + "Trans"];
-    if (!character) return "";
-    let art = uncapToArt(uncap)
-    return `${character}${art != "A" ? `|art${characterSlot.replace("char", "")}=${art}` : ""}${trans ? `|trans${characterSlot.replace("char", "")}=${trans.replace("t", "")}` : ""}`;
+    let awk = teamData[characterSlot + "Awk"];
+    let slot = characterSlot.replace("char", "");
+    return `${character}${uncap > 4 || trans ? `|uchar${slot}=${trans? trans : uncap}` : ""}${awk != "balanced"? `|awkchar${slot}=${awk}` : ""}`;
 }
 
 function getSummonInfo(summonSlot) {
+    let slot = summonSlot.split("-").slice(-1)[0];
     let summon = teamData[summonSlot];
     let uncap = teamData[summonSlot + "Uncap"];
     let trans = teamData[summonSlot + "Trans"];
@@ -1127,94 +1121,82 @@ function getSummonInfo(summonSlot) {
     if (trans === "t5" || (uncap !== 6 && uncap === summons[summonIDs[summon]].maxUncap)) {
         return `${summon}`;
     }
-    return `${summon}|u${summonSlot.substring(1).replace("-", "")}=${trans ? trans : uncap}`;
+    return `${summon}|u${slot}=${trans ? trans : uncap}`;
 }
 
-function getTeamSummonInfo(summonSlot) {
-    let summon = teamData[summonSlot];
-    let uncap = teamData[summonSlot + "Uncap"];
-    let trans = teamData[summonSlot + "Trans"];
-    let slot = summonSlot.substring(2);
-    if (!summon) return "";
-    let art = uncap == 6 ? trans == "t5" ? "D" : "C" : uncap == 5 ? "B" : undefined;
-    return `${summon}${trans ? `|trans${slot}=${trans.replace("t", "")}` : ""}${art ? `|art${slot}=${art}` : ""}`;
-}
-
-
-function importData(data) {
+function importWikiTextV2(inputData) {
+    //use old importer for old format compatibility
+    if (inputData.includes("|team=")) {
+        importDataV1(inputData);
+        return;
+    }
+    //clear existing data
     document.querySelectorAll(".grid-input").forEach(button => {
         gridInputContextMenu(null, button);
     });
     teamData = {};
-    let team = {}, weapons = {}, summons = {};
-    data = data.replace("{{TeamSpread", "").replace(/(?:\r\n|\r|\n)/g, '');
-    data = data.split("}}").slice(0, -2);
-    let temp = data[0].replace("|team={{Team", "").split("|").slice(1);
-    temp.forEach(item => {
-        let [key, value] = item.split("=");
-        team[key] = value;
-    });
-    temp = data[1].replace("|weapons={{WeaponGridSkills", "").split("|").slice(1);
-    temp.forEach(item => {
-        let [key, value] = item.split("=");
-        weapons[key] = value;
-    });
-    temp = data[2].replace("|summons={{SummonGrid", "").split("|").slice(1);
-    temp.forEach(item => {
-        let [key, value] = item.split("=");
-        summons[key] = value;
-    });
-
-    if (team.class) setGridData("mc", team.class);
-    if (team.class == "Manadiver" && team.mino) setGridData("mino", team.mino);
-    if ((team.class == "Paladin" || team.class == "Shieldsworn") && team.shield) setGridData("shield", team.shield);
-    for (let i = 1; i <= 5; i++) {
-        let key = `char${i}`;
-        if (!team[key]) continue;
-        let value = team[key];
-        setGridData(key, value, { uncap: team[`trans${i}`] ? `t${team[`trans${i}`]}` : artToUncap(team[`art${i}`]) });
+    //strip input data into param
+    let data = {};
+    let temp = inputData.replace("{{TeamSpread", "").replace("}}","").replaceAll("\n","").replace("}}","").split("|").filter(r=>r!="");
+    for (let i = 0; i < temp.length; i++) {
+        let [key,value] = temp[i].split("=");
+        data[key] = value;
     }
+
+    if (data.class) setGridData("mc", data.class);
+    if (data.class == "Manadiver" && data.mino) setGridData("mino", data.mino);
+    if ((data.class == "Paladin" || data.class == "Shieldsworn") && data.shield) setGridData("shield", data.shield);
+    //characters
+    for (let i = 1; i <= 8; i++) {
+        let key = `char${i}`;
+        if (!data[key]) continue;
+        let value = data[key];
+        setGridData(key, value, { uncap: data[`uchar${i}`], awk: data[`awkchar${i}`], trans: data[`uchar${i}`] });
+    }
+    //skills
     for (let i = 1; i <= 3; i++) {
         let key = `skill${i}`;
-        if (!team[key]) continue;
-        let value = team[key];
+        if (!data[key]) continue;
+        let value = data[key];
         setGridData(key, value);
     }
-    //if (team.main) setGridData("s-main", team.main);
-    if (team.support) setGridData("s-support", team.support);
-
-    if (weapons.mh) setGridData("mh", weapons.mh, { uncap: weapons.umh, awk: weapons.awkmh });
+    //weapons
+    if (data.mh) setGridData("mh", data.mh, { uncap: data.umh, awk: data.awkmh, trans: data.umh });
     for (let i = 1; i <= 12; i++) {
         let key = `wp${i}`;
-        if (!weapons[key]) continue;
-        let value = weapons[key];
-        setGridData(key, value, { uncap: weapons[`u${i}`], awk: weapons[`awk${i}`] });
+        if (!data[key]) continue;
+        let value = data[key];
+        setGridData(key, value, { uncap: data[`u${i}`], awk: data[`awk${i}`], trans: data[`u${i}`] });
     }
-    if (weapons.opus) setGridData("opusSkill2", weapons.opus.split(",")[0]);
-    if (weapons.opus) setGridData("opusSkill3", weapons.opus.split(",")[1]);
-    if (weapons.ultima) setGridData("ultimaSkill1", weapons.ultima.split(",")[0]);
-    if (weapons.ultima) setGridData("ultimaSkill2", weapons.ultima.split(",")[1]);
-    if (weapons.ultima) setGridData("ultimaSkill3", weapons.ultima.split(",")[2]);
-    if (weapons.draconic) setGridData("draconicSkill2", weapons.draconic.split(",")[0]);
-    if (weapons.draconic) setGridData("draconicSkill3", weapons.draconic.split(",")[1]);
-    if (weapons.destroyer) setGridData("destroyerSkill3", weapons.destroyer, true);
-    if (weapons.ccw) setGridData("ccwSkill2", weapons.ccw, true);
-
-    if (summons.main) setGridData("s-main", summons.main, { uncap: summons[`umain`] });
+    //selectable weapon skills
+    if (data.opus) setGridData("opusSkill2", data.opus.split(",")[0]);
+    if (data.opus) setGridData("opusSkill3", data.opus.split(",")[1]);
+    if (data.ultima) setGridData("ultimaSkill1", data.ultima.split(",")[0]);
+    if (data.ultima) setGridData("ultimaSkill2", data.ultima.split(",")[1]);
+    if (data.ultima) setGridData("ultimaSkill3", data.ultima.split(",")[2]);
+    if (data.draconic) setGridData("draconicSkill2", data.draconic.split(",")[0]);
+    if (data.draconic) setGridData("draconicSkill3", data.draconic.split(",")[1]);
+    if (data.destroyer) setGridData("destroyerSkill3", data.destroyer, true);
+    if (data.ccw) setGridData("ccwSkill2", data.ccw, true);
+    //summons
+    if (data.main) setGridData("s-main", data.main, { uncap: summons[`umain`] });
+    if (data.main) setGridData("s-support", data.support, { uncap: summons[`usupport`] });
     for (let i = 1; i <= 4; i++) {
         let key = `s${i}`;
-        if (!summons[key]) continue;
-        let value = summons[key];
-        setGridData(key, value, { uncap: summons[`u${i}`] });
+        if (!data[key]) continue;
+        let value = data[key];
+        setGridData(key, value, { uncap: data[`u${key}`] });
     }
+    //subsummons
     for (let i = 1; i <= 2; i++) {
         let key = `sub${i}`;
-        if (!summons[key]) continue;
-        let value = summons[key];
-        setGridData(`s-sub${i}`, value, { uncap: summons[`u${key}`] });
+        if (!data[key]) continue;
+        let value = data[key];
+        setGridData(`s-sub${i}`, value, { uncap: data[`u${key}`] });
     }
-    if (summons["quick"]) document.querySelector(`.summon-grid div[id*="${summons["quick"]}"] .quick-summon-toggle`).click()
+    if (data["quick"]) document.querySelector(`.summon-grid div[id*="${data["quick"]}"] .quick-summon-toggle`).click()
 
+    //helper function to get correct item from optionSet
     function setGridData(key, value, options = {}) {
         let button = document.querySelector(`#${key}`);
         let optionSet = button.dataset.options;
@@ -1227,12 +1209,12 @@ function importData(data) {
         setButtonToItem(button, optionSet, selectedOption, options.uncap ? options.uncap : null, options);
     }
 }
-
 ///
 /// Stat Calcs
 ///
 
 function calcCharStats(charSlot) {
+    if (!enableCalcs) return;
     let char = calcData.chars[charSlot];
     let stats = calcData.wSkills.filter(s => char.tags.includes(s.affects) || s.affects == "all");
     stats = stats.map(s => { return { ...s } });
@@ -1258,7 +1240,7 @@ function calcCharStats(charSlot) {
 }
 
 function addSummonAuraCalc(summonSlot, summonID, uncap) {
-    return;
+    if (!enableCalcs) return;
     calcData.wSkills = calcData.wSkills.filter(s => s.addedBy != summonSlot);
     let summonAura = summonAuraData[summonID];
     if (!summonAura) return;
@@ -1275,7 +1257,7 @@ function addSummonAuraCalc(summonSlot, summonID, uncap) {
 }
 
 function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {   
-    return;
+    if (!enableCalcs) return;
     const missingSkill = () => {
         let weap = document.querySelector(`#${weaponSlot}`);
         let warn = document.createElement("img");
@@ -1354,4 +1336,37 @@ function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
         console.log("unboosted mod");
     }
     console.log(calcData)
+}
+
+function addAwakeningStats(button, weapon, awk) {
+    if (!enableCalcs) return;
+    //TODO: handle character awakening
+    calcData.wSkills = calcData.wSkills.filter(s=>s.addedBy != `${button.id}Awk`);
+    let stats;
+    awk = awk.replaceAll(".","");
+    switch (awk) {
+        case "attack":
+            switch (weapon.awakening) {
+                case "revansmkII": stats = [{ value: 35, statName: "might", affects: "<element>" }, { value: 15, statName: "ele atk", affects: "<element>" }, { value: 10, statName: "ex might", affects: "<element>" }]
+                    break;
+                default: break;
+            }
+            break;
+        case "defense": break;
+        case "special": break;
+        case "skill dmg":
+        case "skill": break;
+        case "ca": break;
+        case "healing": break;
+        case "multiattack": break;
+    }
+    if (!stats) return;
+    stats.forEach(s => {
+        s.addedBy = `${button.id}Awk`;
+        s.frame = "grid";
+        switch (s.affects) {
+            case "<element>": s.affects = `element:${weapon.element}`; break;
+        }
+    });
+    calcData.wSkills.push(...stats);
 }
