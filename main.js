@@ -638,7 +638,7 @@ function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
             break;
         case 'characters':
             art = uncap == 5 ? 3 : uncap == 6 || uncap.toString().includes("t") ? 4 : 1;
-            backgroundUrl = `url('https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/npc/${unlimited && parseInt(button.id.replace("char","")) >= 6? "s" : "quest"}/${id}_0${art}.jpg')`;
+            backgroundUrl = `url('https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/npc/${unlimited && parseInt(button.id.replace("char","")) >= 4? "s" : "quest"}/${id}_0${art}.jpg')`;
             break;
         case 'weapons':
             art = uncap == 6 || uncap == "t5" ? "_03" : uncap.toString().includes("t") ? "_02" : "";

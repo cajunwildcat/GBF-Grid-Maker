@@ -262,7 +262,7 @@ ul {
             }
 
             .grid-input {
-                background-image: url("/assets/empty-char-s.jpg");
+                background-image: url("assets/empty-char-s.jpg");
                 height: 74px;
                 background-size: 74px 74px;
             }
