@@ -25,10 +25,8 @@ ul {
     margin-top: 5px;
     margin-left: 10px;
     display: grid;
-    grid-template: 
-        "a b" auto 
-        "c b" auto 
-        "d e" auto / 504px auto;
+    grid-template:
+        "a b" auto "c b" auto "d e" auto / 504px auto;
     gap: 0 2px;
 }
 
@@ -56,12 +54,33 @@ ul {
         background: linear-gradient(to bottom, #041622, #08425a, #6598a8);
         box-shadow: inset 0 0 2px 1px #0c0b0b, inset 0 6px 6px 1px #03141b, inset 15px 4px 9px -12px #3083a5, inset -15px 4px 9px -12px #3083a5, 1px 4px 4px #443e38;
     }
-
-    textarea {
-        width: 257px;
-        height: 617px;
+    
+    >div {
+        display: grid;
+        grid-template-areas:
+        'a b'
+        'c d';
+        gap: 6px;
+        max-width: 272px;
+        
+        #export-url-button {
+            grid-area: c;
+        }
+    }
+    
+    #import-export-text {
+        width: 264px;
+        height: 680px;
         background-color: #1b1b1b;
         color: #ec9c79;
+    }
+    
+    #unlimited-toggle-button {
+        &:not(.toggled) {
+            border: 3px solid #504233;
+            background: linear-gradient(to bottom, #041622, #03080a, #162124);
+            box-shadow: inset 0 0 2px 1px #0c0b0b, inset 0 6px 6px 1px #03141b, inset 15px 4px 9px -12px #152d36, inset -15px 4px 9px -12px #3083a5, 1px 4px 4px #443e38;
+        }
     }
 }
 
@@ -111,9 +130,17 @@ ul {
     grid-area: a;
     position: relative;
     width: 504px;
-    height: 277px;
+    padding-top: 10px;
     background: linear-gradient(to bottom, #4391A7, #173033);
-    box-shadow: inset 0 0 2px 3px #e5ffff, inset 0 0 6px 5px #59eaff, 1px 3px 4px #77776f
+    box-shadow: inset 0 0 2px 3px #e5ffff, inset 0 0 6px 5px #59eaff, 1px 3px 4px #77776f;
+    display: grid;
+    grid-template-areas: 'a b' 'c c' 'd d';
+
+    .non-characters {
+        grid-area: d;
+        position: relative;
+        height: 110px;
+    }
 }
 
 .skill-box {
@@ -122,13 +149,13 @@ ul {
     background-color: #001E28;
     position: absolute;
     bottom: 12px;
-    right: 10px;
+    right: 14px;
     border-radius: 5px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 2px;
-    min-height: 82px
+    min-height: 82px;
 }
 
 .skill-line {
@@ -185,6 +212,68 @@ ul {
     }
 }
 
+.team-members {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 4px;
+    padding: 10px 6px 10px 6px;
+    align-items: center;
+    background: linear-gradient(to bottom, #093D4D, #001E28);
+    border: solid 1px #356C79;
+
+    >div.grid-input {
+        width: 74px;
+        height: 135px;
+        position: relative;
+        background-image: url('assets/empty-char.jpg');
+        background-size: 74px 135px;
+    }
+
+    &.main-members {
+        grid-area: a;
+        margin-left: 11px;
+
+        &.unlimited {
+            margin-right: 11px;
+            grid-column-end: b;
+            justify-content: center;
+        }
+    }
+
+    &.sub-members {
+        grid-area: b;
+        margin-right: 11px;
+
+        #char6,
+        #char7,
+        #char8 {
+            display: none;
+        }
+
+        &.unlimited {
+            grid-area: c;
+            margin-left: 11px;
+            justify-content: center;
+
+            #char6,
+            #char7,
+            #char8 {
+                display: unset;
+            }
+
+            .grid-input {
+                background-image: url("/assets/empty-char-s.jpg");
+                height: 74px;
+                background-size: 74px 74px;
+            }
+        }
+    }
+}
+
+.characters {
+    grid-area: a;
+}
+
 #weapons-container {
     grid-area: c;
     width: fit-content;
@@ -239,9 +328,11 @@ ul {
     &.collapsed {
         height: 0;
         margin-top: unset;
+
         >.w-grid-sub>w {
             height: 0;
         }
+
         >.overflow-wrapper {
             transition: overflow 0.5s ease 0.5s;
             overflow: hidden;
@@ -310,25 +401,6 @@ ul {
     }
 }
 
-.team-members {
-    position: absolute;
-    top: 11px;
-    display: flex;
-    justify-content: space-evenly;
-    gap: 4px;
-    padding: 10px 6px 10px 6px;
-    align-items: center;
-    background: linear-gradient(to bottom, #093D4D, #001E28);
-    border: solid 1px #356C79;
-
-    >div.grid-input {
-        width: 74px;
-        height: 135px;
-        position: relative;
-        background-image: url('assets/empty-char.jpg');
-    }
-}
-
 .uncap-toggle {
     position: absolute;
     bottom: 5px;
@@ -337,6 +409,7 @@ ul {
     height: 30px;
     background-color: transparent;
     background-image: url("assets/Icon_Blue_Star_Full.png");
+
     &[data-max-uncap="3"] {
         background-image: url("assets/Icon_Yellow_Star_Full.png");
     }
@@ -344,6 +417,7 @@ ul {
 
 .uncap-toggle[data-toggled="false"] {
     background-image: url("assets/Icon_Blue_Star.png");
+
     &[data-max-uncap="3"] {
         background-image: url("assets/Icon_Yellow_Star.png");
     }

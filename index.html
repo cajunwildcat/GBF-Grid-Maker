@@ -20,39 +20,46 @@
     <script src="sortable.js"></script>
     <!--Libraries-->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script src="https://unpkg.com/@zumer/snapdom/dist/snapdom.js"></script>
 </head>
 
 <body>
     <div id="team-spread">
         <div class="team-container">
-            <div class="team-members" style="left:10px;">
+            <div class="team-members main-members">
                 <div id="mc" class="grid-input no-drag" data-options="classes" tabindex="1"></div>
                 <div id="char1" class="grid-input" data-options="characters" tabindex="2"></div>
                 <div id="char2" class="grid-input" data-options="characters" tabindex="3"></div>
                 <div id="char3" class="grid-input" data-options="characters" tabindex="4"></div>
             </div>
-            <div class="team-members sub-members" style="right:10px;">
+            <div class="team-members sub-members">
                 <div id="char4" class="grid-input" data-options="characters" tabindex="5"></div>
                 <div id="char5" class="grid-input" data-options="characters" tabindex="6"></div>
+
+                <div id="char6" class="grid-input" data-options="characters" tabindex=""></div>
+                <div id="char7" class="grid-input" data-options="characters" tabindex=""></div>
+                <div id="char8" class="grid-input" data-options="characters" tabindex=""></div>
             </div>
-            <div class="team-summon">
-                <div id="s-main" class="grid-input" data-options="summons" tabindex="7"></div>
-                <div id="s-support" class="grid-input" data-options="summons" tabindex="8"></div>
-            </div>
-            <div class="skill-box">
-                <div id="skill1" class="skill grid-input" data-options="skills" tabindex="9">
-                    <img src="assets/empty-skill.png">
-                    <span class="skill name"></span>
+            <div class="non-characters">
+                <div class="team-summon">
+                    <div id="s-main" class="grid-input" data-options="summons" tabindex="7"></div>
+                    <div id="s-support" class="grid-input" data-options="summons" tabindex="8"></div>
                 </div>
-                <div style="top: 29px;" class="skill-line"></div>
-                <div id="skill2" class="skill grid-input" data-options="skills" tabindex="10">
-                    <img src="assets/empty-skill.png">
-                    <span class="skill name"></span>
-                </div>
-                <div style="top: 57px;" class="skill-line"></div>
-                <div id="skill3" class="skill grid-input" data-options="skills" tabindex="11">
-                    <img src="assets/empty-skill.png">
-                    <span class="skill name"></span>
+                <div class="skill-box">
+                    <div id="skill1" class="skill grid-input" data-options="skills" tabindex="9">
+                        <img src="assets/empty-skill.png">
+                        <span class="skill name"></span>
+                    </div>
+                    <div style="top: 29px;" class="skill-line"></div>
+                    <div id="skill2" class="skill grid-input" data-options="skills" tabindex="10">
+                        <img src="assets/empty-skill.png">
+                        <span class="skill name"></span>
+                    </div>
+                    <div style="top: 57px;" class="skill-line"></div>
+                    <div id="skill3" class="skill grid-input" data-options="skills" tabindex="11">
+                        <img src="assets/empty-skill.png">
+                        <span class="skill name"></span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -102,23 +109,25 @@
                 </div>
             </div>
             <div id="weapon-grid-extra" class="collapsed">
-                <div class="overflow-wrapper"><div class="w-grid-sub">
-                    <div id="slot10" class="w">
-                        <div id="wp10" class="grid-input" data-options="weapons" tabindex="29"></div>
-                        <span class="w-skills"></span>
+                <div class="overflow-wrapper">
+                    <div class="w-grid-sub">
+                        <div id="slot10" class="w">
+                            <div id="wp10" class="grid-input" data-options="weapons" tabindex="29"></div>
+                            <span class="w-skills"></span>
+                        </div>
+                        <div id="slot11" class="w">
+                            <div id="wp11" class="grid-input" data-options="weapons" tabindex="30"></div>
+                            <span class="w-skills"></span>
+                        </div>
+                        <div id="slot12" class="w">
+                            <div id="wp12" class="grid-input" data-options="weapons" tabindex="31"></div>
+                            <span class="w-skills"></span>
+                        </div>
                     </div>
-                    <div id="slot11" class="w">
-                        <div id="wp11" class="grid-input" data-options="weapons" tabindex="30"></div>
-                        <span class="w-skills"></span>
-                    </div>
-                <div id="slot12" class="w">
-                    <div id="wp12" class="grid-input" data-options="weapons" tabindex="31"></div>
-                    <span class="w-skills"></span>
                 </div>
-            </div></div>
-            <button id="collapse-extra-grid-button">↓ Show Extra Grid ↓</button>
+                <button id="collapse-extra-grid-button">↓ Show Extra Grid ↓</button>
+            </div>
         </div>
-    </div>
         <div class="summon-grid">
             <div class="main-summon">
                 <div id="s-main" class="grid-input" data-options="summons" tabindex="22"></div>
@@ -139,7 +148,8 @@
         <div>
             <button id="export-wikitext-button" class="ui-button">Export to<br>Wikitext</button>
             <button id="import-wikitext-button" class="ui-button">Import from<br>Wikitext</button>
-            <button id="open-url-button" class="ui-button">Open URL</button>
+            <button style="display:none;" id="open-url-button" class="ui-button">Open URL</button>
+            <button id="unlimited-toggle-button" class="ui-button">Unlimited?</button>
             <button id="export-url-button" class="ui-button">Copy URL</button>
         </div>
         <textarea id="import-export-text"></textarea>

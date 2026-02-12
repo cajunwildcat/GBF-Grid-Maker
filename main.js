@@ -16,9 +16,11 @@ let filters = {
     weapons: ["any"],
     summons: ["any"]
 }
+let unlimited = false;
+let jp = true;
 
-useTestData = false;
-enableCalcs = false;
+const useTestData = false;
+const enableCalcs = false;
 
 window.onload = async (e) => {
     setupStaticButtons();
@@ -384,6 +386,22 @@ function setupStaticButtons() {
     if (!getSetLocalStorage("extra-collapsed")) {
         document.querySelector("#collapse-extra-grid-button").click();
     }
+
+    document.querySelector("#unlimited-toggle-button").onclick = () => {
+        toggleUnlimited();
+    }
+}
+
+function toggleUnlimited() {
+    [...document.querySelectorAll(".team-members")].forEach(e => e.classList.toggle("unlimited"));
+    if (unlimited) {
+        [...document.querySelectorAll(".sub-members .grid-input")].forEach(e => e.style.backgroundImage = e.style.backgroundImage.replace("/s/", "/quest/"))
+    }
+    else {
+        [...document.querySelectorAll(".sub-members .grid-input")].forEach(e => e.style.backgroundImage = e.style.backgroundImage.replace("/quest/", "/s/"))
+    }
+    document.querySelector("#unlimited-toggle-button").classList.toggle("toggled");
+    unlimited = !unlimited;
 }
 
 ///
@@ -446,6 +464,7 @@ function gridInputContextMenu(event, button = null) {
 
     button.querySelector(".uncap")?.remove();
     button.querySelector(".w-awakening")?.remove();
+    button.querySelector(".c-awakening")?.remove();
     if (button.querySelector(".quick-summon-toggle")) {
         if (button.querySelector(".quick-summon-toggle").dataset.toggled == "true") delete teamData.quickSummon;
         button.querySelector(".quick-summon-toggle").remove();
@@ -547,6 +566,9 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
             if (["Manadiver", "Paladin", "Shieldsworn"].includes(itemName)) addClassGear(button, itemName);
             break;
         case 'characters':
+            if (parseInt(button.id.replace("char", "")) >= 6 && !unlimited) {
+                toggleUnlimited();
+            }
             let char = characters[selectedOption.metatags[0]];
             calcData.chars[button.id] = {
                 tags: [`element:${char.element}`, ...char.weapon.map(w => `weapon:${w}`), ...char.race.map(r => `race:${r}`)].map(e => e.toLowerCase())
@@ -616,7 +638,7 @@ function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
             break;
         case 'characters':
             art = uncap == 5 ? 3 : uncap == 6 || uncap.toString().includes("t") ? 4 : 1;
-            backgroundUrl = `url('https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/npc/quest/${id}_0${art}.jpg')`;
+            backgroundUrl = `url('https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/npc/${unlimited && parseInt(button.id.replace("char","")) >= 6? "s" : "quest"}/${id}_0${art}.jpg')`;
             break;
         case 'weapons':
             art = uncap == 6 || uncap == "t5" ? "_03" : uncap.toString().includes("t") ? "_02" : "";
@@ -1198,7 +1220,7 @@ function importWikiTextV2(inputData) {
     if (data.ccw) setGridData("ccwSkill2", data.ccw);
     //summons
     if (data.main) setGridData("s-main", data.main, { uncap: summons[`umain`] });
-    if (data.main) setGridData("s-support", data.support, { uncap: summons[`usupport`] });
+    if (data.support) setGridData("s-support", data.support, { uncap: summons[`usupport`] });
     for (let i = 1; i <= 4; i++) {
         let key = `s${i}`;
         if (!data[key]) continue;
@@ -1293,7 +1315,7 @@ function exportURL() {
     }
     while (summ.length && summ.at(-1) === ",") summ.pop();
     //mc info
-    mc.push(decimalToBase62(classes[teamData.mc].id));
+    if (teamData.mc) mc.push(decimalToBase62(classes[teamData.mc].id));
     for (let i = 1; i <= 3; i++) {
         let key = `skill${i}`;
         if (!teamData[key]) continue;
@@ -1313,13 +1335,13 @@ function exportURL() {
         wskill.push(`&ulti=${teamData.ultimaSkill1 || ""},${teamData.ultimaSkill2 || ""},${teamData.ultimaSkill3 || ""}`);
     }
     if (teamData.draconicSkill2 || teamData.draconicSkill3) {
-        wskill.push(`&opus=${teamData.draconicSkill2 || ""},${teamData.draconicSkill3 || ""}`);
+        wskill.push(`&drac=${teamData.draconicSkill2 || ""},${teamData.draconicSkill3 || ""}`);
     }
     if (teamData.destroyerSkill3) {
-        wskill.push(`&dest=${teamData.destroyerSkill3}`);        
+        wskill.push(`&dest=${teamData.destroyerSkill3}`);
     }
 
-    return window.location.origin + window.location.pathname + `?c=${char.join("")}&w=${weap.join("")}&s=${summ.join("")}&mc=${mc.join("")}${teamData.quickSummon? `&qs=${teamData.quickSummon}` : ""}${wskill.join("")}`;
+    return window.location.origin + window.location.pathname + `?c=${char.join("")}&w=${weap.join("")}&s=${summ.join("")}&mc=${mc.join("")}${teamData.quickSummon ? `&qs=${teamData.quickSummon}` : ""}${wskill.join("")}`;
 }
 
 function importURL() {
@@ -1410,7 +1432,7 @@ function importURL() {
         if (ultimaSkills[2]) setGridData("ultimaSkill3", ultimaSkills[2]);
     }
 
-    const draconic = params.get("draconic");
+    const draconic = params.get("drac");
     if (draconic) {
         const draconicSkills = draconic.split(",");
         if (draconicSkills[0]) setGridData("draconicSkill2", draconicSkills[0]);
