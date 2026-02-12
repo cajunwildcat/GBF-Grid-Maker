@@ -28,3 +28,8 @@ function base62ToDecimal(str) {
     
     return result;
 }
+
+function getSetLocalStorage(key, value = null) {
+    if (value === null) return JSON.parse(localStorage.getItem(key));
+    localStorage.setItem(key, JSON.stringify(value));
+}
