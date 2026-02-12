@@ -14,24 +14,34 @@ once the action is done it updates the branch after which the automatic github a
 
 # TODO:
 ## High Priority:
-- Pull class, mino, shield data from wiki
- - GrandCypher update script needs to be updated
+- Pull mino, shield data from wiki
+ - Skills should default to hardcoded icons and fallback to wiki icons
+  - Need to parse wiki icons to just ID
  - Classes should be auto-filtered to row IV/V, EX II, and origin
   - Other classes should exist for the purpose of importing, just not shown in search list
  - Shorthand names for class equipment will have to be hard coded, but full name fallbacks should work automatically
+
+- Add toggle for Unlimited parties
+ - Use second row of backline characters to use `s` instead of `quest` to preserve total height
+
+- Change Summons to inner grid layout?
+- Change sub summons to use `m` instead of `party_sub`
+ - Requires swapping background-image when swapping sub summon with callable summon
+ - Possibly extend to allow swapping of main summon?
+
 
 - Add aliases to `aliases.js` and `weights.js`
     - aliases should only be names that are not already part of the name
         - e.g. "Colo" is not an acceptable alias for "Colossus Omega" since it is already part of the name
 - Enforce single weapon series restriction
 
-
 ## Medium Priority
+- Grid stat calc
+ - Pull weapon skill data from wiki to match weapon uncap with proper skills (opus s1)
+ - Add calc support for selectable weapon skills
+ - Add UI for showing per character stats
+ - Re-calc weapon skills and summon auras when changing uncap
+
+## Low Priority
 - Redesign filters
     - Save filter options to local storage
-
-- Grid stat calc
- - Fill out skill data in `skillData.js`
- - Match skills to applicable characters
- - Apply aura boosts
- - Re-calc weapon skills and summon auras when changing uncap
