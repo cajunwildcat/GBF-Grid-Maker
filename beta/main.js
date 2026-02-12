@@ -1319,7 +1319,7 @@ function exportURL() {
         wskill.push(`&dest=${teamData.destroyerSkill3}`);        
     }
 
-    return window.location.origin + `?c=${char.join("")}&w=${weap.join("")}&s=${summ.join("")}&mc=${mc.join("")}${teamData.quickSummon? `&qs=${teamData.quickSummon}` : ""}${wskill.join("")}`;
+    return window.location.origin + window.location.pathname + `?c=${char.join("")}&w=${weap.join("")}&s=${summ.join("")}&mc=${mc.join("")}${teamData.quickSummon? `&qs=${teamData.quickSummon}` : ""}${wskill.join("")}`;
 }
 
 function importURL() {
