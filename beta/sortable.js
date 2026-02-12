@@ -11,7 +11,7 @@ function NewSortableSwapContainer(container, draggable, group, extraOptions = {}
             // This is necessary to avoid a bug where the Wikitext duplicates a weapon if moved to an empty grid slot
             // Summons and Characters have their data attached to the swapped element but weapons have their data attached to a child element because skill icons are siblings instead of children
             const target = e.related.classList.contains("w") ? e.related.firstElementChild : e.related;
-            if (!target.dataset.itemId) return false;
+            if (!target.dataset.itemId || target.dataset.itemId == "") return false;
             return true
         },
         onEnd: swapItems
@@ -19,6 +19,7 @@ function NewSortableSwapContainer(container, draggable, group, extraOptions = {}
 }
 
 function swapItems(e) {
+    if (!e.swapItem) return;
     const draggedElement = e.item.classList.contains("w") ? e.item.firstElementChild : e.item;
     const swappedElement = e.swapItem.classList.contains("w") ? e.swapItem.firstElementChild : e.swapItem;
     const draggedID = draggedElement.id;
