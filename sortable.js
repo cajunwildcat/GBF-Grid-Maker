@@ -33,6 +33,20 @@ function swapItems(e) {
         if (draggedQuickSummon.dataset.toggled == "true") draggedQuickSummon.click();
     }
 
+    // Handle swapping character image type for unlimited backline
+    if (unlimited && draggedElement.dataset.options === "characters") {
+        // Dragged is sub, swapped is main
+        if ((draggedElement.id.slice(-1) >= 4 && swappedElement.id.slice(-1) < 4)) {
+            draggedElement.style.backgroundImage = draggedElement.style.backgroundImage.replace("/s/","/quest/");
+            swappedElement.style.backgroundImage = swappedElement.style.backgroundImage.replace("/quest/","/s/");
+        }
+        // Dragged is main, swapped is sub
+        else if (draggedElement.id.slice(-1) < 4 && swappedElement.id.slice(-1) >= 4) {
+            swappedElement.style.backgroundImage = swappedElement.style.backgroundImage.replace("/s/","/quest/");
+            draggedElement.style.backgroundImage = draggedElement.style.backgroundImage.replace("/quest/","/s/");
+        }
+    }
+
     // Swap IDs
     draggedElement.id = swappedID;
     swappedElement.id = draggedID;

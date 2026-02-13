@@ -1026,7 +1026,11 @@ function generateWikiTemplate() {
 |char2=${getCharacterInfo("char2")}
 |char3=${getCharacterInfo("char3")}
 |char4=${getCharacterInfo("char4")}
-|char5=${getCharacterInfo("char5")}
+|char5=${getCharacterInfo("char5")}${
+unlimited? `
+|char6=${getCharacterInfo("char6")}
+|char7=${getCharacterInfo("char7")}
+|char8=${getCharacterInfo("char8")}` : ""}
 |skill1=${getTeamData("skill1")}
 |skill2=${getTeamData("skill2")}
 |skill3=${getTeamData("skill3")}
