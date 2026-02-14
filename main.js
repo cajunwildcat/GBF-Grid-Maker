@@ -646,7 +646,11 @@ function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
             break;
         case 'summons':
             art = uncap == 6 || uncap == "t5" ? "_04" : uncap.toString().includes("t") ? "_03" : uncap == 5 && !summons[id].pageName.includes("SSR") && !beastSummons.includes(parseInt(id)) ? "_02" : "";
-            backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/summon/${button.parentElement.classList[0].includes("team") ? "m" : `party_${button.parentElement.classList[0].includes("main") ? "main" : "sub"}`}/${id}${art}.jpg')`;
+            let artType;
+            if (button.parentElement.classList[0].includes("team") || button.parentElement.classList[0] == "sub-summons") artType = "m";
+            else if (button.id == "s-main") artType = "party_main";
+            else artType = "party_sub";
+            backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/summon/${artType}/${id}${art}.jpg')`;
             break;
         case 'mino':
             backgroundUrl = `url(https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/familiar/s/${selectedOption.metatags[0]}.jpg)`

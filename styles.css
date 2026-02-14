@@ -355,6 +355,7 @@ ul {
         top: 52px;
         left: 13.5px;
         background-image: url('assets/empty-char.jpg');
+        background-size: 110px 231px;
     }
 
     >.w-skills {
@@ -482,42 +483,50 @@ ul {
         >div {
             position: relative;
             background-image: url("assets/empty-char.jpg");
-            height: 245px;
             width: 137px;
+            height: 245px;
+            background-size: 137px 245px;
         }
     }
 
     .callable-summons {
         position: relative;
         left: 182px;
-        top: 40px;
+        top: 35px;
         display: grid;
         grid-template-columns: repeat(2, 0fr);
         grid-template-rows: repeat(2, 1fr);
         grid-column-gap: 8px;
         grid-row-gap: 72px;
         width: fit-content;
+
+        >div {
+        width: 130px;
+        height: 98px;
+        position: relative;
+        background-image: url("assets/empty-summon.jpg");
+        }
     }
 
     .sub-summons {
         position: relative;
         left: 182px;
-        top: 100px;
+        top: 121px;
         display: grid;
         grid-template-columns: repeat(2, 0fr);
         grid-column-gap: 8px;
         width: fit-content;
-
+        
         .quick-summon-toggle {
             display: none;
         }
-    }
-
-    div:not(.main-summon)>div {
-        width: 130px;
-        height: 98px;
-        position: relative;
-        background-image: url("assets/empty-summon.jpg");
+        
+        >div {
+            background-image: url("assets/empty-sub-summon.jpg");
+            width: 130px;
+            height: 74px;
+            position: relative;
+        }
     }
 }
 
