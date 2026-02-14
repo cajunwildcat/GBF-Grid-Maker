@@ -20,12 +20,6 @@ once the action is done it updates the branch after which the automatic github a
  - Classes should be auto-filtered to row IV/V, EX II, and origin
  - Shorthand names for class equipment will have to be hard coded, but full name fallbacks should work automatically
 
-- Change Summons to inner grid layout?
-- Change sub summons to use `m` instead of `party_sub`
- - Requires swapping background-image when swapping sub summon with callable summon
- - Possibly extend to allow swapping of main summon?
-
-
 - Add aliases to `aliases.js` and `weights.js`
     - aliases should only be names that are not already part of the name
         - e.g. "Colo" is not an acceptable alias for "Colossus Omega" since it is already part of the name
@@ -39,5 +33,6 @@ once the action is done it updates the branch after which the automatic github a
  - Re-calc weapon skills and summon auras when changing uncap
 
 ## Low Priority
+- Summon uncap selection under image like wiki
 - Redesign filters
     - Save filter options to local storage
