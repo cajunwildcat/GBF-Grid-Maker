@@ -1308,19 +1308,19 @@ function exportURL() {
     }
     while (weap.length && weap.at(-1) === ",") weap.pop();
     //summons
-    for (let i = 1; i <= 8; i++) {
+    for (let i = 0; i <= 7; i++) {
         let key;
-        if (i < 5) key = `s${i}`;
-        else if (i < 7) key = `s-sub${i - 4}`;
-        else if (i == 7) key = `s-main`;
-        else if (i == 8) key = `s-support`;
+        if (i == 0) key = `s-main`;
+        else if (i < 5) key = `s${i}`;
+        else if (i < 6) key = `s-sub${i - 4}`;
+        else if (i == 7) key = `s-support`;
         if (teamData[key]) {
             let id = (summonIDs[teamData[key]] - 2000000000) / 1000;
             summ.push(decimalToBase62(id));
             if (teamData[`${key}Trans`] && teamData[`${key}Trans`] != "t5") summ.push(`.${teamData[`${key}Trans`]}`);
             else if (teamData[`${key}Uncap`] !== summons[summonIDs[teamData[key]]].maxUncap) summ.push(`.${teamData[`${key}Uncap`]}`);
         }
-        if (i < 8) summ.push(",");
+        if (i < 7) summ.push(",");
     }
     while (summ.length && summ.at(-1) === ",") summ.pop();
     //mc info
@@ -1401,7 +1401,7 @@ function importURL() {
 
     const summData = params.get("s").split(",");
     if (summData.length > 0) {
-        const summonSlots = ["s1", "s2", "s3", "s4", "s-sub1", "s-sub2", "s-main", "s-support"];
+        const summonSlots = [ "s-main", "s1", "s2", "s3", "s4", "s-sub1", "s-sub2", "s-support"];
         for (let i = 0; i < summData.length && i < summonSlots.length; i++) {
             if (summData[i] == "") continue;
             let [id, uncap] = summData[i].split(".");
