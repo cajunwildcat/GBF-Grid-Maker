@@ -1296,9 +1296,10 @@ function exportURL() {
                     case "attack": awk = 1; break;
                     case "defense": awk = 2; break;
                     case "special": awk = 3; break;
-                    case "skill": awk = 4; break;
-                    case "ca": awk = 5; break;
+                    case "ca": awk = 4; break;
+                    case "skill": awk = 5; break;
                     case "healing": awk = 6; break;
+                    case "multiattack": awk = 7; break;
                 }
                 if (awk) weap.push(`$${awk}`);
             }
@@ -1389,9 +1390,10 @@ function importURL() {
                 case "1": awk = "attack"; break;
                 case "2": awk = "defense"; break;
                 case "3": awk = "special"; break;
-                case "4": awk = "skill"; break;
-                case "5": awk = "ca"; break;
+                case "4": awk = "ca"; break;
+                case "5": awk = "skill"; break;
                 case "6": awk = "healing"; break;
+                case "7": awk = "multiattack"; break;
             }
             setGridData(i == 0 ? `mh` : `wp${i}`, weapons[id].pageName, { uncap: uncap, awk: awk, trans: uncap });
         }

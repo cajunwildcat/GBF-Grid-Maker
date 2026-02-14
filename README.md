@@ -14,6 +14,10 @@ once the action is done it updates the branch after which the automatic github a
 
 # TODO:
 ## High Priority:
+- Export shield/mino to URL
+
+- Character awakening dropdown should not be transparent when balanced is selected
+
 - Pull mino, shield data from wiki
  - Skills should default to hardcoded icons and fallback to wiki icons
   - Need to parse wiki icons to just ID
@@ -23,6 +27,7 @@ once the action is done it updates the branch after which the automatic github a
 - Add aliases to `aliases.js` and `weights.js`
     - aliases should only be names that are not already part of the name
         - e.g. "Colo" is not an acceptable alias for "Colossus Omega" since it is already part of the name
+
 - Enforce single weapon series restriction
 
 ## Medium Priority
