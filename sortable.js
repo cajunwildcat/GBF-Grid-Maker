@@ -6,14 +6,7 @@ function NewSortableSwapContainer(container, draggable, group, extraOptions = {}
         draggable: draggable,
         group: group,
         ...extraOptions,
-        onMove: (e) => {
-            // Disable swapping for weapon grid-inputs that are not filled
-            // This is necessary to avoid a bug where the Wikitext duplicates a weapon if moved to an empty grid slot
-            // Summons and Characters have their data attached to the swapped element but weapons have their data attached to a child element because skill icons are siblings instead of children
-            const target = e.related.classList.contains("w") ? e.related.firstElementChild : e.related;
-            if (!target.dataset.itemId) return false;
-            return true
-        },
+        onMove: (e) => true,
         onEnd: swapItems
     });
 }
@@ -26,10 +19,36 @@ function swapItems(e) {
 
     if (draggedID == swappedID) return;
 
-    // Handle quick summon button when swapping summons
     if (draggedElement.dataset.options === "summons") {
-        const draggedQuickSummon = draggedElement.querySelector(".quick-summon-toggle");
-        if (draggedQuickSummon.dataset.toggled == "true") draggedQuickSummon.click();
+        // Handle swaps with quick summon
+        if ((teamData.quickSummon == draggedElement.id.slice(-1) || teamData.quickSummon == swappedElement.id.slice(-1)) && (draggedElement.parentElement.classList[0] == "sub-summons" || swappedElement.parentElement.classList[0] == "sub-summons")) document.querySelector(".quick-summon-toggle[data-toggled='true']")?.click();
+        //TODO: will need to be updated if swapping main summon is added
+        else if (teamData.quickSummon == draggedElement.id.slice(-1)) teamData.quickSummon = swappedID.slice(-1);
+        else if (teamData.quickSummon == swappedElement.id.slice(-1)) teamData.quickSummon = draggedID.slice(-1);
+
+        // Swap callable and sub summon image type
+        if (draggedElement.parentElement.classList[0] == "sub-summons" && swappedElement.parentElement.classList[0] == "callable-summons") {
+            swappedElement.style.backgroundImage = swappedElement.style.backgroundImage.replace("/m/", "/party_sub/");
+            draggedElement.style.backgroundImage = draggedElement.style.backgroundImage.replace("/party_sub/", "/m/");
+        }
+        else if (draggedElement.parentElement.classList[0] == "callable-summons" && swappedElement.parentElement.classList[0] == "sub-summons") {
+            swappedElement.style.backgroundImage = swappedElement.style.backgroundImage.replace("/party_sub/", "/m/");
+            draggedElement.style.backgroundImage = draggedElement.style.backgroundImage.replace("/m/", "/party_sub/");
+        }
+    }
+
+    // Handle swapping character image type for unlimited backline
+    if (unlimited && draggedElement.dataset.options === "characters") {
+        // Dragged is sub, swapped is main
+        if (draggedElement.parentElement.classList[1] == "sub-members" && swappedElement.parentElement.classList[1] == "main-members") {
+            swappedElement.style.backgroundImage = swappedElement.style.backgroundImage.replace("/s/", "/quest/");
+            draggedElement.style.backgroundImage = draggedElement.style.backgroundImage.replace("/quest/", "/s/");
+        }
+        // Dragged is main, swapped is sub
+        else if (draggedElement.parentElement.classList[1] == "main-members" && swappedElement.parentElement.classList[1] == "sub-members") {
+            draggedElement.style.backgroundImage = draggedElement.style.backgroundImage.replace("/s/", "/quest/");
+            swappedElement.style.backgroundImage = swappedElement.style.backgroundImage.replace("/quest/", "/s/");
+        }
     }
 
     // Swap IDs
@@ -40,17 +59,17 @@ function swapItems(e) {
     draggedElement.tabIndex = swappedElement.tabIndex;
     swappedElement.tabIndex = tempIndex;
 
-    if (teamData[draggedID]) {
-        const oldData = { ...teamData }
+    const oldData = { ...teamData }
+    if (oldData[draggedID]) {
         Object.keys(oldData).filter(key => key.match(new RegExp(`${draggedID}(\\D|\$)`))).forEach(key => {
             let newKey = key.replace(draggedID, swappedID);
-            // Swap the dragged character's data with the swapped character's data
             if (!oldData[newKey]) delete teamData[key];
             teamData[newKey] = oldData[key];
         });
+    }
+    if (oldData[swappedID]) {
         Object.keys(oldData).filter(key => key.match(new RegExp(`${swappedID}(\\D|\$)`))).forEach(key => {
             let newKey = key.replace(swappedID, draggedID);
-            // Swap the dragged character's data with the swapped character's data
             if (!oldData[newKey]) delete teamData[key];
             teamData[newKey] = oldData[key];
         });

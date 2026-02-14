@@ -2,36 +2,25 @@ let cOptions = [];
 let wOptions = [];
 let sOptions = [];
 let aOptoins = [];
+let clOptions = [];
 let elements = { "fire": 1, "water": 2, "earth": 3, "wind": 4, "light": 5, "dark": 6 };
 let weaponTypes = { "sabre": 1, "dagger": 2, "spear": 3, "axe": 4, "staff": 5, "gun": 6, "melee": 7, "bow": 8, "harp": 9, "katana": 10 };
 let worldHarps = [1040815000, 1040815100, 1040815200, 1040815300, 1040815400];
 let beastSummons = [2040376000, 2040377000, 2040378000, 2040379000]
 let teamData = {};
 let calcData = { wSkills: [], chars: {}, auraBoosts: {} };
-let characters, summons, weapons, abilities;
+let characters, summons, weapons, abilities, classes;
 let characterIDs = {}, summonIDs = {}, weaponIDs = {};
 let filters = {
     characters: ["any"],
     weapons: ["any"],
     summons: ["any"]
 }
-const artToUncap = (art) => {
-    switch (art) {
-        case "D": return 6;
-        case "C": return 5;
-        default: return 4;
-    }
-}
-const uncapToArt = (uncap) => {
-    switch (uncap) {
-        case 6: return "D";
-        case 5: return "C";
-        default: return "A";
-    }
-}
+let unlimited = false;
+let jp = true;
 
-useTestData = false;
-enableCalcs = false;
+const useTestData = false;
+const enableCalcs = false;
 
 window.onload = async (e) => {
     setupStaticButtons();
@@ -39,16 +28,6 @@ window.onload = async (e) => {
     await fetch(useTestData ? "./test data/characters.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/characters.json", { next: 43200 })
         .then(function (response) { return response.json(); })
         .then((response) => characters = response);
-    await fetch(useTestData ? "./test data/summons.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/summons.json", { next: 43200 })
-        .then(function (response) { return response.json(); })
-        .then((response) => summons = response);
-    await fetch(useTestData ? "./test data/weapons.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/weapons.json", { next: 43200 })
-        .then(function (response) { return response.json(); })
-        .then((response) => weapons = response);
-    await fetch(useTestData ? "./test data/abilities.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/abilities.json", { next: 43200 })
-        .then(function (response) { return response.json(); })
-        .then((response) => abilities = response);
-
     for (let id in characters) {
         let c = characters[id];
         let name = c.pageName;
@@ -87,6 +66,10 @@ window.onload = async (e) => {
             weight: weight
         });
     }
+
+    await fetch(useTestData ? "./test data/summons.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/summons.json", { next: 43200 })
+        .then(function (response) { return response.json(); })
+        .then((response) => summons = response);
     for (let id in summons) {
         let s = summons[id];
         let name = s.pageName;
@@ -96,7 +79,7 @@ window.onload = async (e) => {
         if (weights[name]) weight = weights[name];
         else if (s.series == "omega") weight = 1;
         else if (s == "optimus") weight = 1;
-        else if (s== "collab") weight = -1;
+        else if (s == "collab") weight = -1;
 
         let metas = [id.toString()];
         s.jpname ? metas.push(s.jpname) : null;
@@ -110,6 +93,10 @@ window.onload = async (e) => {
             weight: weight
         });
     }
+
+    await fetch(useTestData ? "./test data/weapons.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/weapons.json", { next: 43200 })
+        .then(function (response) { return response.json(); })
+        .then((response) => weapons = response);
     for (let id in weapons) {
         let w = weapons[id];
         let name = w.pageName;
@@ -133,12 +120,16 @@ window.onload = async (e) => {
             weight: weight
         });
     }
-    //Abilities that sub options from a selectable ability or otherwise not settable
+
+    await fetch(useTestData ? "./test data/abilities.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/abilities.json", { next: 43200 })
+        .then(function (response) { return response.json(); })
+        .then((response) => abilities = response);
+    //Abilities that are sub options from a selectable ability or otherwise not settable
     let abilityExclusions = ["Affliction Arrow", "Sweeping Arrow", "Deepshot Arrow", "Ensemble of Heroes", "Ensemble of Warriors", "Sky Splitter", "Salt of Cleansing Spirits", "Combat Spirit Infusion", "Spirit Suppression"]
     for (let ability in abilities) {
         if (abilities[ability].ix == "s1" || abilityExclusions.includes(ability)) continue;
 
-        let metas = [ability];
+        let metas = [ability, abilities[ability].id];
         if (alias = (aliases[ability])) {
             metas.push(...alias);
         }
@@ -149,6 +140,24 @@ window.onload = async (e) => {
             weight: weights[ability] ? weights[ability] : 0
         });
     }
+
+    await fetch(useTestData ? "./test data/classes.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/classes.json", { next: 43200 })
+        .then(function (response) { return response.json(); })
+        .then((response) => classes = response);
+    for (let clas in classes) {
+        cl = classes[clas];
+        let metas = [cl.imgid, cl.jpname, cl.id.toString()];
+        if (alias = (aliases[cl])) {
+            metas.push(...alias);
+        }
+
+        clOptions.push({
+            label: clas,
+            metatags: metas,
+            weight: weights[clas] ? weights[clas] : 0
+        });
+    }
+
     setupButtonSearch();
 
     // Make character grid elements draggable
@@ -158,7 +167,9 @@ window.onload = async (e) => {
     InitSummonsContainer();
 
     // Make weapon grid elements draggable
-    InitWeaponsContainer()
+    InitWeaponsContainer();
+
+    importURL();
 };
 
 const optionSets = {
@@ -330,15 +341,15 @@ function setupButtonSearch() {
             }
         };
     });
-
 }
 
 function setupStaticButtons() {
-    document.querySelector("#export-button").onclick = () => {
+    //wikitext import/export
+    document.querySelector("#export-wikitext-button").onclick = () => {
         document.querySelector("#import-export-text").value = generateWikiTemplate();
     }
 
-    document.querySelector("#import-button").onclick = () => {
+    document.querySelector("#import-wikitext-button").onclick = () => {
         importWikiTextV2(document.querySelector("#import-export-text").value);
     }
 
@@ -348,6 +359,20 @@ function setupStaticButtons() {
         }
     }
 
+    //url exports
+    document.querySelector("#export-url-button").onclick = (e) => {
+        navigator.clipboard.writeText(exportURL());
+        e.target.textContent = "Copied!";
+        setTimeout(() => {
+            e.target.textContent = "Copy URL";
+        }, 2500)
+    }
+
+    document.querySelector("#open-url-button").onclick = () => {
+        window.open(exportURL(), "_blank");
+    }
+
+    //drawer buttons
     document.querySelector("#show-filters-button").onclick = e => {
         let collapsed = document.querySelector("#filters").classList.toggle("filter-transition");
         e.target.textContent = collapsed ? "↓ Hide Filters ↓" : "↑ Show Filters ↑";
@@ -361,11 +386,22 @@ function setupStaticButtons() {
     if (!getSetLocalStorage("extra-collapsed")) {
         document.querySelector("#collapse-extra-grid-button").click();
     }
+
+    document.querySelector("#unlimited-toggle-button").onclick = () => {
+        toggleUnlimited();
+    }
 }
 
-function getSetLocalStorage(key, value = null) {
-    if (value === null) return JSON.parse(localStorage.getItem(key));
-    localStorage.setItem(key, JSON.stringify(value));
+function toggleUnlimited() {
+    [...document.querySelectorAll(".team-members")].forEach(e => e.classList.toggle("unlimited"));
+    if (unlimited) {
+        [...document.querySelectorAll(".sub-members .grid-input")].forEach(e => e.style.backgroundImage = e.style.backgroundImage.replace("/s/", "/quest/"))
+    }
+    else {
+        [...document.querySelectorAll(".sub-members .grid-input")].forEach(e => e.style.backgroundImage = e.style.backgroundImage.replace("/quest/", "/s/"))
+    }
+    document.querySelector("#unlimited-toggle-button").classList.toggle("toggled");
+    unlimited = !unlimited;
 }
 
 ///
@@ -428,6 +464,7 @@ function gridInputContextMenu(event, button = null) {
 
     button.querySelector(".uncap")?.remove();
     button.querySelector(".w-awakening")?.remove();
+    button.querySelector(".c-awakening")?.remove();
     if (button.querySelector(".quick-summon-toggle")) {
         if (button.querySelector(".quick-summon-toggle").dataset.toggled == "true") delete teamData.quickSummon;
         button.querySelector(".quick-summon-toggle").remove();
@@ -529,9 +566,12 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
             if (["Manadiver", "Paladin", "Shieldsworn"].includes(itemName)) addClassGear(button, itemName);
             break;
         case 'characters':
+            if (parseInt(button.id.replace("char", "")) >= 6 && !unlimited) {
+                toggleUnlimited();
+            }
             let char = characters[selectedOption.metatags[0]];
             calcData.chars[button.id] = {
-                tags: [`element:${char.element}`, ...char.weapon.map(w => `weapon:${w}`), ...char.race.map(r => `race:${r}`)].map(e=>e.toLowerCase())
+                tags: [`element:${char.element}`, ...char.weapon.map(w => `weapon:${w}`), ...char.race.map(r => `race:${r}`)].map(e => e.toLowerCase())
             }
 
             if (button.querySelector(".c-awakening")) {
@@ -598,7 +638,7 @@ function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
             break;
         case 'characters':
             art = uncap == 5 ? 3 : uncap == 6 || uncap.toString().includes("t") ? 4 : 1;
-            backgroundUrl = `url('https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/npc/quest/${id}_0${art}.jpg')`;
+            backgroundUrl = `url('https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/npc/${unlimited && parseInt(button.id.replace("char","")) >= 4? "s" : "quest"}/${id}_0${art}.jpg')`;
             break;
         case 'weapons':
             art = uncap == 6 || uncap == "t5" ? "_03" : uncap.toString().includes("t") ? "_02" : "";
@@ -606,7 +646,11 @@ function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
             break;
         case 'summons':
             art = uncap == 6 || uncap == "t5" ? "_04" : uncap.toString().includes("t") ? "_03" : uncap == 5 && !summons[id].pageName.includes("SSR") && !beastSummons.includes(parseInt(id)) ? "_02" : "";
-            backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/summon/${button.parentElement.classList[0].includes("team") ? "m" : `party_${button.parentElement.classList[0].includes("main") ? "main" : "sub"}`}/${id}${art}.jpg')`;
+            let artType;
+            if (button.parentElement.classList[0].includes("team") || button.parentElement.classList[0] == "sub-summons") artType = "m";
+            else if (button.id == "s-main") artType = "party_main";
+            else artType = "party_sub";
+            backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/summon/${artType}/${id}${art}.jpg')`;
             break;
         case 'mino':
             backgroundUrl = `url(https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/familiar/s/${selectedOption.metatags[0]}.jpg)`
@@ -814,12 +858,12 @@ function addUncapButton(button, optionSet, selectedOption, uncap, id, trans) {
         button.appendChild(uncapButton);
     }
     else if (maxUncap === 6) {
-        teamData[button.id + "Trans"] = trans? trans : uncap == 6 ? "t5" : null;
+        teamData[button.id + "Trans"] = trans ? trans : uncap == 6 ? "t5" : null;
         teamData[button.id + "Uncap"] = uncap;
         uncapButton = document.createElement("button");
         uncapButton.classList.add("uncap-select");
         uncapButton.classList.add("uncap");
-        uncapButton.dataset.trans = trans? trans : uncap == 6 ? "t5" : null;
+        uncapButton.dataset.trans = trans ? trans : uncap == 6 ? "t5" : null;
         uncapButton.title = "Select Uncap";
         uncapButton.onclick = openTransDropdown;
         function openTransDropdown(e) {
@@ -871,7 +915,7 @@ function addUncapButton(button, optionSet, selectedOption, uncap, id, trans) {
 
 function addAwakeningButton(button, id, iAwk) {
     if (iAwk) {
-        iAwk = iAwk.toLowerCase().replaceAll(".","");
+        iAwk = iAwk.toLowerCase().replaceAll(".", "");
         switch (iAwk) {
             case "skill dmg": iAwk = "skill"; break;
             case "ma": iAwk = "multiattack"; break;
@@ -914,7 +958,7 @@ function addAwakeningButton(button, id, iAwk) {
     let awks = ["empty"];
     let awkType;
     if (button.id.includes("char")) {
-        awks=["balanced", "attack", "defense", "multiattack"];
+        awks = ["balanced", "attack", "defense", "multiattack"];
         if (!iAwk) iAwk = "balanced";
         awkType = "c";
     }
@@ -980,13 +1024,17 @@ function addAwakeningButton(button, id, iAwk) {
 /// Export / Import
 ///
 function generateWikiTemplate() {
-return `{{TeamSpread
+    return `{{TeamSpread
 |class=${getTeamData("mc")}${teamData.mino ? `|mino=${teamData.mino}` : ""}${teamData.shield ? `|shield=${teamData.shield}` : ""}
 |char1=${getCharacterInfo("char1")}
 |char2=${getCharacterInfo("char2")}
 |char3=${getCharacterInfo("char3")}
 |char4=${getCharacterInfo("char4")}
-|char5=${getCharacterInfo("char5")}
+|char5=${getCharacterInfo("char5")}${
+unlimited? `
+|char6=${getCharacterInfo("char6")}
+|char7=${getCharacterInfo("char7")}
+|char8=${getCharacterInfo("char8")}` : ""}
 |skill1=${getTeamData("skill1")}
 |skill2=${getTeamData("skill2")}
 |skill3=${getTeamData("skill3")}
@@ -1109,7 +1157,7 @@ function getCharacterInfo(characterSlot) {
     let trans = teamData[characterSlot + "Trans"];
     let awk = teamData[characterSlot + "Awk"];
     let slot = characterSlot.replace("char", "");
-    return `${character}${uncap > 4 || trans ? `|uchar${slot}=${trans? trans : uncap}` : ""}${awk != "balanced"? `|awkchar${slot}=${awk}` : ""}`;
+    return `${character}${uncap > 4 || trans ? `|uchar${slot}=${trans ? trans : uncap}` : ""}${awk != "balanced" ? `|awkchar${slot}=${awk}` : ""}`;
 }
 
 function getSummonInfo(summonSlot) {
@@ -1137,9 +1185,9 @@ function importWikiTextV2(inputData) {
     teamData = {};
     //strip input data into param
     let data = {};
-    let temp = inputData.replace("{{TeamSpread", "").replace("}}","").replaceAll("\n","").replace("}}","").split("|").filter(r=>r!="");
+    let temp = inputData.replace("{{TeamSpread", "").replace("}}", "").replaceAll("\n", "").replace("}}", "").split("|").filter(r => r != "");
     for (let i = 0; i < temp.length; i++) {
-        let [key,value] = temp[i].split("=");
+        let [key, value] = temp[i].split("=");
         data[key] = value;
     }
 
@@ -1176,11 +1224,11 @@ function importWikiTextV2(inputData) {
     if (data.ultima) setGridData("ultimaSkill3", data.ultima.split(",")[2]);
     if (data.draconic) setGridData("draconicSkill2", data.draconic.split(",")[0]);
     if (data.draconic) setGridData("draconicSkill3", data.draconic.split(",")[1]);
-    if (data.destroyer) setGridData("destroyerSkill3", data.destroyer, true);
-    if (data.ccw) setGridData("ccwSkill2", data.ccw, true);
+    if (data.destroyer) setGridData("destroyerSkill3", data.destroyer);
+    if (data.ccw) setGridData("ccwSkill2", data.ccw);
     //summons
     if (data.main) setGridData("s-main", data.main, { uncap: summons[`umain`] });
-    if (data.main) setGridData("s-support", data.support, { uncap: summons[`usupport`] });
+    if (data.support) setGridData("s-support", data.support, { uncap: summons[`usupport`] });
     for (let i = 1; i <= 4; i++) {
         let key = `s${i}`;
         if (!data[key]) continue;
@@ -1194,21 +1242,218 @@ function importWikiTextV2(inputData) {
         let value = data[key];
         setGridData(`s-sub${i}`, value, { uncap: data[`u${key}`] });
     }
-    if (data["quick"]) document.querySelector(`.summon-grid div[id*="${data["quick"]}"] .quick-summon-toggle`).click()
-
-    //helper function to get correct item from optionSet
-    function setGridData(key, value, options = {}) {
-        let button = document.querySelector(`#${key}`);
-        let optionSet = button.dataset.options;
-        let selectedOption;
-        selectedOption = optionSets[optionSet].find(option => option.label == value);
-        if (selectedOption == null) {
-            selectedOption = optionSets[optionSet].find(option => option.metatags.includes(value.toLowerCase()));
-        }
-        if (!selectedOption) alert(`There was an issue reading the value for ${key}. Please double check it is spelled and capitalized correctly.`)
-        setButtonToItem(button, optionSet, selectedOption, options.uncap ? options.uncap : null, options);
-    }
+    if (data["quick"]) document.querySelector(`.summon-grid div[id*="${data["quick"]}"] .quick-summon-toggle`).click();
 }
+
+//helper function to get correct item from optionSet
+function setGridData(key, value, options = {}) {
+    let button = document.querySelector(`#${key}`);
+    let optionSet = button.dataset.options;
+    let selectedOption;
+    selectedOption = optionSets[optionSet].find(option => option.label == value);
+    if (selectedOption == null) {
+        selectedOption = optionSets[optionSet].find(option => option.metatags.includes(value.toLowerCase()));
+    }
+    if (!selectedOption) alert(`There was an issue reading the value for ${key}. Please double check it is spelled and capitalized correctly.`)
+    setButtonToItem(button, optionSet, selectedOption, options.uncap ? options.uncap : null, options);
+}
+
+function exportURL() {
+    let char = [], weap = [], summ = [], mc = [], wskill = [];
+    //characters
+    for (let i = 1; i <= 8; i++) {
+        key = `char${i}`;
+        if (teamData[key]) {
+            let id = (characterIDs[teamData[key]] - 3000000000) / 1000;
+            char.push(decimalToBase62(id));
+            if (teamData[`${key}Trans`]) char.push(`.${teamData[`${key}Trans`]}`);
+            else if (teamData[`${key}Uncap`] > 4) char.push(`.${teamData[`${key}Uncap`]}`);
+            if (teamData[`${key}Awk`]) {
+                let awk = teamData[`${key}Awk`];
+                switch (awk) {
+                    case "balanced": awk = 0; break;
+                    case "attack": awk = 1; break;
+                    case "defense": awk = 2; break;
+                    case "multiattack": awk = 3; break;
+                }
+                if (awk > 0) char.push(`$${awk}`);
+            }
+        }
+        if (i < 8) char.push(",")
+    }
+    while (char.length && char.at(-1) === ",") char.pop();
+    //weapons
+    for (let i = 0; i <= 12; i++) {
+        let key = i == 0 ? `mh` : `wp${i}`;
+        if (teamData[key]) {
+            let id = (weaponIDs[teamData[key]].replace("_note", "") - 1000000000) / 100;
+            weap.push(decimalToBase62(id));
+            if (teamData[`${key}Trans`] && teamData[`${key}Trans`] != "t5") weap.push(`.${teamData[`${key}Trans`]}`);
+            else if (teamData[`${key}Uncap`] !== weapons[weaponIDs[teamData[key]]].maxUncap) weap.push(`.${teamData[`${key}Uncap`]}`);
+            if (teamData[`${key}Awk`]) {
+                let awk = teamData[`${key}Awk`];
+                switch (awk) {
+                    case "attack": awk = 1; break;
+                    case "defense": awk = 2; break;
+                    case "special": awk = 3; break;
+                    case "skill": awk = 4; break;
+                    case "ca": awk = 5; break;
+                    case "healing": awk = 6; break;
+                }
+                if (awk) weap.push(`$${awk}`);
+            }
+        }
+        if (i < 12) weap.push(",")
+    }
+    while (weap.length && weap.at(-1) === ",") weap.pop();
+    //summons
+    for (let i = 1; i <= 8; i++) {
+        let key;
+        if (i < 5) key = `s${i}`;
+        else if (i < 7) key = `s-sub${i - 4}`;
+        else if (i == 7) key = `s-main`;
+        else if (i == 8) key = `s-support`;
+        if (teamData[key]) {
+            let id = (summonIDs[teamData[key]] - 2000000000) / 1000;
+            summ.push(decimalToBase62(id));
+            if (teamData[`${key}Trans`] && teamData[`${key}Trans`] != "t5") summ.push(`.${teamData[`${key}Trans`]}`);
+            else if (teamData[`${key}Uncap`] !== summons[summonIDs[teamData[key]]].maxUncap) summ.push(`.${teamData[`${key}Uncap`]}`);
+        }
+        if (i < 8) summ.push(",");
+    }
+    while (summ.length && summ.at(-1) === ",") summ.pop();
+    //mc info
+    if (teamData.mc) mc.push(decimalToBase62(classes[teamData.mc].id));
+    for (let i = 1; i <= 3; i++) {
+        let key = `skill${i}`;
+        if (!teamData[key]) continue;
+        mc.push(",");
+        let id = abilities[teamData[key]].id.split("_");
+        id[0] = decimalToBase62(id[0]);
+        mc.push(id.join("_"));
+    }
+    //selectable weapon skills
+    if (teamData.ccwSkill2) {
+        wskill.push(`&ccw=${teamData.ccwSkill2}`);
+    }
+    if (teamData.opusSkill2 || teamData.opusSkill3) {
+        wskill.push(`&opus=${teamData.opusSkill2 || ""},${teamData.opusSkill3 || ""}`);
+    }
+    if (teamData.ultimaSkill1 || teamData.ultimaSkill2 || teamData.ultimaSkill3) {
+        wskill.push(`&ulti=${teamData.ultimaSkill1 || ""},${teamData.ultimaSkill2 || ""},${teamData.ultimaSkill3 || ""}`);
+    }
+    if (teamData.draconicSkill2 || teamData.draconicSkill3) {
+        wskill.push(`&drac=${teamData.draconicSkill2 || ""},${teamData.draconicSkill3 || ""}`);
+    }
+    if (teamData.destroyerSkill3) {
+        wskill.push(`&dest=${teamData.destroyerSkill3}`);
+    }
+
+    return window.location.origin + window.location.pathname + `?c=${char.join("")}&w=${weap.join("")}&s=${summ.join("")}&mc=${mc.join("")}${teamData.quickSummon ? `&qs=${teamData.quickSummon}` : ""}${wskill.join("")}`;
+}
+
+function importURL() {
+    //clear existing data
+    document.querySelectorAll(".grid-input").forEach(button => {
+        gridInputContextMenu(null, button);
+    });
+    teamData = {};
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.size == 0) return;
+
+    const charData = params.get("c").split(",");
+    if (charData != "") {
+        for (let i = 0; i < charData.length; i++) {
+            if (charData[i] == "") continue;
+            let [char, awk] = charData[i].split("$");
+            let [id, uncap] = char.split(".");
+            id = base62ToDecimal(id) * 1000 + 3000000000;
+            switch (awk) {
+                case "1": awk = "attack"; break;
+                case "2": awk = "defense"; break;
+                case "3": awk = "multiattack"; break;
+            }
+            setGridData(`char${i + 1}`, characters[id].pageName, { uncap: uncap, awk: awk, trans: uncap });
+        }
+    }
+
+    const weapData = params.get("w").split(",");
+    if (weapData != "") {
+        for (let i = 0; i < weapData.length; i++) {
+            if (weapData[i] == "") continue;
+            let [weap, awk] = weapData[i].split("$");
+            let [id, uncap] = weap.split(".");
+            id = base62ToDecimal(id) * 100 + 1000000000;
+            switch (awk) {
+                case "1": awk = "attack"; break;
+                case "2": awk = "defense"; break;
+                case "3": awk = "special"; break;
+                case "4": awk = "skill"; break;
+                case "5": awk = "ca"; break;
+                case "6": awk = "healing"; break;
+            }
+            setGridData(i == 0 ? `mh` : `wp${i}`, weapons[id].pageName, { uncap: uncap, awk: awk, trans: uncap });
+        }
+    }
+
+    const summData = params.get("s").split(",");
+    if (summData.length > 0) {
+        const summonSlots = ["s1", "s2", "s3", "s4", "s-sub1", "s-sub2", "s-main", "s-support"];
+        for (let i = 0; i < summData.length && i < summonSlots.length; i++) {
+            if (summData[i] == "") continue;
+            let [id, uncap] = summData[i].split(".");
+            id = base62ToDecimal(id) * 1000 + 2000000000;
+
+            setGridData(summonSlots[i], summons[id].pageName, { uncap: uncap, trans: uncap });
+        }
+    }
+
+    const mcData = params.get("mc").split(",");
+    if (mcData != "") {
+        let clID = base62ToDecimal(mcData[0]);
+        setGridData("mc", clID.toString());
+        for (let i = 1; i < mcData.length; i++) {
+            let skill = mcData[i].split("_");
+            skill[0] = base62ToDecimal(skill[0]);
+
+            setGridData(`skill${i}`, skill.join("_"));
+        }
+    }
+
+    // Selectable weapon skills
+    const ccw = params.get("ccw");
+    if (ccw) setGridData("ccwSkill2", ccw);
+
+    const opus = params.get("opus");
+    if (opus) {
+        const opusSkills = opus.split(",");
+        if (opusSkills[0]) setGridData("opusSkill2", opusSkills[0]);
+        if (opusSkills[1]) setGridData("opusSkill3", opusSkills[1]);
+    }
+
+    const ulti = params.get("ulti");
+    if (ulti) {
+        const ultimaSkills = ulti.split(",");
+        if (ultimaSkills[0]) setGridData("ultimaSkill1", ultimaSkills[0]);
+        if (ultimaSkills[1]) setGridData("ultimaSkill2", ultimaSkills[1]);
+        if (ultimaSkills[2]) setGridData("ultimaSkill3", ultimaSkills[2]);
+    }
+
+    const draconic = params.get("drac");
+    if (draconic) {
+        const draconicSkills = draconic.split(",");
+        if (draconicSkills[0]) setGridData("draconicSkill2", draconicSkills[0]);
+        if (draconicSkills[1]) setGridData("draconicSkill3", draconicSkills[1]);
+    }
+
+    const dest = params.get("dest");
+    if (dest) setGridData("destroyerSkill3", dest);
+
+    const quick = params.get("qs");
+    if (quick) document.querySelector(`.summon-grid div[id*="${quick}"] .quick-summon-toggle`).click();
+}
+
 ///
 /// Stat Calcs
 ///
@@ -1256,7 +1501,7 @@ function addSummonAuraCalc(summonSlot, summonID, uncap) {
     }
 }
 
-function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {   
+function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
     if (!enableCalcs) return;
     const missingSkill = () => {
         let weap = document.querySelector(`#${weaponSlot}`);
@@ -1267,7 +1512,7 @@ function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
         weap.appendChild(warn);
         console.log(`${skill} does not have skill data.`);
     }
-    let skillLevel = teamData[weaponSlot + "Trans"]? teamData[weaponSlot + "Trans"] : teamData[weaponSlot + "Uncap"];
+    let skillLevel = teamData[weaponSlot + "Trans"] ? teamData[weaponSlot + "Trans"] : teamData[weaponSlot + "Uncap"];
     switch (skillLevel) {
         default: skillLevel = 10; break;
         case 4: skillLevel = 15; break;
@@ -1341,9 +1586,9 @@ function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
 function addAwakeningStats(button, weapon, awk) {
     if (!enableCalcs) return;
     //TODO: handle character awakening
-    calcData.wSkills = calcData.wSkills.filter(s=>s.addedBy != `${button.id}Awk`);
+    calcData.wSkills = calcData.wSkills.filter(s => s.addedBy != `${button.id}Awk`);
     let stats;
-    awk = awk.replaceAll(".","");
+    awk = awk.replaceAll(".", "");
     switch (awk) {
         case "attack":
             switch (weapon.awakening) {
