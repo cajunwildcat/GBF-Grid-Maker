@@ -1313,7 +1313,7 @@ function exportURL() {
         let key;
         if (i == 0) key = `s-main`;
         else if (i < 5) key = `s${i}`;
-        else if (i < 6) key = `s-sub${i - 4}`;
+        else if (i < 7) key = `s-sub${i - 4}`;
         else if (i == 7) key = `s-support`;
         if (teamData[key]) {
             let id = (summonIDs[teamData[key]] - 2000000000) / 1000;
@@ -1333,6 +1333,12 @@ function exportURL() {
         let id = abilities[teamData[key]].id.split("_");
         id[0] = decimalToBase62(id[0]);
         mc.push(id.join("_"));
+    }
+    if (teamData.shield) {
+        mc.push(`&shield=${Object.values(shieldOptions).find(v=>v.metatags.includes(teamData.shield)).metatags[0]}`);
+    }
+    if (teamData.mino) {
+        mc.push(`&mino=${Object.values(minoOptions).find(v=>v.metatags.includes(teamData.mino)).metatags[0]}`);
     }
     //selectable weapon skills
     if (teamData.ccwSkill2) {
@@ -1423,6 +1429,10 @@ function importURL() {
             setGridData(`skill${i}`, skill.join("_"));
         }
     }
+    const shield = params.get("shield");
+    if (shield) setGridData("shield", shield);
+    const mino = params.get("mino");
+    if (mino) setGridData("mino", mino);
 
     // Selectable weapon skills
     const ccw = params.get("ccw");
