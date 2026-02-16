@@ -19,10 +19,10 @@ once the action is done it updates the branch after which the automatic github a
 - Character awakening dropdown should not be transparent when balanced is selected
 
 - Pull mino, shield data from wiki
- - Skills should default to hardcoded icons and fallback to wiki icons
-  - Need to parse wiki icons to just ID
- - Classes should be auto-filtered to row IV/V, EX II, and origin
- - Shorthand names for class equipment will have to be hard coded, but full name fallbacks should work automatically
+  - Skills should default to hardcoded icons and fallback to wiki icons
+    - Need to parse wiki icons to just ID
+  - Classes should be auto-filtered to row IV/V, EX II, and origin
+  - Shorthand names for class equipment will have to be hard coded, but full name fallbacks should work automatically
 
 - Add aliases to `aliases.js` and `weights.js`
     - aliases should only be names that are not already part of the name
@@ -32,10 +32,10 @@ once the action is done it updates the branch after which the automatic github a
 
 ## Medium Priority
 - Grid stat calc
- - Pull weapon skill data from wiki to match weapon uncap with proper skills (opus s1)
- - Add calc support for selectable weapon skills
- - Add UI for showing per character stats
- - Re-calc weapon skills and summon auras when changing uncap
+  - Pull weapon skill data from wiki to match weapon uncap with proper skills (opus s1)
+  - Add calc support for selectable weapon skills
+  - Add UI for showing per character stats
+  - Re-calc weapon skills and summon auras when changing uncap
 
 ## Low Priority
 - Summon uncap selection under image like wiki
