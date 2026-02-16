@@ -863,7 +863,8 @@ function addUncapButton(button, optionSet, selectedOption, uncap, id, trans) {
         uncapButton = document.createElement("button");
         uncapButton.classList.add("uncap-select");
         uncapButton.classList.add("uncap");
-        uncapButton.dataset.trans = trans ? trans : uncap == 6 ? "t5" : null;
+        //TODO: fix trans dataset and change background image to be controlled by it
+        uncapButton.dataset.trans = trans ? trans : uncap == 6 ? "t5" : uncap;
         uncapButton.title = "Select Uncap";
         uncapButton.onclick = openTransDropdown;
         function openTransDropdown(e) {
@@ -1312,7 +1313,7 @@ function exportURL() {
         let key;
         if (i == 0) key = `s-main`;
         else if (i < 5) key = `s${i}`;
-        else if (i < 6) key = `s-sub${i - 4}`;
+        else if (i < 7) key = `s-sub${i - 4}`;
         else if (i == 7) key = `s-support`;
         if (teamData[key]) {
             let id = (summonIDs[teamData[key]] - 2000000000) / 1000;
@@ -1332,6 +1333,12 @@ function exportURL() {
         let id = abilities[teamData[key]].id.split("_");
         id[0] = decimalToBase62(id[0]);
         mc.push(id.join("_"));
+    }
+    if (teamData.shield) {
+        mc.push(`&shield=${Object.values(shieldOptions).find(v=>v.metatags.includes(teamData.shield)).metatags[0]}`);
+    }
+    if (teamData.mino) {
+        mc.push(`&mino=${Object.values(minoOptions).find(v=>v.metatags.includes(teamData.mino)).metatags[0]}`);
     }
     //selectable weapon skills
     if (teamData.ccwSkill2) {
@@ -1422,6 +1429,10 @@ function importURL() {
             setGridData(`skill${i}`, skill.join("_"));
         }
     }
+    const shield = params.get("shield");
+    if (shield) setGridData("shield", shield);
+    const mino = params.get("mino");
+    if (mino) setGridData("mino", mino);
 
     // Selectable weapon skills
     const ccw = params.get("ccw");

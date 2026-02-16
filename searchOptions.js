@@ -39,7 +39,7 @@ const ultimaSkillOptions = {
         { label: "Courage", metatags: ["crit", "courage", "ars"], img: "https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/skill/skill_weapon_tech_<weapon type>.png" },
     ],
     skill2: [
-        { label: "Atuo", metatags: ["auto", "Gauph Key α", "normal", "alpha"], img: "https://gbf.wiki/images/thumb/f/f6/Ws_skill_normal_limit.png/50px-Ws_skill_normal_limit.png" },
+        { label: "Auto", metatags: ["auto", "Gauph Key α", "normal", "alpha"], img: "https://gbf.wiki/images/thumb/f/f6/Ws_skill_normal_limit.png/50px-Ws_skill_normal_limit.png" },
         { label: "Skill", metatags: ["skill", "Gauph Key β", "beta"], img: "https://gbf.wiki/images/thumb/6/60/Ws_skill_ability_limit.png/50px-Ws_skill_ability_limit.png" },
         { label: "Charge Attack", metatags: ["ca", "Gauph Key γ", "gamma", "ougi", "charge attack"], img: "https://gbf.wiki/images/thumb/b/b7/Ws_skill_special_limit.png/50px-Ws_skill_special_limit.png" },
         { label: "Chain Burst", metatags: ["cb", "Gauph Key Δ", "delta", "chain burst"], img: "https://gbf.wiki/images/thumb/1/13/Ws_skill_chain_limit.png/50px-Ws_skill_chain_limit.png" },
@@ -121,6 +121,7 @@ const shieldOptions = [
     { label: "Eth Ckalb Ldeysh", metatags: ["4017", "fediel", "eth ckalb ldeysh"] },
     { label: "Moonhill", metatags: ["4018", "dias", "diaspora", "moonhill"] },
     { label: "Shield of Tenets", metatags: ["4019", "subhl", "subbie", "tenets", "shield of tenets"] },
-    { label: "Shield of Tenets", metatags: ["4020", "world"] },
-    { label: "Shield of Tenets", metatags: ["4021", "anima animus", "aniani"] },
+    { label: "New World Shield", metatags: ["4020", "world"] },
+    { label: "Anima Animus Shield", metatags: ["4021", "anima animus", "aniani"] },
+    { label: "ESV Shield (Man-Portable)", metatags: ["4022", "eva"] },
 ]
