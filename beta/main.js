@@ -863,7 +863,8 @@ function addUncapButton(button, optionSet, selectedOption, uncap, id, trans) {
         uncapButton = document.createElement("button");
         uncapButton.classList.add("uncap-select");
         uncapButton.classList.add("uncap");
-        uncapButton.dataset.trans = trans ? trans : uncap == 6 ? "t5" : null;
+        //TODO: fix trans dataset and change background image to be controlled by it
+        uncapButton.dataset.trans = trans ? trans : uncap == 6 ? "t5" : uncap;
         uncapButton.title = "Select Uncap";
         uncapButton.onclick = openTransDropdown;
         function openTransDropdown(e) {
