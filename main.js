@@ -6,7 +6,7 @@ let clOptions = [];
 let elements = { "fire": 1, "water": 2, "earth": 3, "wind": 4, "light": 5, "dark": 6 };
 let weaponTypes = { "sabre": 1, "dagger": 2, "spear": 3, "axe": 4, "staff": 5, "gun": 6, "melee": 7, "bow": 8, "harp": 9, "katana": 10 };
 let worldHarps = [1040815000, 1040815100, 1040815200, 1040815300, 1040815400];
-let beastSummons = [2040376000, 2040377000, 2040378000, 2040379000]
+let beastSummons = [2040376000, 2040377000, 2040378000, 2040379000, 2040449000, 2040450000]
 let teamData = {};
 let calcData = { wSkills: [], chars: {}, auraBoosts: {} };
 let characters, summons, weapons, abilities, classes;

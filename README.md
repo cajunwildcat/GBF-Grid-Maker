@@ -14,6 +14,8 @@ once the action is done it updates the branch after which the automatic github a
 
 # TODO:
 ## High Priority:
+- Refactor to change `teamData` to store item IDs instead of EN names
+
 - Export shield/mino to URL
 
 - Character awakening dropdown should not be transparent when balanced is selected
