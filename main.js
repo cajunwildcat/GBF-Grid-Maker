@@ -985,6 +985,7 @@ function addAwakeningButton(button, id, iAwk) {
     function openAwakeningDropdown(e) {
         e.stopPropagation();
         hideDropdown();
+        awkButton.style.opacity = "1";
         awkButton.onclick = closeAwakeningDropdown;
         let dropdown = document.createElement("div");
         dropdown.classList.add("dropdown");
@@ -1009,6 +1010,7 @@ function addAwakeningButton(button, id, iAwk) {
     }
     function closeAwakeningDropdown(e) {
         e.stopPropagation();
+        awkButton.style.opacity = "";
         awkButton.querySelector("#awakening-dropdown")?.remove();
         awkButton.onclick = openAwakeningDropdown;
     }
