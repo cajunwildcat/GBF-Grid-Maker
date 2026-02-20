@@ -16,9 +16,9 @@ once the action is done it updates the branch after which the automatic github a
 ## High Priority:
 - Refactor to change `teamData` to store item IDs instead of EN names
 
-- Export shield/mino to URL
-
-- Character awakening dropdown should not be transparent when balanced is selected
+- Add help button
+   - Lists controls and links to the import bookmarklets
+   - Section for user input aliases/weights?
 
 - Pull mino, shield data from wiki
   - Skills should default to hardcoded icons and fallback to wiki icons
@@ -31,6 +31,11 @@ once the action is done it updates the branch after which the automatic github a
         - e.g. "Colo" is not an acceptable alias for "Colossus Omega" since it is already part of the name
 
 - Enforce single weapon series restriction
+
+- Add image generation/exporting
+  - Check if html to image libraries other than `snapdom` can render github images without converting to base:64 blobs
+  - Setup GrandCypher script for downloading the rest of the images
+  - Convert the existing image code to use github images instead of actual game images
 
 ## Medium Priority
 - Grid stat calc
