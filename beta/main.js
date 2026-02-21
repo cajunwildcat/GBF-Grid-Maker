@@ -1482,6 +1482,9 @@ async function copyImage() {
     const popup = document.createElement("div");
     popup.id = "image-popup";
     document.body.append(popup);
+    [...document.querySelectorAll(`.quick-summon-toggle[data-toggled="false"]`)].forEach(e=>{
+        e.style.opacity = 0;
+    });
     const result = await snapdom(document.querySelector("#team-spread"));
     const png = await result.toPng();
     popup.append(png);
@@ -1491,6 +1494,9 @@ async function copyImage() {
     }
     popup.querySelector("#close-image-button").onclick = () => {
         popup.remove();
+        [...document.querySelectorAll(`quick-summon-toggle[data-toggled="false"]`)].forEach(e=>{
+        e.style.opacity = "";
+    });
     }
 }
 ///
