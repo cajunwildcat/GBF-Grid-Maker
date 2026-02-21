@@ -19,6 +19,7 @@ let filters = {
 }
 let unlimited = false;
 let jp = true;
+let djeeta = true;
 
 const useTestData = false;
 const enableCalcs = false;
@@ -102,6 +103,9 @@ window.onload = async (e) => {
         let w = weapons[id];
         let name = w.pageName;
         weaponIDs[name] = id;
+        if (w.skill1.icon) w.skill1.icon = w.skill1.icon.replace(".png", "");
+        if (w.skill2.icon) w.skill2.icon = w.skill2.icon.replace(".png", "");
+        if (w.skill3.icon) w.skill3.icon = w.skill3.icon.replace(".png", "");
 
         let weight = 0;
         if (weights[name]) weight = weights[name];
@@ -130,7 +134,7 @@ window.onload = async (e) => {
     for (let ability in abilities) {
         if (abilities[ability].ix == "s1" || abilityExclusions.includes(ability)) continue;
 
-        let metas = [ability, abilities[ability].id];
+        let metas = [abilities[ability].id];
         if (alias = (aliases[ability])) {
             metas.push(...alias);
         }
@@ -391,15 +395,17 @@ function setupStaticButtons() {
     document.querySelector("#unlimited-toggle-button").onclick = () => {
         toggleUnlimited();
     }
+
+    document.querySelector("#download-image-button").onclick = exportImage;
 }
 
 function toggleUnlimited() {
     [...document.querySelectorAll(".team-members")].forEach(e => e.classList.toggle("unlimited"));
     if (unlimited) {
-        [...document.querySelectorAll(".sub-members .grid-input")].forEach(e => e.style.backgroundImage = e.style.backgroundImage.replace("/s/", "/quest/"))
+        [...document.querySelectorAll(".sub-members .grid-input")].forEach(e => e.style.backgroundImage = e.style.backgroundImage.replace("/square/", "/tall/"))
     }
     else {
-        [...document.querySelectorAll(".sub-members .grid-input")].forEach(e => e.style.backgroundImage = e.style.backgroundImage.replace("/quest/", "/s/"))
+        [...document.querySelectorAll(".sub-members .grid-input")].forEach(e => e.style.backgroundImage = e.style.backgroundImage.replace("/tall/", "/square/"))
     }
     document.querySelector("#unlimited-toggle-button").classList.toggle("toggled");
     unlimited = !unlimited;
@@ -629,35 +635,38 @@ function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
     let backgroundUrl = '';
     switch (optionSet) {
         case 'skills':
-            backgroundUrl = `https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/ability/m/${abilityIcons[selectedOption.label]}.png`;
+            backgroundUrl = `https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/abilities/${id}.webp`;
             button.querySelector("img").src = backgroundUrl;
             button.querySelector("span").textContent = selectedOption.label;
             teamData[button.id] = selectedOption.label;
             return;
         case 'classes':
-            backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/leader/quest/${id}_1_01.jpg')`;
+            let mc = djeeta? "1" : "0";
+            backgroundUrl = `url('https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/classes/tall/${id}_1.webp')`;
             break;
         case 'characters':
             art = uncap == 5 ? 3 : uncap == 6 || uncap.toString().includes("t") ? 4 : 1;
-            backgroundUrl = `url('https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/npc/${unlimited && parseInt(button.id.replace("char","")) >= 4? "s" : "quest"}/${id}_0${art}.jpg')`;
+            type = unlimited && parseInt(button.id.replace("char","")) >= 4? "square" : "tall";
+            backgroundUrl = `url('https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/characters/${type}/${id}_0${art}.webp')`;
             break;
         case 'weapons':
             art = uncap == 6 || uncap == "t5" ? "_03" : uncap.toString().includes("t") ? "_02" : "";
-            backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/weapon/${button.parentElement.classList[0].includes("main") ? "ls" : "m"}/${id}${art}.jpg')`;
+            type = button.parentElement.classList[0].includes("main") ? "mainhand" : "icon";
+            backgroundUrl = `url('https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/weapons/${type}/${id}${art}.webp')`;
             break;
         case 'summons':
             art = uncap == 6 || uncap == "t5" ? "_04" : uncap.toString().includes("t") ? "_03" : uncap == 5 && !summons[id].pageName.includes("SSR") && !beastSummons.includes(parseInt(id)) ? "_02" : "";
-            let artType;
-            if (button.parentElement.classList[0].includes("team") || button.parentElement.classList[0] == "sub-summons") artType = "m";
-            else if (button.id == "s-main") artType = "party_main";
-            else artType = "party_sub";
-            backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/summon/${artType}/${id}${art}.jpg')`;
+            type;
+            if (button.parentElement.classList[0].includes("team") || button.parentElement.classList[0] == "sub-summons") type = "icon";
+            else if (button.id == "s-main") type = "party_main";
+            else type = "party_sub";
+            backgroundUrl = `url('https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/summons/${type}/${id}${art}.webp')`;
             break;
         case 'mino':
-            backgroundUrl = `url(https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/familiar/s/${selectedOption.metatags[0]}.jpg)`
+            backgroundUrl = `url(https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/familiar/s/${id}.jpg)`
             break;
         case 'shield':
-            backgroundUrl = `url(https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/shield/s/${selectedOption.metatags[0]}.jpg)`
+            backgroundUrl = `url(https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/shield/s/${id}.jpg)`
             break;
         case 'opusSkill2':
         case 'opusSkill3':
@@ -683,8 +692,8 @@ function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
     button.style.backgroundImage = backgroundUrl;
     if (button.id == "s-main") {
         let otherButton = Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0];
-        if (backgroundUrl.includes("/m/")) backgroundUrl = backgroundUrl.replace("/m/", "/party_main/");
-        else backgroundUrl = backgroundUrl.replace("/party_main/", "/m/");
+        if (backgroundUrl.includes("/icon/")) backgroundUrl = backgroundUrl.replace("/icon/", "/party_main/");
+        else backgroundUrl = backgroundUrl.replace("/party_main/", "/icon/");
         otherButton.style.backgroundImage = backgroundUrl;
     }
 }
@@ -748,7 +757,7 @@ function addWeaponSkills(button, weaponID, uncap) {
         else {
             skill = document.createElement("img");
             skill.title = weapon.skill1.name;
-            skill.src = `https://gbf.wiki/thumb.php?f=${weapon.skill1.icon}&w=33`;
+            skill.src = `https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/weapons/skills/${weapon.skill1.icon}.webp`;
         }
         skills.appendChild(skill);
         addWeaponSkillCalcData(weapon.skill1, button.id);
@@ -774,7 +783,7 @@ function addWeaponSkills(button, weaponID, uncap) {
         else {
             skill = document.createElement("img");
             skill.title = weapon.skill2.name;
-            skill.src = `https://gbf.wiki/thumb.php?f=${weapon.skill2.icon}&w=33`;
+            skill.src = `https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/weapons/skills/${weapon.skill2.icon}.webp`;
         }
         skills.appendChild(skill);
         addWeaponSkillCalcData(weapon.skill2, button.id);
@@ -802,7 +811,7 @@ function addWeaponSkills(button, weaponID, uncap) {
         else {
             skill = document.createElement("img");
             skill.title = weapon.skill3.name;
-            skill.src = `https://gbf.wiki/thumb.php?f=${weapon.skill3.icon}&w=33`;
+            skill.src = `https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/weapons/skills/${weapon.skill3.icon}.webp`;
         }
         skills.appendChild(skill);
         addWeaponSkillCalcData(weapon.skill3, button.id);
@@ -1469,6 +1478,10 @@ function importURL() {
     if (quick) document.querySelector(`.summon-grid div[id*="${quick}"] .quick-summon-toggle`).click();
 }
 
+async function exportImage() {
+    const result = await snapdom(document.querySelector("#team-spread"));
+    await result.download({format: "png", filename: "granblue team"});
+}
 ///
 /// Stat Calcs
 ///
