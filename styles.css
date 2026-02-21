@@ -62,10 +62,6 @@ ul {
         'c d';
         gap: 6px;
         max-width: 272px;
-        
-        #export-url-button {
-            grid-area: c;
-        }
     }
     
     #import-export-text {
