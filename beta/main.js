@@ -396,7 +396,7 @@ function setupStaticButtons() {
         toggleUnlimited();
     }
 
-    document.querySelector("#download-image-button").onclick = exportImage;
+    document.querySelector("#copy-image-button").onclick = copyImage;
 }
 
 function toggleUnlimited() {
@@ -1478,9 +1478,20 @@ function importURL() {
     if (quick) document.querySelector(`.summon-grid div[id*="${quick}"] .quick-summon-toggle`).click();
 }
 
-async function exportImage() {
+async function copyImage() {
+    const popup = document.createElement("div");
+    popup.id = "image-popup";
+    document.body.append(popup);
     const result = await snapdom(document.querySelector("#team-spread"));
-    await result.download({format: "png", filename: "granblue team"});
+    const png = await result.toPng();
+    popup.append(png);
+    popup.innerHTML += ("<div><button id='download-image-button'>Download</button></div><button id='close-image-button'>X</button>");
+    popup.querySelector("#download-image-button").onclick = async () => {
+        await result.download({format: "png", filename: "granblue team"});
+    }
+    popup.querySelector("#close-image-button").onclick = () => {
+        popup.remove();
+    }
 }
 ///
 /// Stat Calcs
