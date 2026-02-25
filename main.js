@@ -642,7 +642,7 @@ function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
             return;
         case 'classes':
             let mc = djeeta? "1" : "0";
-            backgroundUrl = `url('https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/classes/tall/${id}_1.webp')`;
+            backgroundUrl = `url('https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/classes/tall/${id}_${mc}.webp')`;
             break;
         case 'characters':
             art = uncap == 5 ? 3 : uncap == 6 || uncap.toString().includes("t") ? 4 : 1;
@@ -655,8 +655,7 @@ function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
             backgroundUrl = `url('https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/weapons/${type}/${id}${art}.webp')`;
             break;
         case 'summons':
-            art = uncap == 6 || uncap == "t5" ? "_04" : uncap.toString().includes("t") ? "_03" : uncap == 5 && !summons[id].pageName.includes("SSR") && !beastSummons.includes(parseInt(id)) ? "_02" : "";
-            type;
+            art = uncap == 6 || uncap == "t5" ? "_04" : uncap.toString().includes("t") ? "_03" : uncap == 5 && !summons[id].pageName.includes("SSR") && !beastSummons.includes(parseInt(id)) || (uncap == 4 && id == 2040430000)? "_02" : "";
             if (button.parentElement.classList[0].includes("team") || button.parentElement.classList[0] == "sub-summons") type = "icon";
             else if (button.id == "s-main") type = "party_main";
             else type = "party_sub";
