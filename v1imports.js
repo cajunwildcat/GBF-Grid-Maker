@@ -84,3 +84,18 @@ function importDataV1(data) {
         setButtonToItem(button, optionSet, selectedOption, options.uncap ? options.uncap : null, options);
     }
 }
+
+const artToUncap = (art) => {
+    switch (art) {
+        case "D": return 6;
+        case "C": return 5;
+        default: return 4;
+    }
+}
+const uncapToArt = (uncap) => {
+    switch (uncap) {
+        case 6: return "D";
+        case 5: return "C";
+        default: return "A";
+    }
+}
