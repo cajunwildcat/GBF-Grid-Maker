@@ -3,6 +3,8 @@ let wOptions = [];
 let sOptions = [];
 let aOptoins = [];
 let clOptions = [];
+let minoOptions = [];
+let shieldOptions = [];
 const elements = { "fire": 1, "water": 2, "earth": 3, "wind": 4, "light": 5, "dark": 6 };
 const weaponTypes = { "sabre": 1, "dagger": 2, "spear": 3, "axe": 4, "staff": 5, "gun": 6, "melee": 7, "bow": 8, "harp": 9, "katana": 10 };
 const worldHarps = [1040815000, 1040815100, 1040815200, 1040815300, 1040815400];
@@ -10,7 +12,7 @@ const beastSummons = [2040376000, 2040377000, 2040378000, 2040379000, 2040449000
 const auxClasses = ["Gladiator", "Chrysaor", "Iatromantis", "Street King", "Viking"];
 let teamData = {};
 let calcData = { wSkills: [], chars: {}, auraBoosts: {} };
-let characters, summons, weapons, abilities, classes;
+let characters, summons, weapons, abilities, classes, minos, shields;
 let characterIDs = {}, summonIDs = {}, weaponIDs = {};
 let filters = {
     characters: ["any"],
@@ -19,6 +21,7 @@ let filters = {
 }
 let unlimited = false;
 let jp = true;
+let djeeta = true;
 
 const useTestData = false;
 const enableCalcs = false;
@@ -102,6 +105,9 @@ window.onload = async (e) => {
         let w = weapons[id];
         let name = w.pageName;
         weaponIDs[name] = id;
+        if (w.skill1.icon) w.skill1.icon = w.skill1.icon.replace(".png", "");
+        if (w.skill2.icon) w.skill2.icon = w.skill2.icon.replace(".png", "");
+        if (w.skill3.icon) w.skill3.icon = w.skill3.icon.replace(".png", "");
 
         let weight = 0;
         if (weights[name]) weight = weights[name];
@@ -130,7 +136,7 @@ window.onload = async (e) => {
     for (let ability in abilities) {
         if (abilities[ability].ix == "s1" || abilityExclusions.includes(ability)) continue;
 
-        let metas = [ability, abilities[ability].id];
+        let metas = [abilities[ability].id];
         if (alias = (aliases[ability])) {
             metas.push(...alias);
         }
@@ -142,7 +148,7 @@ window.onload = async (e) => {
         });
     }
 
-    await fetch(useTestData ? "./test data/classes.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/classes.json", { next: 43200 })
+    await fetch("https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/classes.json", { next: 43200 })
         .then(function (response) { return response.json(); })
         .then((response) => classes = response);
     for (let clas in classes) {
@@ -156,6 +162,40 @@ window.onload = async (e) => {
             label: clas,
             metatags: metas,
             weight: weights[clas] ? weights[clas] : 0
+        });
+    }
+
+    await fetch("https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/minos.json", { next: 43200 })
+        .then(function (response) { return response.json(); })
+        .then((response) => minos = response);
+    for (let id in minos) {
+        let m = minos[id];
+        let metas = [id];
+        if (alias = (aliases[m.name])) {
+            metas.push(...alias);
+        }
+
+        minoOptions.push({
+            label: m.name,
+            metatags: metas,
+            weight: weights[m.name] ? weights[m.name] : 0
+        });
+    }
+
+    await fetch("https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/shields.json", { next: 43200 })
+        .then(function (response) { return response.json(); })
+        .then((response) => shields = response);
+    for (let id in shields) {
+        let s = shields[id];
+        let metas = [id];
+        if (alias = (aliases[s.name])) {
+            metas.push(...alias);
+        }
+
+        shieldOptions.push({
+            label: s.name,
+            metatags: metas,
+            weight: weights[s.name] ? weights[s.name] : 0
         });
     }
 
@@ -307,6 +347,11 @@ function setupButtonSearch() {
             hideDropdown();
         }
     });
+    document.addEventListener('keydown', (event) => {
+        if (event.key === "Escape" && document.querySelector("#image-popup")) {
+                document.querySelector("#close-image-button").click();
+            }
+    });
 
     document.querySelectorAll(".filter-button").forEach(button => {
         let cat = button.parentElement.id.replace("-filters", "");
@@ -391,15 +436,17 @@ function setupStaticButtons() {
     document.querySelector("#unlimited-toggle-button").onclick = () => {
         toggleUnlimited();
     }
+
+    document.querySelector("#copy-image-button").onclick = generateImage;
 }
 
 function toggleUnlimited() {
     [...document.querySelectorAll(".team-members")].forEach(e => e.classList.toggle("unlimited"));
     if (unlimited) {
-        [...document.querySelectorAll(".sub-members .grid-input")].forEach(e => e.style.backgroundImage = e.style.backgroundImage.replace("/s/", "/quest/"))
+        [...document.querySelectorAll(".sub-members .grid-input")].forEach(e => e.style.backgroundImage = e.style.backgroundImage.replace("/square/", "/tall/"))
     }
     else {
-        [...document.querySelectorAll(".sub-members .grid-input")].forEach(e => e.style.backgroundImage = e.style.backgroundImage.replace("/quest/", "/s/"))
+        [...document.querySelectorAll(".sub-members .grid-input")].forEach(e => e.style.backgroundImage = e.style.backgroundImage.replace("/tall/", "/square/"))
     }
     document.querySelector("#unlimited-toggle-button").classList.toggle("toggled");
     unlimited = !unlimited;
@@ -618,7 +665,7 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
         teamData[button.id] = selectedOption.metatags[0];
     }
     else if (optionSet == "mino" || optionSet == "shield") {
-        teamData[button.id] = selectedOption.metatags[1];
+        teamData[button.id] = selectedOption.metatags[1] ? selectedOption.metatags[1] : selectedOption.label;
     }
     else {
         teamData[button.id] = selectedOption.label;
@@ -629,35 +676,37 @@ function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
     let backgroundUrl = '';
     switch (optionSet) {
         case 'skills':
-            backgroundUrl = `https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/ui/icon/ability/m/${abilityIcons[selectedOption.label]}.png`;
+            backgroundUrl = `https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/abilities/${id}.webp`;
             button.querySelector("img").src = backgroundUrl;
             button.querySelector("span").textContent = selectedOption.label;
             teamData[button.id] = selectedOption.label;
             return;
         case 'classes':
-            backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/leader/quest/${id}_1_01.jpg')`;
+            let mc = djeeta ? "1" : "0";
+            backgroundUrl = `url('https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/classes/tall/${id}_${mc}.webp')`;
             break;
         case 'characters':
             art = uncap == 5 ? 3 : uncap == 6 || uncap.toString().includes("t") ? 4 : 1;
-            backgroundUrl = `url('https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/npc/${unlimited && parseInt(button.id.replace("char","")) >= 4? "s" : "quest"}/${id}_0${art}.jpg')`;
+            type = unlimited && parseInt(button.id.replace("char", "")) >= 4 ? "square" : "tall";
+            backgroundUrl = `url('https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/characters/${type}/${id}_0${art}.webp')`;
             break;
         case 'weapons':
             art = uncap == 6 || uncap == "t5" ? "_03" : uncap.toString().includes("t") ? "_02" : "";
-            backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/weapon/${button.parentElement.classList[0].includes("main") ? "ls" : "m"}/${id}${art}.jpg')`;
+            type = button.parentElement.classList[0].includes("main") ? "mainhand" : "icon";
+            backgroundUrl = `url('https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/weapons/${type}/${id}${art}.webp')`;
             break;
         case 'summons':
-            art = uncap == 6 || uncap == "t5" ? "_04" : uncap.toString().includes("t") ? "_03" : uncap == 5 && !summons[id].pageName.includes("SSR") && !beastSummons.includes(parseInt(id)) ? "_02" : "";
-            let artType;
-            if (button.parentElement.classList[0].includes("team") || button.parentElement.classList[0] == "sub-summons") artType = "m";
-            else if (button.id == "s-main") artType = "party_main";
-            else artType = "party_sub";
-            backgroundUrl = `url('https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/summon/${artType}/${id}${art}.jpg')`;
+            art = uncap == 6 || uncap == "t5" ? "_04" : uncap.toString().includes("t") ? "_03" : uncap == 5 && !summons[id].pageName.includes("SSR") && !beastSummons.includes(parseInt(id)) || (uncap == 4 && id == 2040430000) ? "_02" : "";
+            if (button.parentElement.classList[0].includes("team") || button.parentElement.classList[0] == "sub-summons") type = "icon";
+            else if (button.id == "s-main") type = "party_main";
+            else type = "party_sub";
+            backgroundUrl = `url('https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/summons/${type}/${id}${art}.webp')`;
             break;
         case 'mino':
-            backgroundUrl = `url(https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/familiar/s/${selectedOption.metatags[0]}.jpg)`
+            backgroundUrl = `url(https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/gear/minos/${id}.webp)`
             break;
         case 'shield':
-            backgroundUrl = `url(https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/shield/s/${selectedOption.metatags[0]}.jpg)`
+            backgroundUrl = `url(https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/gear/shields/${id}.webp)`
             break;
         case 'opusSkill2':
         case 'opusSkill3':
@@ -683,8 +732,8 @@ function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
     button.style.backgroundImage = backgroundUrl;
     if (button.id == "s-main") {
         let otherButton = Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0];
-        if (backgroundUrl.includes("/m/")) backgroundUrl = backgroundUrl.replace("/m/", "/party_main/");
-        else backgroundUrl = backgroundUrl.replace("/party_main/", "/m/");
+        if (backgroundUrl.includes("/icon/")) backgroundUrl = backgroundUrl.replace("/icon/", "/party_main/");
+        else backgroundUrl = backgroundUrl.replace("/party_main/", "/icon/");
         otherButton.style.backgroundImage = backgroundUrl;
     }
 }
@@ -748,7 +797,7 @@ function addWeaponSkills(button, weaponID, uncap) {
         else {
             skill = document.createElement("img");
             skill.title = weapon.skill1.name;
-            skill.src = `https://gbf.wiki/thumb.php?f=${weapon.skill1.icon}&w=33`;
+            skill.src = `https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/weapons/skills/${weapon.skill1.icon}.webp`;
         }
         skills.appendChild(skill);
         addWeaponSkillCalcData(weapon.skill1, button.id);
@@ -774,7 +823,7 @@ function addWeaponSkills(button, weaponID, uncap) {
         else {
             skill = document.createElement("img");
             skill.title = weapon.skill2.name;
-            skill.src = `https://gbf.wiki/thumb.php?f=${weapon.skill2.icon}&w=33`;
+            skill.src = `https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/weapons/skills/${weapon.skill2.icon}.webp`;
         }
         skills.appendChild(skill);
         addWeaponSkillCalcData(weapon.skill2, button.id);
@@ -802,7 +851,7 @@ function addWeaponSkills(button, weaponID, uncap) {
         else {
             skill = document.createElement("img");
             skill.title = weapon.skill3.name;
-            skill.src = `https://gbf.wiki/thumb.php?f=${weapon.skill3.icon}&w=33`;
+            skill.src = `https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/weapons/skills/${weapon.skill3.icon}.webp`;
         }
         skills.appendChild(skill);
         addWeaponSkillCalcData(weapon.skill3, button.id);
@@ -815,7 +864,7 @@ function addSelectableWeaponSkill(skill, optionSet) {
     skill.id = optionSet;
     skill.classList.add("weapon-skill");
     skill.classList.add("grid-input");
-    skill.style.backgroundImage = `url(https://gbf.wiki/thumb.php?f=ws_skill_blank.png&w=33`;
+    skill.style.backgroundImage = `url(./assets/Ws_skill_blank.png`;
     skill.style.width = "33px";
     skill.onclick = (e) => gridInputClick(e, false);
     skill.oncontextmenu = (e) => gridInputContextMenu(e);
@@ -1034,8 +1083,7 @@ function generateWikiTemplate() {
 |char2=${getCharacterInfo("char2")}
 |char3=${getCharacterInfo("char3")}
 |char4=${getCharacterInfo("char4")}
-|char5=${getCharacterInfo("char5")}${
-unlimited? `
+|char5=${getCharacterInfo("char5")}${unlimited ? `
 |char6=${getCharacterInfo("char6")}
 |char7=${getCharacterInfo("char7")}
 |char8=${getCharacterInfo("char8")}` : ""}
@@ -1338,10 +1386,10 @@ function exportURL() {
         mc.push(id.join("_"));
     }
     if (teamData.shield) {
-        mc.push(`&shield=${Object.values(shieldOptions).find(v=>v.metatags.includes(teamData.shield)).metatags[0]}`);
+        mc.push(`&shield=${Object.values(shieldOptions).find(v => v.metatags.includes(teamData.shield)).metatags[0]}`);
     }
     if (teamData.mino) {
-        mc.push(`&mino=${Object.values(minoOptions).find(v=>v.metatags.includes(teamData.mino)).metatags[0]}`);
+        mc.push(`&mino=${Object.values(minoOptions).find(v => v.metatags.includes(teamData.mino)).metatags[0]}`);
     }
     //selectable weapon skills
     if (teamData.ccwSkill2) {
@@ -1411,7 +1459,7 @@ function importURL() {
 
     const summData = params.get("s").split(",");
     if (summData.length > 0) {
-        const summonSlots = [ "s-main", "s1", "s2", "s3", "s4", "s-sub1", "s-sub2", "s-support"];
+        const summonSlots = ["s-main", "s1", "s2", "s3", "s4", "s-sub1", "s-sub2", "s-support"];
         for (let i = 0; i < summData.length && i < summonSlots.length; i++) {
             if (summData[i] == "") continue;
             let [id, uncap] = summData[i].split(".");
@@ -1471,6 +1519,54 @@ function importURL() {
     if (quick) document.querySelector(`.summon-grid div[id*="${quick}"] .quick-summon-toggle`).click();
 }
 
+async function generateImage() {
+    [...document.querySelectorAll(`.quick-summon-toggle[data-toggled="false"], .c-awakening[data-awk="balanced"]`)].forEach(e => {
+        e.style.opacity = 0;
+    });
+    if ((!teamData.wp10 && !teamData.wp11 && !teamData.wp12) && !getSetLocalStorage("extra-collapsed")) {
+        document.querySelector("#collapse-extra-grid-button").click();
+        await (() => {return new Promise((res) => setTimeout(() => res(), 500))})()
+    }
+
+    const popup = document.createElement("div");
+    popup.id = "image-popup";
+    document.body.append(popup);
+    const result = await snapdom(document.querySelector("#team-spread"));
+    const png = await result.toPng();
+    popup.append(png);
+    popup.innerHTML += ("<div style='display:flex; gap: 1em;'><button class='ui-button' id='copy-image-button'>Copy</button><button class='ui-button' id='download-image-button'>Download</button><button class='ui-button' id='download-image-parts-button'>Download Parts</button></div><button class='ui-button' id='close-image-button'>X</button>");
+    popup.querySelector("#download-image-button").onclick = async () => {
+        await result.download({ format: "png", filename: "granblue team" });
+    }
+    popup.querySelector("#copy-image-button").onclick = async () => {
+        try {
+            const data = await fetch(png.src);
+            const blob = await data.blob();
+            await navigator.clipboard.write([
+                new ClipboardItem({
+                    [blob.type]: blob
+                })
+            ]);
+            popup.querySelector("#copy-image-button").textContent = "Copied!"
+        } catch (e) {
+            popup.querySelector("#copy-image-button").textContent = "Copy Failed"
+        }
+    }
+    popup.querySelector("#download-image-parts-button").onclick = async () => {
+        const team = await snapdom(document.querySelector(".team-container"));
+        const weapon = await snapdom(document.querySelector("#weapons-container"));
+        const summon = await snapdom(document.querySelector(".summon-grid"));
+        await team.download({ format: "png", filename: "characters.png" });
+        await weapon.download({ format: "png", filename: "weapons.png" });
+        await summon.download({ format: "png", filename: "summons.png" });
+    }
+    popup.querySelector("#close-image-button").onclick = () => {
+        popup.remove();
+        [...document.querySelectorAll(`.quick-summon-toggle[data-toggled="false"], .c-awakening[data-awk="balanced"]`)].forEach(e => {
+            e.style.opacity = "";
+        });
+    }
+}
 ///
 /// Stat Calcs
 ///

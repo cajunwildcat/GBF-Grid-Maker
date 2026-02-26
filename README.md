@@ -20,12 +20,6 @@ once the action is done it updates the branch after which the automatic github a
    - Lists controls and links to the import bookmarklets
    - Section for user input aliases/weights?
 
-- Pull mino, shield data from wiki
-  - Skills should default to hardcoded icons and fallback to wiki icons
-    - Need to parse wiki icons to just ID
-  - Classes should be auto-filtered to row IV/V, EX II, and origin
-  - Shorthand names for class equipment will have to be hard coded, but full name fallbacks should work automatically
-
 - Add aliases to `aliases.js` and `weights.js`
     - aliases should only be names that are not already part of the name
         - e.g. "Colo" is not an acceptable alias for "Colossus Omega" since it is already part of the name
