@@ -349,8 +349,8 @@ function setupButtonSearch() {
     });
     document.addEventListener('keydown', (event) => {
         if (event.key === "Escape" && document.querySelector("#image-popup")) {
-                document.querySelector("#close-image-button").click();
-            }
+            document.querySelector("#close-image-button").click();
+        }
     });
 
     document.querySelectorAll(".filter-button").forEach(button => {
@@ -1031,6 +1031,7 @@ function addAwakeningButton(button, id, iAwk) {
     awkButton.classList.add(`${awkType}-awakening-select`);
     awkButton.id = button.id + "Awk";
     awkButton.title = "Select Awakening";
+    awkButton.dataset.awk = "empty";
     awkButton.onclick = openAwakeningDropdown;
     function openAwakeningDropdown(e) {
         e.stopPropagation();
@@ -1517,15 +1518,21 @@ function importURL() {
 
     const quick = params.get("qs");
     if (quick) document.querySelector(`.summon-grid div[id*="${quick}"] .quick-summon-toggle`).click();
+
+    //TODO: figure out a way to wait for all images to load instead of set delay
+    const image = params.get("image");
+    if (image) setTimeout(() => document.querySelector("#copy-image-button").click(), 1000);
 }
 
 async function generateImage() {
-    [...document.querySelectorAll(`.quick-summon-toggle[data-toggled="false"], .c-awakening[data-awk="balanced"]`)].forEach(e => {
+    [...document.querySelectorAll(`.quick-summon-toggle[data-toggled="false"], 
+        .c-awakening[data-awk="balanced"],
+        .w-awakening[data-awk="empty"]`)].forEach(e => {
         e.style.opacity = 0;
     });
     if ((!teamData.wp10 && !teamData.wp11 && !teamData.wp12) && !getSetLocalStorage("extra-collapsed")) {
         document.querySelector("#collapse-extra-grid-button").click();
-        await (() => {return new Promise((res) => setTimeout(() => res(), 500))})()
+        await (() => { return new Promise((res) => setTimeout(() => res(), 500)) })()
     }
 
     const popup = document.createElement("div");
@@ -1562,7 +1569,9 @@ async function generateImage() {
     }
     popup.querySelector("#close-image-button").onclick = () => {
         popup.remove();
-        [...document.querySelectorAll(`.quick-summon-toggle[data-toggled="false"], .c-awakening[data-awk="balanced"]`)].forEach(e => {
+        [...document.querySelectorAll(`.quick-summon-toggle[data-toggled="false"], 
+            .c-awakening[data-awk="balanced"],
+            .w-awakening[data-awk="empty"]`)].forEach(e => {
             e.style.opacity = "";
         });
     }
