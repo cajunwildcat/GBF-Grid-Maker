@@ -38,7 +38,7 @@ window.onload = async (e) => {
         characterIDs[name] = id;
 
         let metas = [id.toString()];
-        let jpname = c.jpname? c.jpname : name;
+        let jpname = c.jpname ? c.jpname : name;
         if (c.series && c.series.toLowerCase().includes("grand")) {
             metas.push(`G.${name.split(" (")[0]}`)
         }
@@ -90,7 +90,7 @@ window.onload = async (e) => {
         if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id] || aliases[name.split(' Omega')[0]])) {
             metas.push(...alias);
         }
-        let jpname = s.jpname? s.jpname : name;
+        let jpname = s.jpname ? s.jpname : name;
 
         sOptions.push({
             label: name,
@@ -124,7 +124,7 @@ window.onload = async (e) => {
 
         wOptions.push({
             label: name,
-            jplabel: w.jpname? w.jpname : name,
+            jplabel: w.jpname ? w.jpname : name,
             metatags: metas,
             weight: weight
         });
@@ -146,7 +146,7 @@ window.onload = async (e) => {
 
         aOptoins.push({
             label: abil.name,
-            jplabel: abil.jpname? abil.jpname : abil.name,
+            jplabel: abil.jpname ? abil.jpname : abil.name,
             metatags: metas,
             weight: weights[id] ? weights[id] : 0
         });
@@ -163,8 +163,8 @@ window.onload = async (e) => {
         }
 
         clOptions.push({
-            label: id,
-            jplabel: cl.jpname? cl.jpname : cl.name,
+            label: cl.name,
+            jplabel: cl.jpname ? cl.jpname : cl.name,
             metatags: metas,
             weight: weights[id] ? weights[id] : 0
         });
@@ -292,6 +292,7 @@ function setupButtonSearch() {
         const searchTerm = searchInput.value.toLowerCase();
         filteredOptions = currentOptions.filter(option =>
             option.label.toLowerCase().includes(searchTerm) ||
+            option.jplabel.toLowerCase().includes(searchTerm) ||
             option.metatags.some(tag => tag.toLowerCase().includes(searchTerm))
         );
         renderOptions(filteredOptions);
@@ -464,13 +465,15 @@ function toggleUnlimited() {
 }
 
 function toggleLang(lang) {
-    switch(lang) {
+    switch (lang) {
         case "en": jp = false; break;
         case "jp": jp = true; break;
     }
     document.querySelector("html").lang = lang;
     getSetLocalStorage("lang", lang);
-    [...document.querySelectorAll(`.skill[id*="skill"]`)].forEach(e => setGridData(e.id, e.dataset.itemId));
+    [...document.querySelectorAll(`.skill[id*="skill"]`)].forEach(e => {
+        if (e.dataset.itemId) { setGridData(e.id, e.dataset.itemId) }
+    });
 }
 
 ///
@@ -585,7 +588,7 @@ function renderOptions(options) {
     optionsList.innerHTML = '';
     options.forEach((option, index) => {
         const li = document.createElement('li');
-        li.textContent = jp? option.jplabel : option.label;
+        li.textContent = jp ? option.jplabel : option.label;
         li.setAttribute('data-index', index);
         li.addEventListener('click', () => {
             setButtonToItem(activeButton, activeButton.dataset.options, option); // Update background image
@@ -614,7 +617,7 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
     Object.keys(teamData)?.filter(key => key.includes(button.id)).forEach(key => delete teamData[key]);
     calcData.wSkills = calcData.wSkills.filter(s => s.addedBy != button.id);
 
-    let itemName = jp? selectedOption.jplabel : selectedOption.label;
+    let itemName = jp ? selectedOption.jplabel : selectedOption.label;
     let id = selectedOption.metatags[0];
     if (id == button.dataset.itemId && !button.id == "s-main") {
         setButtonBackground(button, selectedOption, optionSet, uncap, id);
@@ -699,7 +702,7 @@ function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
         case 'skills':
             backgroundUrl = `https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/abilities/${id}.webp`;
             button.querySelector("img").src = backgroundUrl;
-            button.querySelector("span").textContent = jp? selectedOption.jplabel : selectedOption.label;
+            button.querySelector("span").textContent = jp ? selectedOption.jplabel : selectedOption.label;
             teamData[button.id] = selectedOption.label;
             return;
         case 'classes':
@@ -1322,7 +1325,7 @@ function setGridData(key, value, options = {}) {
     let button = document.querySelector(`#${key}`);
     let optionSet = button.dataset.options;
     let selectedOption;
-    selectedOption = optionSets[optionSet].find(option => option.label == value);
+    selectedOption = optionSets[optionSet].find(option => option.label == value || option.jplabel == value);
     if (selectedOption == null) {
         selectedOption = optionSets[optionSet].find(option => option.metatags.includes(value.toLowerCase()));
     }
