@@ -21,6 +21,7 @@ let filters = {
 }
 let unlimited = false;
 let jp = false;
+let showWiki = true;
 let djeeta = true;
 
 const useTestData = false;
@@ -274,10 +275,6 @@ window.onload = async (e) => {
         });
     }
 
-    if (getSetLocalStorage("lang") == "jp") {
-        toggleLang("jp");
-    }
-
     setupButtonSearch();
 
     // Make character grid elements draggable
@@ -518,6 +515,11 @@ function setupStaticButtons() {
     }
 
     document.querySelector("#copy-image-button").onclick = generateImage;
+
+    if (getSetLocalStorage("lang") == "jp") {
+        toggleLang("jp");
+    }
+    if (!getSetLocalStorage("showWiki")) toggleWikiControls();
 }
 
 function toggleUnlimited() {
@@ -543,6 +545,12 @@ function toggleLang(lang) {
     [...document.querySelectorAll(`.skill[id*="skill"]`)].forEach(e => {
         if (e.dataset.itemId) { setGridData(e.id, e.dataset.itemId) }
     });
+}
+
+function toggleWikiControls() {
+    showWiki = !showWiki;
+    getSetLocalStorage("showWiki", showWiki);
+    document.querySelector("html").classList.toggle("no-wiki");
 }
 
 ///

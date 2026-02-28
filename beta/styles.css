@@ -679,3 +679,7 @@ li.active {
         font-size: 2em;
     }
 }
+
+html.no-wiki .wiki-control{
+    display: none;
+}
