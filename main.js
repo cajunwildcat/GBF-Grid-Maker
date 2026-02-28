@@ -41,22 +41,45 @@ window.onload = async (e) => {
         let jpname = c.jpname ? c.jpname : name;
         if (c.series && c.series.toLowerCase().includes("grand")) {
             metas.push(`G.${name.split(" (")[0]}`)
+            jpname += " (リミテッド)";
         }
         if (c.series && c.series.toLowerCase().includes("summer")) {
             metas.push(`S.${name.split(" (")[0]}`)
+            jpname += " (水着)";
         }
         if (c.series && c.series.toLowerCase().includes("halloween")) {
             metas.push(`H.${name.split(" (")[0]}`)
+            jpname += " (ハロウィン)";
         }
         if (c.series && c.series.toLowerCase().includes("holiday")) {
             metas.push(`C.${name.split(" (")[0]}`)
+            jpname += " (クリスマス)";
         }
         if (c.series && c.series.toLowerCase().includes("yukata")) {
             metas.push(`Y.${name.split(" (")[0]}`)
+            jpname += " (浴衣)";
         }
         if (c.series && c.series.toLowerCase().includes("valentine")) {
             metas.push(`V.${name.split(" (")[0]}`)
+            jpname += " (バレンタイン)";
         }
+        if (c.series && c.series.toLowerCase().includes("formal")) {
+            metas.push(`F.${name.split(" (")[0]}`)
+            jpname += " (ドレスアップ)";
+        }
+        if (c.series && c.series.toLowerCase().includes("fantasy")) jpname += " (アナザー)";
+        if (name.includes("(Collab)")) jpname += " (コラボ)";
+        if (name.includes("(Event)")) jpname += " (イベント)";
+        if (name.includes("(Fire)")) jpname += " (火)";
+        if (name.includes("(Water)")) jpname += " (水)";
+        if (name.includes("(Earth)")) jpname += " (土)";
+        if (name.includes("(Wind)")) jpname += " (風)";
+        if (name.includes("(Light)")) jpname += " (光)";
+        if (name.includes("(Dark)")) jpname += " (闇)";
+        if (name.includes("(Promo)")) jpname += " (特典)";
+        if (name.includes("(SSR)")) jpname += " (SSR)";
+        if (name.includes("(SR)")) jpname += " (SR)";
+        if (name.includes("(R)")) jpname += " (R)";
         if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id])) {
             metas.push(...alias);
         }
@@ -90,7 +113,37 @@ window.onload = async (e) => {
         if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id] || aliases[name.split(' Omega')[0]])) {
             metas.push(...alias);
         }
-        let jpname = s.jpname ? s.jpname : name;
+        let jpname = s.jpname;
+        if (s.series && s.series.toLowerCase().includes("grand")) {
+            metas.push(`G.${name.split(" (")[0]}`)
+            jpname += " (リミテッド)";
+        }
+        if (s.series && s.series.toLowerCase().includes("summer")) {
+            metas.push(`S.${name.split(" (")[0]}`)
+            jpname += " (水着)";
+        }
+        if (s.series && s.series.toLowerCase().includes("halloween")) {
+            metas.push(`H.${name.split(" (")[0]}`)
+            jpname += " (ハロウィン)";
+        }
+        if (s.series && s.series.toLowerCase().includes("holiday")) {
+            metas.push(`C.${name.split(" (")[0]}`)
+            jpname += " (クリスマス)";
+        }
+        if (s.series && s.series.toLowerCase().includes("yukata")) {
+            metas.push(`Y.${name.split(" (")[0]}`)
+            jpname += " (浴衣)";
+        }
+        if (s.series && s.series.toLowerCase().includes("valentine")) {
+            metas.push(`V.${name.split(" (")[0]}`)
+            jpname += " (バレンタイン)";
+        }
+        if (s.series && s.series.toLowerCase().includes("formal")) {
+            metas.push(`F.${name.split(" (")[0]}`)
+            jpname += " (ドレスアップ)";
+        }
+        if (name.includes("(SSR)")) jpname += " (SSR)";
+        if (name.includes("(SR)")) jpname += " (SR)";
 
         sOptions.push({
             label: name,
@@ -116,6 +169,21 @@ window.onload = async (e) => {
         else if (w.series == "dark opus") weight = 10;
         else if (w.series == "collab") weight = -1;
 
+        let jpname = w.jpname;
+        if (jpname) {
+            if (name.includes("(Fire)")) jpname += " (火)";
+            if (name.includes("(Water)")) jpname += " (水)";
+            if (name.includes("(Earth)")) jpname += " (土)";
+            if (name.includes("(Wind)")) jpname += " (風)";
+            if (name.includes("(Light)")) jpname += " (光)";
+            if (name.includes("(Dark)")) jpname += " (闇)";
+            if (name.includes("(Promo)")) jpname += " (特典)";
+            if (name.includes("(SSR)")) jpname += " (SSR)";
+            if (name.includes("(SR)")) jpname += " (SR)";
+            if (name.includes("(R)")) jpname += " (R)";
+        }
+        else jpname = name;
+
         let metas = [id.toString()];
         if (w.character) metas.push(`${w.character.split(" (")[0]} ${w.type}`);
         if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id])) {
@@ -124,7 +192,7 @@ window.onload = async (e) => {
 
         wOptions.push({
             label: name,
-            jplabel: w.jpname ? w.jpname : name,
+            jplabel: jpname,
             metatags: metas,
             weight: weight
         });
