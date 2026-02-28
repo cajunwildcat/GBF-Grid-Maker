@@ -20,7 +20,7 @@ let filters = {
     summons: ["any"]
 }
 let unlimited = false;
-let jp = true;
+let jp = false;
 let djeeta = true;
 
 const useTestData = false;
@@ -29,7 +29,7 @@ const enableCalcs = false;
 window.onload = async (e) => {
     setupStaticButtons();
 
-    await fetch(useTestData ? "./test data/characters.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/characters.json", { next: 43200 })
+    await fetch(useTestData ? "./test data/characters.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/characters.json")
         .then(function (response) { return response.json(); })
         .then((response) => characters = response);
     for (let id in characters) {
@@ -38,7 +38,7 @@ window.onload = async (e) => {
         characterIDs[name] = id;
 
         let metas = [id.toString()];
-        c.jpname ? metas.push(c.jpname) : null;
+        let jpname = c.jpname? c.jpname : name;
         if (c.series && c.series.toLowerCase().includes("grand")) {
             metas.push(`G.${name.split(" (")[0]}`)
         }
@@ -66,12 +66,13 @@ window.onload = async (e) => {
 
         cOptions.push({
             label: name,
+            jplabel: jpname,
             metatags: metas,
             weight: weight
         });
     }
 
-    await fetch(useTestData ? "./test data/summons.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/summons.json", { next: 43200 })
+    await fetch(useTestData ? "./test data/summons.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/summons.json")
         .then(function (response) { return response.json(); })
         .then((response) => summons = response);
     for (let id in summons) {
@@ -86,19 +87,20 @@ window.onload = async (e) => {
         else if (s == "collab") weight = -1;
 
         let metas = [id.toString()];
-        s.jpname ? metas.push(s.jpname) : null;
         if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id] || aliases[name.split(' Omega')[0]])) {
             metas.push(...alias);
         }
+        let jpname = s.jpname? s.jpname : name;
 
         sOptions.push({
             label: name,
+            jplabel: jpname,
             metatags: metas,
             weight: weight
         });
     }
 
-    await fetch(useTestData ? "./test data/weapons.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/weapons.json", { next: 43200 })
+    await fetch(useTestData ? "./test data/weapons.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/weapons.json")
         .then(function (response) { return response.json(); })
         .then((response) => weapons = response);
     for (let id in weapons) {
@@ -115,7 +117,6 @@ window.onload = async (e) => {
         else if (w.series == "collab") weight = -1;
 
         let metas = [id.toString()];
-        w.jpname ? metas.push(w.jpname) : null;
         if (w.character) metas.push(`${w.character.split(" (")[0]} ${w.type}`);
         if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id])) {
             metas.push(...alias);
@@ -123,49 +124,53 @@ window.onload = async (e) => {
 
         wOptions.push({
             label: name,
+            jplabel: w.jpname? w.jpname : name,
             metatags: metas,
             weight: weight
         });
     }
 
-    await fetch(useTestData ? "./test data/abilities.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/abilities.json", { next: 43200 })
+    await fetch(useTestData ? "./test data/abilities.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/abilities.json")
         .then(function (response) { return response.json(); })
         .then((response) => abilities = response);
     //Abilities that are sub options from a selectable ability or otherwise not settable
     let abilityExclusions = ["Affliction Arrow", "Sweeping Arrow", "Deepshot Arrow", "Ensemble of Heroes", "Ensemble of Warriors", "Sky Splitter", "Salt of Cleansing Spirits", "Combat Spirit Infusion", "Spirit Suppression"]
-    for (let ability in abilities) {
-        if (abilities[ability].ix == "s1" || abilityExclusions.includes(ability)) continue;
+    for (let id in abilities) {
+        let abil = abilities[id];
+        if (abil.ix == "s1" || abilityExclusions.includes(abil.name)) continue;
 
-        let metas = [abilities[ability].id];
-        if (alias = (aliases[ability])) {
+        let metas = [id];
+        if (alias = (aliases[id])) {
             metas.push(...alias);
         }
 
         aOptoins.push({
-            label: ability,
+            label: abil.name,
+            jplabel: abil.jpname? abil.jpname : abil.name,
             metatags: metas,
-            weight: weights[ability] ? weights[ability] : 0
+            weight: weights[id] ? weights[id] : 0
         });
     }
 
-    await fetch("https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/classes.json", { next: 43200 })
+    await fetch("https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/classes.json")
         .then(function (response) { return response.json(); })
         .then((response) => classes = response);
-    for (let clas in classes) {
-        cl = classes[clas];
-        let metas = [cl.imgid, cl.jpname, cl.id.toString()];
+    for (let id in classes) {
+        cl = classes[id];
+        let metas = [cl.imgid, cl.jpname, id.toString()];
         if (alias = (aliases[cl])) {
             metas.push(...alias);
         }
 
         clOptions.push({
-            label: clas,
+            label: id,
+            jplabel: cl.jpname? cl.jpname : cl.name,
             metatags: metas,
-            weight: weights[clas] ? weights[clas] : 0
+            weight: weights[id] ? weights[id] : 0
         });
     }
 
-    await fetch("https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/minos.json", { next: 43200 })
+    await fetch("https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/minos.json")
         .then(function (response) { return response.json(); })
         .then((response) => minos = response);
     for (let id in minos) {
@@ -177,12 +182,13 @@ window.onload = async (e) => {
 
         minoOptions.push({
             label: m.name,
+            jplabel: m.jpname,
             metatags: metas,
             weight: weights[m.name] ? weights[m.name] : 0
         });
     }
 
-    await fetch("https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/shields.json", { next: 43200 })
+    await fetch("https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/shields.json")
         .then(function (response) { return response.json(); })
         .then((response) => shields = response);
     for (let id in shields) {
@@ -194,9 +200,14 @@ window.onload = async (e) => {
 
         shieldOptions.push({
             label: s.name,
+            jplabel: s.jpname,
             metatags: metas,
             weight: weights[s.name] ? weights[s.name] : 0
         });
+    }
+
+    if (getSetLocalStorage("lang") == "jp") {
+        toggleLang("jp");
     }
 
     setupButtonSearch();
@@ -452,6 +463,16 @@ function toggleUnlimited() {
     unlimited = !unlimited;
 }
 
+function toggleLang(lang) {
+    switch(lang) {
+        case "en": jp = false; break;
+        case "jp": jp = true; break;
+    }
+    document.querySelector("html").lang = lang;
+    getSetLocalStorage("lang", lang);
+    [...document.querySelectorAll(`.skill[id*="skill"]`)].forEach(e => setGridData(e.id, e.dataset.itemId));
+}
+
 ///
 /// Input Handling
 ///
@@ -564,7 +585,7 @@ function renderOptions(options) {
     optionsList.innerHTML = '';
     options.forEach((option, index) => {
         const li = document.createElement('li');
-        li.textContent = option.label;
+        li.textContent = jp? option.jplabel : option.label;
         li.setAttribute('data-index', index);
         li.addEventListener('click', () => {
             setButtonToItem(activeButton, activeButton.dataset.options, option); // Update background image
@@ -593,7 +614,7 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
     Object.keys(teamData)?.filter(key => key.includes(button.id)).forEach(key => delete teamData[key]);
     calcData.wSkills = calcData.wSkills.filter(s => s.addedBy != button.id);
 
-    let itemName = selectedOption.label;
+    let itemName = jp? selectedOption.jplabel : selectedOption.label;
     let id = selectedOption.metatags[0];
     if (id == button.dataset.itemId && !button.id == "s-main") {
         setButtonBackground(button, selectedOption, optionSet, uncap, id);
@@ -678,7 +699,7 @@ function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
         case 'skills':
             backgroundUrl = `https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/abilities/${id}.webp`;
             button.querySelector("img").src = backgroundUrl;
-            button.querySelector("span").textContent = selectedOption.label;
+            button.querySelector("span").textContent = jp? selectedOption.jplabel : selectedOption.label;
             teamData[button.id] = selectedOption.label;
             return;
         case 'classes':
@@ -1525,7 +1546,8 @@ function importURL() {
 async function generateImage() {
     [...document.querySelectorAll(`.quick-summon-toggle[data-toggled="false"], 
         .c-awakening[data-awk="balanced"],
-        .w-awakening[data-awk="empty"]`)].forEach(e => {
+        .w-awakening[data-awk="empty"],
+        .uncap-toggle[data-toggled="true"]`)].forEach(e => {
         e.style.opacity = 0;
     });
     if ((!teamData.wp10 && !teamData.wp11 && !teamData.wp12) && !getSetLocalStorage("extra-collapsed")) {
@@ -1569,7 +1591,8 @@ async function generateImage() {
         popup.remove();
         [...document.querySelectorAll(`.quick-summon-toggle[data-toggled="false"], 
             .c-awakening[data-awk="balanced"],
-            .w-awakening[data-awk="empty"]`)].forEach(e => {
+            .w-awakening[data-awk="empty"],
+            .uncap-toggle[data-toggled="true"`)].forEach(e => {
             e.style.opacity = "";
         });
     }
