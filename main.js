@@ -1547,6 +1547,9 @@ function importURL() {
     const quick = params.get("qs");
     if (quick) document.querySelector(`.summon-grid div[id*="${quick}"] .quick-summon-toggle`).click();
 
+    const lang = params.get("lang");
+    if (lang == "jp" && !jp) toggleLang("jp");
+
     //TODO: figure out a way to wait for all images to load instead of set delay
     const image = params.get("image");
     if (image) setTimeout(() => document.querySelector("#copy-image-button").click(), 1000);
