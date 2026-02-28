@@ -174,6 +174,7 @@ ul {
     margin: 0;
     padding: 0;
     width: 100%;
+    height: 25px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
