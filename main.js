@@ -471,6 +471,7 @@ function toggleLang(lang) {
     }
     document.querySelector("html").lang = lang;
     getSetLocalStorage("lang", lang);
+    // update skills to show correct language
     [...document.querySelectorAll(`.skill[id*="skill"]`)].forEach(e => {
         if (e.dataset.itemId) { setGridData(e.id, e.dataset.itemId) }
     });
@@ -1327,11 +1328,14 @@ function setGridData(key, value, options = {}) {
     let button = document.querySelector(`#${key}`);
     let optionSet = button.dataset.options;
     let selectedOption;
-    selectedOption = optionSets[optionSet].find(option => option.label == value || option.jplabel == value);
+    selectedOption = optionSets[optionSet].find(option => option.label.toLowerCase() == value.toLowerCase() || option.jplabel == value);
     if (selectedOption == null) {
         selectedOption = optionSets[optionSet].find(option => option.metatags.includes(value.toLowerCase()));
     }
-    if (!selectedOption) alert(`There was an issue reading the value for ${key}. Please double check it is spelled and capitalized correctly.`)
+    if (!selectedOption) {
+        alert(`There was an issue reading the value for ${key}. Please double check it is spelled and capitalized correctly.`);
+        return;
+    }
     setButtonToItem(button, optionSet, selectedOption, options.uncap ? options.uncap : null, options);
 }
 
