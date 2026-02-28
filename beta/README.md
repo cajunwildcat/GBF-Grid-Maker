@@ -16,18 +16,27 @@ once the action is done it updates the branch after which the automatic github a
 ## High Priority:
 - Refactor to change `teamData` to store item IDs instead of EN names
 
+- Add help button
+   - Lists controls and links to the import bookmarklets
+   - Section for user input aliases/weights?
+
 - Add aliases to `aliases.js` and `weights.js`
     - aliases should only be names that are not already part of the name
         - e.g. "Colo" is not an acceptable alias for "Colossus Omega" since it is already part of the name
 
 - Enforce single weapon series restriction
 
+- Add image generation/exporting
+  - Check if html to image libraries other than `snapdom` can render github images without converting to base:64 blobs
+  - Setup GrandCypher script for downloading the rest of the images
+  - Convert the existing image code to use github images instead of actual game images
+
 ## Medium Priority
 - Grid stat calc
- - Pull weapon skill data from wiki to match weapon uncap with proper skills (opus s1)
- - Add calc support for selectable weapon skills
- - Add UI for showing per character stats
- - Re-calc weapon skills and summon auras when changing uncap
+  - Pull weapon skill data from wiki to match weapon uncap with proper skills (opus s1)
+  - Add calc support for selectable weapon skills
+  - Add UI for showing per character stats
+  - Re-calc weapon skills and summon auras when changing uncap
 
 ## Low Priority
 - Summon uncap selection under image like wiki
