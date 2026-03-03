@@ -519,7 +519,7 @@ function setupStaticButtons() {
     if (getSetLocalStorage("lang") == "jp") {
         toggleLang("jp");
     }
-    if (!getSetLocalStorage("showWiki")) toggleWikiControls();
+    if (getSetLocalStorage("showWiki") == false) toggleWikiControls();
 }
 
 function toggleUnlimited() {
