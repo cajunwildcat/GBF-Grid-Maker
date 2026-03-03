@@ -21,6 +21,7 @@ let filters = {
 }
 let unlimited = false;
 let jp = false;
+let showWiki = true;
 let djeeta = true;
 
 const useTestData = false;
@@ -41,22 +42,45 @@ window.onload = async (e) => {
         let jpname = c.jpname ? c.jpname : name;
         if (c.series && c.series.toLowerCase().includes("grand")) {
             metas.push(`G.${name.split(" (")[0]}`)
+            jpname += " (リミテッド)";
         }
         if (c.series && c.series.toLowerCase().includes("summer")) {
             metas.push(`S.${name.split(" (")[0]}`)
+            jpname += " (水着)";
         }
         if (c.series && c.series.toLowerCase().includes("halloween")) {
             metas.push(`H.${name.split(" (")[0]}`)
+            jpname += " (ハロウィン)";
         }
         if (c.series && c.series.toLowerCase().includes("holiday")) {
             metas.push(`C.${name.split(" (")[0]}`)
+            jpname += " (クリスマス)";
         }
         if (c.series && c.series.toLowerCase().includes("yukata")) {
             metas.push(`Y.${name.split(" (")[0]}`)
+            jpname += " (浴衣)";
         }
         if (c.series && c.series.toLowerCase().includes("valentine")) {
             metas.push(`V.${name.split(" (")[0]}`)
+            jpname += " (バレンタイン)";
         }
+        if (c.series && c.series.toLowerCase().includes("formal")) {
+            metas.push(`F.${name.split(" (")[0]}`)
+            jpname += " (ドレスアップ)";
+        }
+        if (c.series && c.series.toLowerCase().includes("fantasy")) jpname += " (アナザー)";
+        if (name.includes("(Collab)")) jpname += " (コラボ)";
+        if (name.includes("(Event)")) jpname += " (イベント)";
+        if (name.includes("(Fire)")) jpname += " (火)";
+        if (name.includes("(Water)")) jpname += " (水)";
+        if (name.includes("(Earth)")) jpname += " (土)";
+        if (name.includes("(Wind)")) jpname += " (風)";
+        if (name.includes("(Light)")) jpname += " (光)";
+        if (name.includes("(Dark)")) jpname += " (闇)";
+        if (name.includes("(Promo)")) jpname += " (特典)";
+        if (name.includes("(SSR)")) jpname += " (SSR)";
+        if (name.includes("(SR)")) jpname += " (SR)";
+        if (name.includes("(R)")) jpname += " (R)";
         if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id])) {
             metas.push(...alias);
         }
@@ -90,7 +114,37 @@ window.onload = async (e) => {
         if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id] || aliases[name.split(' Omega')[0]])) {
             metas.push(...alias);
         }
-        let jpname = s.jpname ? s.jpname : name;
+        let jpname = s.jpname;
+        if (s.series && s.series.toLowerCase().includes("grand")) {
+            metas.push(`G.${name.split(" (")[0]}`)
+            jpname += " (リミテッド)";
+        }
+        if (s.series && s.series.toLowerCase().includes("summer")) {
+            metas.push(`S.${name.split(" (")[0]}`)
+            jpname += " (水着)";
+        }
+        if (s.series && s.series.toLowerCase().includes("halloween")) {
+            metas.push(`H.${name.split(" (")[0]}`)
+            jpname += " (ハロウィン)";
+        }
+        if (s.series && s.series.toLowerCase().includes("holiday")) {
+            metas.push(`C.${name.split(" (")[0]}`)
+            jpname += " (クリスマス)";
+        }
+        if (s.series && s.series.toLowerCase().includes("yukata")) {
+            metas.push(`Y.${name.split(" (")[0]}`)
+            jpname += " (浴衣)";
+        }
+        if (s.series && s.series.toLowerCase().includes("valentine")) {
+            metas.push(`V.${name.split(" (")[0]}`)
+            jpname += " (バレンタイン)";
+        }
+        if (s.series && s.series.toLowerCase().includes("formal")) {
+            metas.push(`F.${name.split(" (")[0]}`)
+            jpname += " (ドレスアップ)";
+        }
+        if (name.includes("(SSR)")) jpname += " (SSR)";
+        if (name.includes("(SR)")) jpname += " (SR)";
 
         sOptions.push({
             label: name,
@@ -116,6 +170,21 @@ window.onload = async (e) => {
         else if (w.series == "dark opus") weight = 10;
         else if (w.series == "collab") weight = -1;
 
+        let jpname = w.jpname;
+        if (jpname) {
+            if (name.includes("(Fire)")) jpname += " (火)";
+            if (name.includes("(Water)")) jpname += " (水)";
+            if (name.includes("(Earth)")) jpname += " (土)";
+            if (name.includes("(Wind)")) jpname += " (風)";
+            if (name.includes("(Light)")) jpname += " (光)";
+            if (name.includes("(Dark)")) jpname += " (闇)";
+            if (name.includes("(Promo)")) jpname += " (特典)";
+            if (name.includes("(SSR)")) jpname += " (SSR)";
+            if (name.includes("(SR)")) jpname += " (SR)";
+            if (name.includes("(R)")) jpname += " (R)";
+        }
+        else jpname = name;
+
         let metas = [id.toString()];
         if (w.character) metas.push(`${w.character.split(" (")[0]} ${w.type}`);
         if (alias = (aliases[name] || aliases[name.split(' (')[0]] || aliases[id])) {
@@ -124,7 +193,7 @@ window.onload = async (e) => {
 
         wOptions.push({
             label: name,
-            jplabel: w.jpname ? w.jpname : name,
+            jplabel: jpname,
             metatags: metas,
             weight: weight
         });
@@ -204,10 +273,6 @@ window.onload = async (e) => {
             metatags: metas,
             weight: weights[s.name] ? weights[s.name] : 0
         });
-    }
-
-    if (getSetLocalStorage("lang") == "jp") {
-        toggleLang("jp");
     }
 
     setupButtonSearch();
@@ -450,6 +515,11 @@ function setupStaticButtons() {
     }
 
     document.querySelector("#copy-image-button").onclick = generateImage;
+
+    if (getSetLocalStorage("lang") == "jp") {
+        toggleLang("jp");
+    }
+    if (!getSetLocalStorage("showWiki")) toggleWikiControls();
 }
 
 function toggleUnlimited() {
@@ -475,6 +545,12 @@ function toggleLang(lang) {
     [...document.querySelectorAll(`.skill[id*="skill"]`)].forEach(e => {
         if (e.dataset.itemId) { setGridData(e.id, e.dataset.itemId) }
     });
+}
+
+function toggleWikiControls() {
+    showWiki = !showWiki;
+    getSetLocalStorage("showWiki", showWiki);
+    document.querySelector("html").classList.toggle("no-wiki");
 }
 
 ///
@@ -711,7 +787,7 @@ function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
             backgroundUrl = `url('https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/classes/tall/${id}_${mc}.webp')`;
             break;
         case 'characters':
-            art = uncap == 5 ? 3 : uncap == 6 || uncap.toString().includes("t") ? 4 : 1;
+            art = id.slice(-1) != 0? 1 : uncap == 5 ? 3 : uncap == 6 || uncap.toString().includes("t") ? 4 : 1;
             type = unlimited && parseInt(button.id.replace("char", "")) >= 4 ? "square" : "tall";
             backgroundUrl = `url('https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/characters/${type}/${id}_0${art}.webp')`;
             break;
@@ -1345,7 +1421,11 @@ function exportURL() {
     for (let i = 1; i <= 8; i++) {
         key = `char${i}`;
         if (teamData[key]) {
-            let id = (characterIDs[teamData[key]] - 3000000000) / 1000;
+            let id = characterIDs[teamData[key]], style = id.toString().slice(-1);
+            if (style > 1) {
+                id -= style;
+            }
+            id = (id - 3000000000) / 1000;
             char.push(decimalToBase62(id));
             if (teamData[`${key}Trans`]) char.push(`.${teamData[`${key}Trans`]}`);
             else if (teamData[`${key}Uncap`] > 4) char.push(`.${teamData[`${key}Uncap`]}`);
@@ -1359,6 +1439,7 @@ function exportURL() {
                 }
                 if (awk > 0) char.push(`$${awk}`);
             }
+            if (style != 0) char.push(`%${style}`);
         }
         if (i < 8) char.push(",")
     }
@@ -1405,12 +1486,12 @@ function exportURL() {
     }
     while (summ.length && summ.at(-1) === ",") summ.pop();
     //mc info
-    if (teamData.mc) mc.push(decimalToBase62(classes[teamData.mc].id));
+    if (teamData.mc) mc.push(decimalToBase62(Object.keys(classes).find(c=>classes[c].name == teamData.mc || classes[c].jpname == teamData.mc)));
     for (let i = 1; i <= 3; i++) {
         let key = `skill${i}`;
         if (!teamData[key]) continue;
         mc.push(",");
-        let id = abilities[teamData[key]].id.split("_");
+        let id = Object.keys(abilities).find(k => abilities[k].name == teamData[key] || abilities[k].jpname == teamData[key]).split("_");
         id[0] = decimalToBase62(id[0]);
         mc.push(id.join("_"));
     }
@@ -1454,9 +1535,14 @@ function importURL() {
     if (charData != "") {
         for (let i = 0; i < charData.length; i++) {
             if (charData[i] == "") continue;
-            let [char, awk] = charData[i].split("$");
-            let [id, uncap] = char.split(".");
+            let id = charData[i].match("\\w[^\\W]+")[0];
+            let uncap = charData[i].match("\\.\\d");
+            if (uncap) uncap = uncap[0][1];
+            let awk = charData[i].match("\\$\\d");
+            if (awk) awk = awk[0][1];
+            let style = charData[i].match("\\%\\d");
             id = base62ToDecimal(id) * 1000 + 3000000000;
+            if (style) id = id.toString().slice(0,-1) + style[0][1];
             switch (awk) {
                 case "1": awk = "attack"; break;
                 case "2": awk = "defense"; break;
@@ -1546,6 +1632,9 @@ function importURL() {
 
     const quick = params.get("qs");
     if (quick) document.querySelector(`.summon-grid div[id*="${quick}"] .quick-summon-toggle`).click();
+
+    const lang = params.get("lang");
+    if (lang == "jp" && !jp) toggleLang("jp");
 
     //TODO: figure out a way to wait for all images to load instead of set delay
     const image = params.get("image");
