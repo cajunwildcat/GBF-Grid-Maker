@@ -787,7 +787,7 @@ function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
             backgroundUrl = `url('https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/classes/tall/${id}_${mc}.webp')`;
             break;
         case 'characters':
-            art = uncap == 5 ? 3 : uncap == 6 || uncap.toString().includes("t") ? 4 : 1;
+            art = id.slice(-1) != 0? 1 : uncap == 5 ? 3 : uncap == 6 || uncap.toString().includes("t") ? 4 : 1;
             type = unlimited && parseInt(button.id.replace("char", "")) >= 4 ? "square" : "tall";
             backgroundUrl = `url('https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/characters/${type}/${id}_0${art}.webp')`;
             break;
@@ -1421,7 +1421,11 @@ function exportURL() {
     for (let i = 1; i <= 8; i++) {
         key = `char${i}`;
         if (teamData[key]) {
-            let id = (characterIDs[teamData[key]] - 3000000000) / 1000;
+            let id = characterIDs[teamData[key]], style = id.toString().slice(-1);
+            if (style > 1) {
+                id -= style;
+            }
+            id = (id - 3000000000) / 1000;
             char.push(decimalToBase62(id));
             if (teamData[`${key}Trans`]) char.push(`.${teamData[`${key}Trans`]}`);
             else if (teamData[`${key}Uncap`] > 4) char.push(`.${teamData[`${key}Uncap`]}`);
@@ -1435,6 +1439,7 @@ function exportURL() {
                 }
                 if (awk > 0) char.push(`$${awk}`);
             }
+            if (style != 0) char.push(`%${style}`);
         }
         if (i < 8) char.push(",")
     }
@@ -1481,12 +1486,12 @@ function exportURL() {
     }
     while (summ.length && summ.at(-1) === ",") summ.pop();
     //mc info
-    if (teamData.mc) mc.push(decimalToBase62(classes[teamData.mc].id));
+    if (teamData.mc) mc.push(decimalToBase62(Object.keys(classes).find(c=>classes[c].name == teamData.mc || classes[c].jpname == teamData.mc)));
     for (let i = 1; i <= 3; i++) {
         let key = `skill${i}`;
         if (!teamData[key]) continue;
         mc.push(",");
-        let id = abilities[teamData[key]].id.split("_");
+        let id = Object.keys(abilities).find(k => abilities[k].name == teamData[key] || abilities[k].jpname == teamData[key]).split("_");
         id[0] = decimalToBase62(id[0]);
         mc.push(id.join("_"));
     }
@@ -1530,9 +1535,14 @@ function importURL() {
     if (charData != "") {
         for (let i = 0; i < charData.length; i++) {
             if (charData[i] == "") continue;
-            let [char, awk] = charData[i].split("$");
-            let [id, uncap] = char.split(".");
+            let id = charData[i].match("\\w[^\\W]+")[0];
+            let uncap = charData[i].match("\\.\\d");
+            if (uncap) uncap = uncap[0][1];
+            let awk = charData[i].match("\\$\\d");
+            if (awk) awk = awk[0][1];
+            let style = charData[i].match("\\%\\d");
             id = base62ToDecimal(id) * 1000 + 3000000000;
+            if (style) id = id.toString().slice(0,-1) + style[0][1];
             switch (awk) {
                 case "1": awk = "attack"; break;
                 case "2": awk = "defense"; break;
