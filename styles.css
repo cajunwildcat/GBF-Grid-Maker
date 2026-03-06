@@ -585,6 +585,10 @@ ul {
     display: block;
     width: 30px;
 
+    ul {
+        overflow: hidden;
+    }
+
     li {
         background-size: 30px 30px;
         width: 30px;
