@@ -591,7 +591,14 @@ function gridInputClick(event, sort = true, button = null) {
 function gridInputContextMenu(event, button = null) {
     if (!button) button = event.target;
     event?.preventDefault();
+    if (button.classList.contains("c-awakening") || button.classList.contains("w-awakening")) {
+        button.click();
+        button.querySelector("li").click();
+        return;
+    }
+    else if (button.dataset.awk != null) return;
     button.style.backgroundImage = null;
+    //TODO: rewrite all .grid-input items to have their default images controlled by CSS instead
     if (button.dataset.options == "skills") {
         button.querySelector("img").src = "assets/empty-skill.png";
         button.querySelector("span").textContent = "";
