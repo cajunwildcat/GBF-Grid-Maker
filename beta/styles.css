@@ -360,6 +360,22 @@ ul {
         width: 100px;
         left: 17px;
     }
+
+    >#bullets {
+        display: grid;
+        position: absolute;
+        top: -5px;
+        grid-template-columns: repeat(3, 33px);
+        background-image: unset;
+        height: min-content;
+        left: 18.5px;
+
+        button {
+            background-image: url("./assets/empty-skill.png");
+            width: 33px;
+            height: 33px;
+        }
+    }
 }
 
 .w-grid-sub {
