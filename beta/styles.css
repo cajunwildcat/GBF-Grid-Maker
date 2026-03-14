@@ -672,7 +672,7 @@ li.active {
 }
 
 #image-popup {
-    position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
     width: 100%;
@@ -689,7 +689,7 @@ li.active {
     }
 
     img {
-        transform: scale(0.9);
+        max-width: 90%;
     }
 
     #close-image-button {
