@@ -290,7 +290,7 @@ window.onload = async (e) => {
 
         bulletOptions.push({
             label: b.name,
-            //jplabel: b.jpname,
+            jplabel: b.jpname,
             metatags: metas,
             weight: weights[b.name] ? weights[b.name] : 0
         });
