@@ -690,6 +690,7 @@ li.active {
 
     img {
         max-width: 90%;
+        height: unset !important;
     }
 
     #close-image-button {

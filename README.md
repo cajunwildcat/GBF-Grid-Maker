@@ -26,11 +26,6 @@ once the action is done it updates the branch after which the automatic github a
 
 - Enforce single weapon series restriction
 
-- Add image generation/exporting
-  - Check if html to image libraries other than `snapdom` can render github images without converting to base:64 blobs
-  - Setup GrandCypher script for downloading the rest of the images
-  - Convert the existing image code to use github images instead of actual game images
-
 ## Medium Priority
 - Grid stat calc
   - Pull weapon skill data from wiki to match weapon uncap with proper skills (opus s1)
@@ -41,4 +36,4 @@ once the action is done it updates the branch after which the automatic github a
 ## Low Priority
 - Summon uncap selection under image like wiki
 - Redesign filters
-    - Save filter options to local storage
+  - Save filter options to local storage
