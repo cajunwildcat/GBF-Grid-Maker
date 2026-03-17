@@ -513,10 +513,6 @@ function setupStaticButtons() {
         }, 2500)
     }
 
-    document.querySelector("#open-url-button").onclick = () => {
-        window.open(exportURL(), "_blank");
-    }
-
     //drawer buttons
     document.querySelector("#show-filters-button").onclick = e => {
         let collapsed = document.querySelector("#filters").classList.toggle("filter-transition");
@@ -532,20 +528,33 @@ function setupStaticButtons() {
         document.querySelector("#collapse-extra-grid-button").click();
     }
 
-    document.querySelector("#unlimited-toggle-button").onclick = () => {
-        toggleUnlimited();
+    document.querySelector("#unlimited-toggle-button").onclick = (e) => {
+        if (unlimited) return;
+        toggleUnlimited(e);
+        e.target.classList.toggle("toggled");
+        document.querySelector("#standard-toggle-button").classList.toggle("toggled");
+    }
+    document.querySelector("#standard-toggle-button").onclick = (e) => {
+        if (!unlimited) return;
+        toggleUnlimited(e);
+        e.target.classList.toggle("toggled");
+        document.querySelector("#unlimited-toggle-button").classList.toggle("toggled");
     }
 
     document.querySelector("#copy-image-button").onclick = generateImage;
+    
+    document.querySelector("#help-button").onclick = showHelpPopup;
 
     if (getSetLocalStorage("lang") == "jp") {
         toggleLang("jp");
     }
     //if (getSetLocalStorage("showWiki") == false) toggleWikiControls();
     getSetLocalStorage("showWiki", true);
+
 }
 
 function toggleUnlimited() {
+    document.querySelector("#team-spread").classList.toggle("unlimited");
     [...document.querySelectorAll(".team-members")].forEach(e => e.classList.toggle("unlimited"));
     if (unlimited) {
         [...document.querySelectorAll(".sub-members .grid-input")].forEach(e => e.style.backgroundImage = e.style.backgroundImage.replace("/square/", "/tall/"))
@@ -553,7 +562,6 @@ function toggleUnlimited() {
     else {
         [...document.querySelectorAll(".sub-members .grid-input")].forEach(e => e.style.backgroundImage = e.style.backgroundImage.replace("/tall/", "/square/"))
     }
-    document.querySelector("#unlimited-toggle-button").classList.toggle("toggled");
     unlimited = !unlimited;
 }
 
@@ -573,7 +581,11 @@ function toggleLang(lang) {
 function toggleWikiControls() {
     showWiki = !showWiki;
     getSetLocalStorage("showWiki", showWiki);
-    document.querySelector("html").classList.toggle("no-wiki");
+    document.querySelector("#wiki-controls").classList.toggle("hide");
+}
+
+function showHelpPopup() {
+
 }
 
 ///
@@ -1752,10 +1764,12 @@ function importURL() {
 }
 
 async function generateImage() {
-    [...document.querySelectorAll(`.quick-summon-toggle[data-toggled="false"], 
+    const hideForImage = `.quick-summon-toggle[data-toggled="false"], 
         .c-awakening[data-awk="balanced"],
         .w-awakening[data-awk="empty"],
-        .uncap-toggle[data-toggled="true"]`)].forEach(e => {
+        .uncap-toggle[data-toggled="true"],
+        #grid-controls`;
+    [...document.querySelectorAll(hideForImage)].forEach(e => {
         e.style.opacity = 0;
     });
     if ((!teamData.wp10 && !teamData.wp11 && !teamData.wp12) && !getSetLocalStorage("extra-collapsed")) {
@@ -1797,10 +1811,7 @@ async function generateImage() {
     }
     popup.querySelector("#close-image-button").onclick = () => {
         popup.remove();
-        [...document.querySelectorAll(`.quick-summon-toggle[data-toggled="false"], 
-            .c-awakening[data-awk="balanced"],
-            .w-awakening[data-awk="empty"],
-            .uncap-toggle[data-toggled="true"`)].forEach(e => {
+        [...document.querySelectorAll(hideForImage)].forEach(e => {
             e.style.opacity = "";
         });
     }

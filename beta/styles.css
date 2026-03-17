@@ -26,8 +26,55 @@ ul {
     margin-left: 10px;
     display: grid;
     grid-template:
-        "a b" auto "c b" auto "d e" auto / 504px auto;
+        "a b" min-content "c b" 230px "f e" auto / 504px 470px;
     gap: 0 2px;
+
+    &.unlimited {
+        grid-template-rows: 385px 122px auto;
+
+        .team-container {
+            background-size: 504px 385px;
+        }
+    }
+
+    & #grid-controls {
+        padding-left: 10px;
+        grid-area: e;
+        position: relative;
+
+        #unlimited-toggle-button {
+            background-image: url("./assets/unlimited-off.png");
+            background-color: transparent;
+            width: 150px;
+            height: 37px;
+
+            &.toggled {
+                background-image: url("./assets/unlimited-on.png");
+            }
+        }
+
+        #standard-toggle-button {
+            background-image: url("./assets/standard-off.png");
+            background-color: transparent;
+            background-size: 150px 37px;
+            width: 150px;
+            height: 37px;
+
+            &.toggled {
+                background-image: url("./assets/standard-on.png");
+            }
+        }
+
+        #help-button {
+            position: absolute;
+            top: 0;
+            right: 4px;
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+    }
 }
 
 .ui-button {
@@ -44,7 +91,7 @@ ul {
     box-shadow: inset 0 0 2px 1px #0c0b0b, inset 0 6px 6px 1px #cefeff, inset 0 -6px 7px 0px #62effe, 1px 4px 4px #443e38;
 }
 
-#controls {
+#wiki-controls {
     font-size: 24px;
     display: flex;
     flex-direction: column;
@@ -71,17 +118,13 @@ ul {
         color: #ec9c79;
     }
 
-    #unlimited-toggle-button {
-        &:not(.toggled) {
-            border: 3px solid #504233;
-            background: linear-gradient(to bottom, #041622, #03080a, #162124);
-            box-shadow: inset 0 0 2px 1px #0c0b0b, inset 0 6px 6px 1px #03141b, inset 15px 4px 9px -12px #152d36, inset -15px 4px 9px -12px #3083a5, 1px 4px 4px #443e38;
-        }
+    &.hide {
+        display: none;
     }
 }
 
 #filters {
-    position: absolute;
+    position: fixed;
     bottom: 0px;
     left: 530px;
     color: white;
@@ -271,7 +314,7 @@ ul {
 }
 
 #weapons-container {
-    grid-area: c;
+    grid-area: c / 1 / f;
     width: fit-content;
     height: fit-content;
 }
@@ -671,13 +714,16 @@ li.active {
     scrollbar-width: none;
 }
 
-#image-popup {
+.popup {
     position: fixed;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
+}
+
+#image-popup {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -699,8 +745,4 @@ li.active {
         right: 10%;
         font-size: 2em;
     }
-}
-
-html.no-wiki .wiki-control{
-    display: none;
 }
