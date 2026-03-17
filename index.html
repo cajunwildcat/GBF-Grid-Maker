@@ -12,7 +12,6 @@
     <script src="aliases.js"></script>
     <script src="weights.js"></script>
     <script src="searchOptions.js"></script>
-    <script src="abilityIcons.js"></script>
     <!--Scripts-->
     <script src="main.js"></script>
     <script src="v1imports.js"></script>
@@ -143,16 +142,21 @@
                 <div id="s-sub2" class="grid-input" data-options="summons" tabindex="28"></div>
             </div>
         </div>
+        <div id="grid-controls">
+            <div>
+                <button id="standard-toggle-button" class="toggled"></button>
+                <button id="unlimited-toggle-button"></button>
+            </div>
+            <button id="copy-image-button" class="ui-button">Generate Image</button>
+            <button id="export-url-button" class="ui-button">Copy URL</button>
+
+            <button id="help-button" class="ui-button">Help</button>
+        </div>
     </div>
-    <div id="controls">
+    <div id="wiki-controls">
         <div>
             <button id="export-wikitext-button" class="ui-button wiki-control">Export to<br>Wikitext</button>
             <button id="import-wikitext-button" class="ui-button wiki-control">Import from<br>Wikitext</button>
-            <button id="copy-image-button" class="ui-button">Generate Image</button>
-            <button id="export-url-button" class="ui-button">Copy URL</button>
-            <button id="unlimited-toggle-button" class="ui-button">Unlimited?</button>
-
-            <button style="display:none;" id="open-url-button" class="ui-button">Open URL</button>
         </div>
         <textarea id="import-export-text" class="wiki-control"></textarea>
     </div>
@@ -232,7 +236,6 @@
         </div>
         <span>Shift+Click: Toggle Column<br>Ctrl+Click: Disable All But Clicked</span>
     </div>
-
 
     <div id="dropdown" class="dropdown">
         <input type="text" id="searchInput" placeholder="Search...">

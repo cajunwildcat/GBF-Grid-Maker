@@ -5,6 +5,7 @@ let aOptoins = [];
 let clOptions = [];
 let minoOptions = [];
 let shieldOptions = [];
+let bulletOptions = [];
 const elements = { "fire": 1, "water": 2, "earth": 3, "wind": 4, "light": 5, "dark": 6 };
 const weaponTypes = { "sabre": 1, "dagger": 2, "spear": 3, "axe": 4, "staff": 5, "gun": 6, "melee": 7, "bow": 8, "harp": 9, "katana": 10 };
 const worldHarps = [1040815000, 1040815100, 1040815200, 1040815300, 1040815400];
@@ -12,7 +13,7 @@ const beastSummons = [2040376000, 2040377000, 2040378000, 2040379000, 2040449000
 const auxClasses = ["Gladiator", "Chrysaor", "Iatromantis", "Street King", "Viking"];
 let teamData = {};
 let calcData = { wSkills: [], chars: {}, auraBoosts: {} };
-let characters, summons, weapons, abilities, classes, minos, shields;
+let characters, summons, weapons, abilities, classes, minos, shields, bullets;
 let characterIDs = {}, summonIDs = {}, weaponIDs = {};
 let filters = {
     characters: ["any"],
@@ -275,6 +276,26 @@ window.onload = async (e) => {
         });
     }
 
+    await fetch("https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/bullets.json")
+        .then(function (response) { return response.json(); })
+        .then((response) => bullets = response);
+    for (let id in bullets) {
+        let b = bullets[id];
+        let type = ["", "parabellum", "rifle", "cartridge", "aetherial"][id.toString()[0]];
+        b.type = type;
+        let metas = [id];
+        if (alias = (aliases[b.name])) {
+            metas.push(...alias);
+        }
+
+        bulletOptions.push({
+            label: b.name,
+            jplabel: b.jpname,
+            metatags: metas,
+            weight: weights[b.name] ? weights[b.name] : 0
+        });
+    }
+
     setupButtonSearch();
 
     // Make character grid elements draggable
@@ -305,7 +326,8 @@ const optionSets = {
     ultimaSkill3: ultimaSkillOptions.skill3,
     destroyerSkill3: destroyerSkillOptions.skill3,
     mino: minoOptions,
-    shield: shieldOptions
+    shield: shieldOptions,
+    bullet: bulletOptions
 };
 let currentOptions = [];
 let filteredOptions = [];
@@ -357,7 +379,7 @@ function setupButtonSearch() {
         const searchTerm = searchInput.value.toLowerCase();
         filteredOptions = currentOptions.filter(option =>
             option.label.toLowerCase().includes(searchTerm) ||
-            option.jplabel.toLowerCase().includes(searchTerm) ||
+            option.jplabel?.toLowerCase().includes(searchTerm) ||
             option.metatags.some(tag => tag.toLowerCase().includes(searchTerm))
         );
         renderOptions(filteredOptions);
@@ -491,10 +513,6 @@ function setupStaticButtons() {
         }, 2500)
     }
 
-    document.querySelector("#open-url-button").onclick = () => {
-        window.open(exportURL(), "_blank");
-    }
-
     //drawer buttons
     document.querySelector("#show-filters-button").onclick = e => {
         let collapsed = document.querySelector("#filters").classList.toggle("filter-transition");
@@ -510,20 +528,33 @@ function setupStaticButtons() {
         document.querySelector("#collapse-extra-grid-button").click();
     }
 
-    document.querySelector("#unlimited-toggle-button").onclick = () => {
-        toggleUnlimited();
+    document.querySelector("#unlimited-toggle-button").onclick = (e) => {
+        if (unlimited) return;
+        toggleUnlimited(e);
+        e.target.classList.toggle("toggled");
+        document.querySelector("#standard-toggle-button").classList.toggle("toggled");
+    }
+    document.querySelector("#standard-toggle-button").onclick = (e) => {
+        if (!unlimited) return;
+        toggleUnlimited(e);
+        e.target.classList.toggle("toggled");
+        document.querySelector("#unlimited-toggle-button").classList.toggle("toggled");
     }
 
     document.querySelector("#copy-image-button").onclick = generateImage;
+    
+    document.querySelector("#help-button").onclick = showHelpPopup;
 
     if (getSetLocalStorage("lang") == "jp") {
         toggleLang("jp");
     }
     //if (getSetLocalStorage("showWiki") == false) toggleWikiControls();
     getSetLocalStorage("showWiki", true);
+
 }
 
 function toggleUnlimited() {
+    document.querySelector("#team-spread").classList.toggle("unlimited");
     [...document.querySelectorAll(".team-members")].forEach(e => e.classList.toggle("unlimited"));
     if (unlimited) {
         [...document.querySelectorAll(".sub-members .grid-input")].forEach(e => e.style.backgroundImage = e.style.backgroundImage.replace("/square/", "/tall/"))
@@ -531,7 +562,6 @@ function toggleUnlimited() {
     else {
         [...document.querySelectorAll(".sub-members .grid-input")].forEach(e => e.style.backgroundImage = e.style.backgroundImage.replace("/tall/", "/square/"))
     }
-    document.querySelector("#unlimited-toggle-button").classList.toggle("toggled");
     unlimited = !unlimited;
 }
 
@@ -551,7 +581,11 @@ function toggleLang(lang) {
 function toggleWikiControls() {
     showWiki = !showWiki;
     getSetLocalStorage("showWiki", showWiki);
-    document.querySelector("html").classList.toggle("no-wiki");
+    document.querySelector("#wiki-controls").classList.toggle("hide");
+}
+
+function showHelpPopup() {
+
 }
 
 ///
@@ -575,6 +609,8 @@ function gridInputClick(event, sort = true, button = null) {
             case 'summons':
                 return filters.summons.includes(summons[option.metatags[0]].rarity.toLowerCase())
                     && filters.summons.includes(summons[option.metatags[0]].element.toLowerCase());
+            case 'bullet':
+                return button.dataset.bulletType == bullets[option.metatags[0]].type;
             default: return true;
         }
     });
@@ -610,6 +646,8 @@ function gridInputContextMenu(event, button = null) {
             delete teamData[skills.firstChild.id];
             skills.firstChild.remove();
         }
+
+        removeBulletDiv();
     }
     else if (button.id == "s-main") {
         Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].style.backgroundImage = null;
@@ -641,6 +679,16 @@ function gridInputContextMenu(event, button = null) {
 
     if (button.dataset.itemId) button.dataset.itemId = "";
     hideDropdown();
+}
+
+function removeBulletDiv() {
+    if (bulletDiv = document.querySelector("#bullets")) {
+        while (bulletDiv.firstChild) {
+            delete teamData[bulletDiv.firstChild.id];
+            bulletDiv.firstChild.remove();
+        }
+        bulletDiv.remove();
+    }
 }
 
 // Position and show dropdown
@@ -702,7 +750,7 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
     Object.keys(teamData)?.filter(key => key.includes(button.id)).forEach(key => delete teamData[key]);
     calcData.wSkills = calcData.wSkills.filter(s => s.addedBy != button.id);
 
-    let itemName = jp ? selectedOption.jplabel : selectedOption.label;
+    let itemName = selectedOption.label;
     let id = selectedOption.metatags[0];
     if (id == button.dataset.itemId && !button.id == "s-main") {
         setButtonBackground(button, selectedOption, optionSet, uncap, id);
@@ -721,6 +769,10 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
                 button.querySelector(".class-gear").remove();
             }
             if (["Manadiver", "Paladin", "Shieldsworn"].includes(itemName)) addClassGear(button, itemName);
+            if (itemName == "Soldier") {
+                if (teamData.mh && weapons[weaponIDs[teamData.mh]].type == "gun") addBulletButtons(weaponIDs[teamData.mh]);
+            }
+            else removeBulletDiv();
             break;
         case 'characters':
             if (parseInt(button.id.replace("char", "")) >= 6 && !unlimited) {
@@ -749,6 +801,10 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
             }
             if (weapons[id].awakening) addAwakeningButton(button, id, options.awk);
             addWeaponSkills(button, id, uncap);
+            if (button.id == "mh") {
+                if (weapons[id].type == "gun" && teamData.mc == "Soldier") addBulletButtons(id);
+                else removeBulletDiv();
+            }
             break;
         case 'summons':
             if (!button.parentElement.classList.contains("team-summon")) addQuickSummonButton(button);
@@ -756,6 +812,7 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
             break;
         case 'mino':
         case 'shield':
+        case 'bullet':
         case 'opusSkill2':
         case 'opusSkill3':
         case 'ultimaSkill1':
@@ -795,7 +852,7 @@ function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
             backgroundUrl = `url('https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/classes/tall/${id}_${mc}.webp')`;
             break;
         case 'characters':
-            art = id.slice(-1) != 0? 1 : uncap == 5 ? 3 : uncap == 6 || uncap.toString().includes("t") ? 4 : 1;
+            art = id.slice(-1) != 0 ? 1 : uncap == 5 ? 3 : uncap == 6 || uncap.toString().includes("t") ? 4 : 1;
             type = unlimited && parseInt(button.id.replace("char", "")) >= 4 ? "square" : "tall";
             backgroundUrl = `url('https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/characters/${type}/${id}_0${art}.webp')`;
             break;
@@ -816,6 +873,9 @@ function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
             break;
         case 'shield':
             backgroundUrl = `url(https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/gear/shields/${id}.webp)`
+            break;
+        case 'bullet':
+            backgroundUrl = `url(https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/gear/bullets/${id}.webp)`
             break;
         case 'opusSkill2':
         case 'opusSkill3':
@@ -1183,12 +1243,32 @@ function addAwakeningButton(button, id, iAwk) {
     button.appendChild(awkButton);
 }
 
+function addBulletButtons(weaponID) {
+    let bullets = weapons[weaponID].bullets;
+    let mh = document.querySelector(".w-grid-main");
+    let bulletDiv = document.createElement("div");
+    bulletDiv.classList.add("grid-input");
+    //bulletDiv.classList.add("class-gear");
+    bulletDiv.id = "bullets";
+    for (let i = 0; i < bullets.length; i++) {
+        if (!bullets[i]) continue;
+        let bulletButton = document.createElement("button");
+        bulletButton.id = `bullet${i + 1}`;
+        bulletButton.dataset.options = "bullet";
+        bulletButton.dataset.bulletType = bullets[i];
+        bulletDiv.appendChild(bulletButton);
+        bulletButton.onclick = gridInputClick;
+        bulletButton.oncontextmenu = gridInputContextMenu;
+    }
+    mh.appendChild(bulletDiv);
+}
+
 ///
 /// Export / Import
 ///
 function generateWikiTemplate() {
     return `{{TeamSpread
-|class=${getTeamData("mc")}${teamData.mino ? `|mino=${teamData.mino}` : ""}${teamData.shield ? `|shield=${teamData.shield}` : ""}
+|class=${getTeamData("mc")}${teamData.mino ? `|mino=${teamData.mino}` : ""}${teamData.shield ? `|shield=${teamData.shield}` : ""}${getBulletInfo()}
 |char1=${getCharacterInfo("char1")}
 |char2=${getCharacterInfo("char2")}
 |char3=${getCharacterInfo("char3")}
@@ -1232,106 +1312,115 @@ function generateWikiTemplate() {
 |source=
 |comments=
 |rotation=
-}}`
-}
+}}`;
 
-function getTeamData(item) {
-    return teamData[item] ? teamData[item] : "";
-}
-
-function getOpusSkillInfo() {
-    let skills = [];
-    for (let i = 2; i <= 3; i++) {
-        let skill = teamData[`opusSkill${i}`];
-        if (skill) {
-            skills.push(skill);
-        }
+    function getTeamData(item) {
+        return teamData[item] ? teamData[item] : "";
     }
-    if (skills.length > 0)
-        return `
+
+    function getBulletInfo() {
+        if (!Object.keys(teamData).some(k => k.includes("bullet"))) return "";
+        let equippedBullets = [];
+        for (let i = 1; i < 7; i++) {
+            if (teamData[`bullet${i}`]) equippedBullets.push(aliases[teamData[`bullet${i}`]][0]);
+        }
+        return `|bullets=${equippedBullets.join(",")}`;
+    }
+
+    function getOpusSkillInfo() {
+        let skills = [];
+        for (let i = 2; i <= 3; i++) {
+            let skill = teamData[`opusSkill${i}`];
+            if (skill) {
+                skills.push(skill);
+            }
+        }
+        if (skills.length > 0)
+            return `
 |opus=` + skills.join(',');
-    return "";
-}
-
-function getUltimaSkillInfo() {
-    let skills = [];
-    for (let i = 1; i <= 3; i++) {
-        let skill = teamData[`ultimaSkill${i}`];
-        if (skill) {
-            skills.push(skill);
-        }
+        return "";
     }
-    if (skills.length > 0)
-        return `
+
+    function getUltimaSkillInfo() {
+        let skills = [];
+        for (let i = 1; i <= 3; i++) {
+            let skill = teamData[`ultimaSkill${i}`];
+            if (skill) {
+                skills.push(skill);
+            }
+        }
+        if (skills.length > 0)
+            return `
 |ultima=` + skills.join(',');
-    return "";
-}
+        return "";
+    }
 
-function getDraconicSkillInfo() {
-    let skills = [];
-    for (let i = 1; i <= 3; i++) {
-        let skill = teamData[`draconicSkill${i}`];
-        if (skill) {
-            skills.push(skill);
+    function getDraconicSkillInfo() {
+        let skills = [];
+        for (let i = 1; i <= 3; i++) {
+            let skill = teamData[`draconicSkill${i}`];
+            if (skill) {
+                skills.push(skill);
+            }
         }
-    }
-    if (skills.length > 0)
-        return `
+        if (skills.length > 0)
+            return `
 |draconic=` + skills.join(',');
-    return "";
-}
+        return "";
+    }
 
-function getDestroyerSkillInfo() {
-    if (teamData.destroyerSkill3) {
-        return `
+    function getDestroyerSkillInfo() {
+        if (teamData.destroyerSkill3) {
+            return `
 |destroyer=${teamData.destroyerSkill3}`;
+        }
+        else return "";
     }
-    else return "";
-}
 
 
-function getCCWSkillInfo() {
-    if (teamData.ccwSkill2) {
-        return `
+    function getCCWSkillInfo() {
+        if (teamData.ccwSkill2) {
+            return `
 |ccw=${teamData.ccwSkill2}`;
+        }
+        else return "";
     }
-    else return "";
-}
 
-function getWeaponInfo(weaponSlot) {
-    let index = weaponSlot.replace("wp", "");
-    let weapon = teamData[weaponSlot];
-    let uncap = teamData[weaponSlot + "Uncap"];
-    let trans = teamData[weaponSlot + "Trans"];
-    let awk = teamData[weaponSlot + "Awk"];
-    if (!weapon) return "";
-    if (index != "mh" && !(index == "1" && teamData.mc && auxClasses.includes(teamData.mc)) && ["ultima", "ccw"].includes(weapons[weaponIDs[weapon]].series)) weapon = weapon.split("(")[0].trim();
-    if ((uncap !== 6 && uncap === weapons[weaponIDs[weapon]].maxUncap) || (weapons[weaponIDs[weapon]].series == "dark opus" && uncap == 5)) {
-        uncap = null;
+    function getWeaponInfo(weaponSlot) {
+        let index = weaponSlot.replace("wp", "");
+        let weapon = teamData[weaponSlot];
+        let uncap = teamData[weaponSlot + "Uncap"];
+        let trans = teamData[weaponSlot + "Trans"];
+        let awk = teamData[weaponSlot + "Awk"];
+        if (!weapon) return "";
+        if (index != "mh" && !(index == "1" && teamData.mc && auxClasses.includes(teamData.mc)) && ["ultima", "ccw"].includes(weapons[weaponIDs[weapon]].series)) weapon = weapon.split("(")[0].trim();
+        if ((uncap !== 6 && uncap === weapons[weaponIDs[weapon]].maxUncap) || (weapons[weaponIDs[weapon]].series == "dark opus" && uncap == 5)) {
+            uncap = null;
+        }
+        return `${weapon}${uncap != null ? `|u${index}=${trans ? trans : uncap}` : ""}${awk && awk != "empty" ? `|awk${index}=${awk}` : ""}`;
     }
-    return `${weapon}${uncap != null ? `|u${index}=${trans ? trans : uncap}` : ""}${awk && awk != "empty" ? `|awk${index}=${awk}` : ""}`;
-}
 
-function getCharacterInfo(characterSlot) {
-    let character = teamData[characterSlot];
-    if (!character) return "";
-    let uncap = teamData[characterSlot + "Uncap"];
-    let trans = teamData[characterSlot + "Trans"];
-    let awk = teamData[characterSlot + "Awk"];
-    let slot = characterSlot.replace("char", "");
-    return `${character}${uncap > 4 || trans ? `|uchar${slot}=${trans ? trans : uncap}` : ""}${awk != "balanced" ? `|awkchar${slot}=${awk}` : ""}`;
-}
-
-function getSummonInfo(summonSlot) {
-    let slot = summonSlot.split("-").slice(-1)[0];
-    let summon = teamData[summonSlot];
-    let uncap = teamData[summonSlot + "Uncap"];
-    let trans = teamData[summonSlot + "Trans"];
-    if (!summon) return "";
-    if (trans === "t5" || (uncap !== 6 && uncap === summons[summonIDs[summon]].maxUncap)) {
-        return `${summon}`;
+    function getCharacterInfo(characterSlot) {
+        let character = teamData[characterSlot];
+        if (!character) return "";
+        let uncap = teamData[characterSlot + "Uncap"];
+        let trans = teamData[characterSlot + "Trans"];
+        let awk = teamData[characterSlot + "Awk"];
+        let slot = characterSlot.replace("char", "");
+        return `${character}${uncap > 4 || trans ? `|uchar${slot}=${trans ? trans : uncap}` : ""}${awk != "balanced" ? `|awkchar${slot}=${awk}` : ""}`;
     }
-    return `${summon}|u${slot}=${trans ? trans : uncap}`;
+
+    function getSummonInfo(summonSlot) {
+        let slot = summonSlot.split("-").slice(-1)[0];
+        let summon = teamData[summonSlot];
+        let uncap = teamData[summonSlot + "Uncap"];
+        let trans = teamData[summonSlot + "Trans"];
+        if (!summon) return "";
+        if (trans === "t5" || (uncap !== 6 && uncap === summons[summonIDs[summon]].maxUncap)) {
+            return `${summon}`;
+        }
+        return `${summon}|u${slot}=${trans ? trans : uncap}`;
+    }
 }
 
 function importWikiTextV2(inputData) {
@@ -1388,6 +1477,13 @@ function importWikiTextV2(inputData) {
     if (data.draconic) setGridData("draconicSkill3", data.draconic.split(",")[1]);
     if (data.destroyer) setGridData("destroyerSkill3", data.destroyer);
     if (data.ccw) setGridData("ccwSkill2", data.ccw);
+    if (data.class == "Soldier") {
+        bullets = data.bullets.split(",");
+        for (let i = 0; i < bullets.length; i++) {
+            if (bullets[i] == "") continue;
+            setGridData(`bullet${i + 1}`, bullets[i]);
+        }
+    }
     //summons
     if (data.main) setGridData("s-main", data.main, { uncap: summons[`umain`] });
     if (data.support) setGridData("s-support", data.support, { uncap: summons[`usupport`] });
@@ -1494,7 +1590,7 @@ function exportURL() {
     }
     while (summ.length && summ.at(-1) === ",") summ.pop();
     //mc info
-    if (teamData.mc) mc.push(decimalToBase62(Object.keys(classes).find(c=>classes[c].name == teamData.mc || classes[c].jpname == teamData.mc)));
+    if (teamData.mc) mc.push(decimalToBase62(Object.keys(classes).find(c => classes[c].name == teamData.mc || classes[c].jpname == teamData.mc)));
     for (let i = 1; i <= 3; i++) {
         let key = `skill${i}`;
         if (!teamData[key]) continue;
@@ -1525,6 +1621,15 @@ function exportURL() {
     if (teamData.destroyerSkill3) {
         wskill.push(`&dest=${teamData.destroyerSkill3}`);
     }
+    if (Object.keys(teamData).some(k => k.includes("bullet"))) {
+        let equippedBullets = [];
+        for (let i = 1; i < 7; i++) {
+            if (teamData[`bullet${i}`]) equippedBullets.push(Object.keys(bullets).find(k => bullets[k].name == teamData[`bullet${i}`]));
+            else equippedBullets.push("");
+        }
+        while (equippedBullets.length && equippedBullets.at(-1) === "") equippedBullets.pop();
+        if (equippedBullets.length > 0) wskill.push(`&bullet=${equippedBullets.join(",")}`)
+    }
 
     return window.location.origin + window.location.pathname + `?c=${char.join("")}&w=${weap.join("")}&s=${summ.join("")}&mc=${mc.join("")}${teamData.quickSummon ? `&qs=${teamData.quickSummon}` : ""}${wskill.join("")}`;
 }
@@ -1550,7 +1655,7 @@ function importURL() {
             if (awk) awk = awk[0][1];
             let style = charData[i].match("\\%\\d");
             id = base62ToDecimal(id) * 1000 + 3000000000;
-            if (style) id = id.toString().slice(0,-1) + style[0][1];
+            if (style) id = id.toString().slice(0, -1) + style[0][1];
             switch (awk) {
                 case "1": awk = "attack"; break;
                 case "2": awk = "defense"; break;
@@ -1638,6 +1743,15 @@ function importURL() {
     const dest = params.get("dest");
     if (dest) setGridData("destroyerSkill3", dest);
 
+    let bullets = params.get("bullet");
+    if (bullets) {
+        bullets = bullets.split(",");
+        for (let i = 0; i < bullets.length; i++) {
+            if (bullets[i] == "") continue;
+            setGridData(`bullet${i + 1}`, bullets[i]);
+        }
+    }
+
     const quick = params.get("qs");
     if (quick) document.querySelector(`.summon-grid div[id*="${quick}"] .quick-summon-toggle`).click();
 
@@ -1650,10 +1764,12 @@ function importURL() {
 }
 
 async function generateImage() {
-    [...document.querySelectorAll(`.quick-summon-toggle[data-toggled="false"], 
+    const hideForImage = `.quick-summon-toggle[data-toggled="false"], 
         .c-awakening[data-awk="balanced"],
         .w-awakening[data-awk="empty"],
-        .uncap-toggle[data-toggled="true"]`)].forEach(e => {
+        .uncap-toggle[data-toggled="true"],
+        #grid-controls`;
+    [...document.querySelectorAll(hideForImage)].forEach(e => {
         e.style.opacity = 0;
     });
     if ((!teamData.wp10 && !teamData.wp11 && !teamData.wp12) && !getSetLocalStorage("extra-collapsed")) {
@@ -1695,10 +1811,7 @@ async function generateImage() {
     }
     popup.querySelector("#close-image-button").onclick = () => {
         popup.remove();
-        [...document.querySelectorAll(`.quick-summon-toggle[data-toggled="false"], 
-            .c-awakening[data-awk="balanced"],
-            .w-awakening[data-awk="empty"],
-            .uncap-toggle[data-toggled="true"`)].forEach(e => {
+        [...document.querySelectorAll(hideForImage)].forEach(e => {
             e.style.opacity = "";
         });
     }
