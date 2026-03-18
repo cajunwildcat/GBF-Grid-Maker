@@ -1783,6 +1783,7 @@ async function generateImage() {
     const result = await snapdom(document.querySelector("#team-spread"));
     const png = await result.toPng();
     popup.append(png);
+    popup.classList.add("popup")
     popup.innerHTML += ("<div style='display:flex; gap: 1em;'><button class='ui-button' id='copy-image-button'>Copy</button><button class='ui-button' id='download-image-button'>Download</button><button class='ui-button' id='download-image-parts-button'>Download Parts</button></div><button class='ui-button' id='close-image-button'>X</button>");
     popup.querySelector("#download-image-button").onclick = async () => {
         await result.download({ format: "png", filename: "granblue team" });
