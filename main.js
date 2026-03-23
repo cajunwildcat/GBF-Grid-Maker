@@ -585,7 +585,32 @@ function toggleWikiControls() {
 }
 
 function showHelpPopup() {
-
+    const popup = document.createElement("div");
+    popup.classList.add("popup")
+    popup.id = "help-popup";
+    popup.innerHTML = `
+    <div>
+        <div id=help->
+            <h2>How to Use</h2>
+        </div>
+        <div id=help-settings>
+            <h2>Settings</h2>
+            <span><label for=lang-select>Language</label> <select id=lang-select>
+                <option value="en">English</option>
+                <option value="jp">日本語</option>
+            </select></span>
+            <span><label for=wiki-toggle>Show Wiki Import/Export</label> <input type=checkbox id=wiki-toggle /></span>
+        </div>
+    </div>
+    <button class='ui-button' id='close-image-button'>X</button>
+`
+    popup.querySelector("#close-image-button").onclick = () => {
+        popup.remove();
+        [...document.querySelectorAll(hideForImage)].forEach(e => {
+            e.style.opacity = "";
+        });
+    }
+    document.body.append(popup);
 }
 
 ///
@@ -1477,7 +1502,7 @@ function importWikiTextV2(inputData) {
     if (data.draconic) setGridData("draconicSkill3", data.draconic.split(",")[1]);
     if (data.destroyer) setGridData("destroyerSkill3", data.destroyer);
     if (data.ccw) setGridData("ccwSkill2", data.ccw);
-    if (data.class == "Soldier") {
+    if (data.class == "Soldier" && data.bullets) {
         bullets = data.bullets.split(",");
         for (let i = 0; i < bullets.length; i++) {
             if (bullets[i] == "") continue;
@@ -1778,12 +1803,12 @@ async function generateImage() {
     }
 
     const popup = document.createElement("div");
+    popup.classList.add("popup")
     popup.id = "image-popup";
     document.body.append(popup);
     const result = await snapdom(document.querySelector("#team-spread"));
     const png = await result.toPng();
     popup.append(png);
-    popup.classList.add("popup")
     popup.innerHTML += ("<div style='display:flex; gap: 1em;'><button class='ui-button' id='copy-image-button'>Copy</button><button class='ui-button' id='download-image-button'>Download</button><button class='ui-button' id='download-image-parts-button'>Download Parts</button></div><button class='ui-button' id='close-image-button'>X</button>");
     popup.querySelector("#download-image-button").onclick = async () => {
         await result.download({ format: "png", filename: "granblue team" });
