@@ -738,11 +738,38 @@ li.active {
         max-width: 90%;
         height: unset !important;
     }
+}
 
-    #close-image-button {
+#help-popup {
+    >div {
+        display: grid;
+        gap: 5%;
+        grid-template-areas: 
+            'a b' 
+            'a c';
+        grid-template-columns: 30% 30%;
+        color: white;
+        padding: 10% 0 10% 20%;
+        font-size: 1.2em;
+
+        >div {
+            border-radius: 1.2em;
+            padding: 2%;
+            padding-left: 5%;
+            background-color: #292929;
+        }
+
+        #help-settings {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+    }
+}
+
+#close-image-button {
         position: absolute;
         top: 4%;
         right: 10%;
         font-size: 2em;
     }
-}
