@@ -28,12 +28,12 @@ function swapItems(e) {
 
         // Swap callable and sub summon image type
         if (draggedElement.parentElement.classList[0] == "sub-summons" && swappedElement.parentElement.classList[0] == "callable-summons") {
-            swappedElement.style.backgroundImage = swappedElement.style.backgroundImage.replace("/m/", "/party_sub/");
-            draggedElement.style.backgroundImage = draggedElement.style.backgroundImage.replace("/party_sub/", "/m/");
+            swappedElement.style.backgroundImage = swappedElement.style.backgroundImage.replace("/icon/", "/party_sub/");
+            draggedElement.style.backgroundImage = draggedElement.style.backgroundImage.replace("/party_sub/", "/icon/");
         }
         else if (draggedElement.parentElement.classList[0] == "callable-summons" && swappedElement.parentElement.classList[0] == "sub-summons") {
-            swappedElement.style.backgroundImage = swappedElement.style.backgroundImage.replace("/party_sub/", "/m/");
-            draggedElement.style.backgroundImage = draggedElement.style.backgroundImage.replace("/m/", "/party_sub/");
+            swappedElement.style.backgroundImage = swappedElement.style.backgroundImage.replace("/party_sub/", "/icon/");
+            draggedElement.style.backgroundImage = draggedElement.style.backgroundImage.replace("/icon/", "/party_sub/");
         }
     }
 
@@ -41,13 +41,13 @@ function swapItems(e) {
     if (unlimited && draggedElement.dataset.options === "characters") {
         // Dragged is sub, swapped is main
         if (draggedElement.parentElement.classList[1] == "sub-members" && swappedElement.parentElement.classList[1] == "main-members") {
-            swappedElement.style.backgroundImage = swappedElement.style.backgroundImage.replace("/s/", "/quest/");
-            draggedElement.style.backgroundImage = draggedElement.style.backgroundImage.replace("/quest/", "/s/");
+            swappedElement.style.backgroundImage = swappedElement.style.backgroundImage.replace("/square/", "/tall/");
+            draggedElement.style.backgroundImage = draggedElement.style.backgroundImage.replace("/tall/", "/square/");
         }
         // Dragged is main, swapped is sub
         else if (draggedElement.parentElement.classList[1] == "main-members" && swappedElement.parentElement.classList[1] == "sub-members") {
-            draggedElement.style.backgroundImage = draggedElement.style.backgroundImage.replace("/s/", "/quest/");
-            swappedElement.style.backgroundImage = swappedElement.style.backgroundImage.replace("/quest/", "/s/");
+            draggedElement.style.backgroundImage = draggedElement.style.backgroundImage.replace("/square/", "/tall/");
+            swappedElement.style.backgroundImage = swappedElement.style.backgroundImage.replace("/tall/", "/square/");
         }
     }
 
