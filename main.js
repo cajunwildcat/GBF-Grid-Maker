@@ -1444,7 +1444,7 @@ function generateWikiTemplate() {
         if (trans === "t5" || (uncap !== 6 && uncap === summons[summonIDs[summon]].maxUncap)) {
             return `${summon}`;
         }
-        return `${summon}|u${slot}=${trans ? trans : uncap}`;
+        return `${summon}|u${slot}=${trans ? trans.replace("trans","t") : uncap}`;
     }
 }
 
