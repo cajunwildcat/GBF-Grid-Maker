@@ -7,7 +7,7 @@ const opusSkillOptions = {
     ],
     skill3: [
         { label: "Stamina", jplabel: "強壮", metatags: ["stamina", "strength", "渾身"], img: "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/weapons/skills/ws_skill_whole_m_<element>_3.webp" },
-        { label: "Emnity", jplabel: "激情", metatags: ["emnity", "zeal", "背水"], img: "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/weapons/skills/ws_skill_backwater_m_<element>_3.webp" },
+        { label: "Enmity", jplabel: "激情", metatags: ["enmity", "zeal", "背水"], img: "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/weapons/skills/ws_skill_backwater_m_<element>_3.webp" },
         { label: "Trium", jplabel: "闘争", metatags: ["strife", "trium", "三手"], img: "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/weapons/skills/ws_skill_ta_m_<element>_2.webp" },
         { label: "Progression", jplabel: "隆盛", metatags: ["progression", "prosperity", "進境"], img: "./assets/skill_item_14004.jpg" },
         { label: "Celere", jplabel: "技錬", metatags: ["celere", "temperament", "刹那"], img: "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/weapons/skills/ws_skill_moment_m_<element>.webp" },
