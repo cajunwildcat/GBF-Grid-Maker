@@ -11,16 +11,30 @@ function importDataV1(data) {
         let [key, value] = item.split("=");
         team[key] = value;
     });
-    temp = data[1].replace("|weapons={{WeaponGridSkills", "").split("|").slice(1);
-    temp.forEach(item => {
-        let [key, value] = item.split("=");
-        weapons[key] = value;
-    });
-    temp = data[2].replace("|summons={{SummonGrid", "").split("|").slice(1);
-    temp.forEach(item => {
-        let [key, value] = item.split("=");
-        summons[key] = value;
-    });
+    if (data[1].includes("|weapons=")) {
+        temp = data[1].replace("|weapons={{WeaponGridSkills", "").split("|").slice(1);
+        temp.forEach(item => {
+            let [key, value] = item.split("=");
+            weapons[key] = value;
+        });
+        temp = data[2].replace("|summons={{SummonGrid", "").split("|").slice(1);
+        temp.forEach(item => {
+            let [key, value] = item.split("=");
+            summons[key] = value;
+        });
+    }
+    else {
+        temp = data[1].replace("|summons={{SummonGrid", "").split("|").slice(1);
+        temp.forEach(item => {
+            let [key, value] = item.split("=");
+            summons[key] = value;
+        });
+        temp = data[2].replace("|weapons={{WeaponGridSkills", "").split("|").slice(1);
+        temp.forEach(item => {
+            let [key, value] = item.split("=");
+            weapons[key] = value;
+        });
+    }
 
     if (team.class) setGridData("mc", team.class);
     if (team.class == "Manadiver" && team.mino) setGridData("mino", team.mino);
@@ -76,7 +90,7 @@ function importDataV1(data) {
         let button = document.querySelector(`#${key}`);
         let optionSet = button.dataset.options;
         let selectedOption;
-        selectedOption = optionSets[optionSet].find(option => option.label == value);
+        selectedOption = optionSets[optionSet].find(option => option.label.toLowerCase() == value.toLowerCase());
         if (selectedOption == null) {
             selectedOption = optionSets[optionSet].find(option => option.metatags.includes(value.toLowerCase()));
         }
