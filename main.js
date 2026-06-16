@@ -542,7 +542,7 @@ function setupStaticButtons() {
     }
 
     document.querySelector("#copy-image-button").onclick = generateImage;
-    
+
     document.querySelector("#help-button").onclick = showHelpPopup;
 
     if (getSetLocalStorage("lang") == "jp") {
@@ -882,7 +882,10 @@ function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
             backgroundUrl = `url('https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/characters/${type}/${id}_0${art}.webp')`;
             break;
         case 'weapons':
-            art = uncap == 6 || uncap == "t5" ? "_03" : uncap.toString().includes("t") ? "_02" : "";
+            art = "";
+            if (weapons[id].series == "dark opus") {
+                art = uncap == 6 || uncap == "t5" ? "_03" : uncap.toString().includes("t") ? "_02" : "";
+            }
             type = button.parentElement.classList[0].includes("main") ? "mainhand" : "icon";
             backgroundUrl = `url('https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/weapons/${type}/${id}${art}.webp')`;
             break;
@@ -1444,7 +1447,7 @@ function generateWikiTemplate() {
         if (trans === "t5" || (uncap !== 6 && uncap === summons[summonIDs[summon]].maxUncap)) {
             return `${summon}`;
         }
-        return `${summon}|u${slot}=${trans ? trans.replace("trans","t") : uncap}`;
+        return `${summon}|u${slot}=${trans ? trans.replace("trans", "t") : uncap}`;
     }
 }
 
