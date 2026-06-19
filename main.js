@@ -1656,6 +1656,8 @@ function exportURL() {
                     case "multiattack": awk = 7; break;
                 }
                 if (awk) weap.push(`$${awk}`);
+            }
+            if (teamData[`${key}BF`]) {
                 let bf = teamData[`${key}BF`];
                 switch (bf) {
                     case "atk": bf = "73"; break;
