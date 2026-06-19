@@ -595,6 +595,16 @@ ul {
     background-image: url("assets/Secret_square.jpg");
 }
 
+.w-bf {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    left: 0;
+    top: 15%;
+
+    background-color: transparent;
+}
+
 .w-awakening {
     width: 30px;
     height: 30px;
@@ -637,7 +647,8 @@ ul {
 }
 
 #uncap-dropdown,
-#awakening-dropdown {
+#awakening-dropdown,
+#bf-dropdown {
     position: absolute;
     top: 30px;
     left: 0;
