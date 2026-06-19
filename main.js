@@ -825,6 +825,11 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
                 button.querySelector(".w-awakening").remove();
             }
             if (weapons[id].awakening) addAwakeningButton(button, id, options.awk);
+            if (button.querySelector(".w-bf")) {
+                delete teamData[button.querySelector(".w-bf").id];
+                button.querySelector(".w-bf").remove();
+            }
+            if (weapons[id].series == "odious") addBFButton(button, id, options.bf);
             addWeaponSkills(button, id, uncap);
             if (button.id == "mh") {
                 if (weapons[id].type == "gun" && teamData.mc == "Soldier") addBulletButtons(id);
@@ -1053,7 +1058,14 @@ function addWeaponSkills(button, weaponID, uncap) {
         skills.appendChild(skill);
         addWeaponSkillCalcData(weapon.skill3, button.id);
     }
-
+    /* if (weapon.skill4.name) {
+        let skill;
+        skill = document.createElement("img");
+        skill.title = weapon.skill3.name;
+        skill.src = `https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/assets/weapons/skills/${weapon.skill3.icon}.webp`;
+        skills.appendChild(skill);
+        addWeaponSkillCalcData(weapon.skill4, button.id);
+    } */
 }
 
 function addSelectableWeaponSkill(skill, optionSet) {
@@ -1242,7 +1254,7 @@ function addAwakeningButton(button, id, iAwk) {
             ${awks.map(awk =>
             `<li data-awk="${awk}" style="background-image: url('assets/Awakening_${awk}.png');"></li>`
         ).join("\n")}
-            </ul>`
+            </ul>`;
         dropdown.querySelectorAll("li").forEach(li => {
             li.onclick = (e) => {
                 e.preventDefault();
@@ -1269,6 +1281,53 @@ function addAwakeningButton(button, id, iAwk) {
         addAwakeningStats(button, weapons[id], iAwk)
     }
     button.appendChild(awkButton);
+}
+
+function addBFButton(button, id, iBF) {
+    let bfs = ["atk", "skill", "ca", "ma", "dsr", "hp", "def", "dot"];
+    let bfButton = document.createElement("button");
+    bfButton.classList.add("w-bf", "w-bf-select");
+    bfButton.id = button.id + "BF";
+    bfButton.dataset.bf = "atk";
+    bfButton.style.backgroundImage = "url('assets/bf_atk.png')";
+    bfButton.onclick = openBFDropdown;
+    function openBFDropdown(e) {
+        e.stopPropagation();
+        hideDropdown();
+        bfButton.onclick = closeBFDropdown;
+        let dropdown = document.createElement("div");
+        dropdown.classList.add("dropdown");
+        dropdown.id = "bf-dropdown";
+        dropdown.innerHTML = `<ul id="options-list">
+            ${bfs.map(bf =>
+            `<li data-bf="${bf}" style="background-image: url('assets/bf_${bf.replace(" ","_")}.png');"></li>`
+        ).join("\n")}
+            </ul>`;
+        dropdown.querySelectorAll("li").forEach(li => {
+            li.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                teamData[bfButton.id] = li.dataset.bf;
+                bfButton.style.backgroundImage = li.style.backgroundImage;
+                bfButton.dataset.bf = li.dataset.bf;
+                closeBFDropdown(e);
+                //addBFStats(button, weapons[id], li.dataset.bf);
+            }
+        });
+        bfButton.appendChild(dropdown);
+    }
+    function closeBFDropdown(e) {
+        e.stopPropagation();
+        bfButton.querySelector("#bf-dropdown")?.remove();
+        bfButton.onclick = openBFDropdown;
+    }
+    if (iBF) {
+        bfButton.style.backgroundImage = `url('assets/bf_${iBF}.png')`;
+        teamData[bfButton.id] = iBF;
+        bfButton.dataset.bf = iBF;
+        //addBFStats(button, weapons[id], iBF);
+    }
+    button.appendChild(bfButton);
 }
 
 function addBulletButtons(weaponID) {
@@ -1420,12 +1479,13 @@ function generateWikiTemplate() {
         let uncap = teamData[weaponSlot + "Uncap"];
         let trans = teamData[weaponSlot + "Trans"];
         let awk = teamData[weaponSlot + "Awk"];
+        let bf = teamData[weaponSlot + "BF"];
         if (!weapon) return "";
         if (index != "mh" && !(index == "1" && teamData.mc && auxClasses.includes(teamData.mc)) && ["ultima", "ccw"].includes(weapons[weaponIDs[weapon]].series)) weapon = weapon.split("(")[0].trim();
         if ((uncap !== 6 && uncap === weapons[weaponIDs[weapon]].maxUncap) || (weapons[weaponIDs[weapon]].series == "dark opus" && uncap == 5)) {
             uncap = null;
         }
-        return `${weapon}${uncap != null ? `|u${index}=${trans ? trans : uncap}` : ""}${awk && awk != "empty" ? `|awk${index}=${awk}` : ""}`;
+        return `${weapon}${uncap != null ? `|u${index}=${trans ? trans : uncap}` : ""}${awk && awk != "empty" ? `|awk${index}=${awk}` : ""}${bf? `|bf${index}=${bf}` : ""}`;
     }
 
     function getCharacterInfo(characterSlot) {
@@ -1493,7 +1553,7 @@ function importWikiTextV2(inputData) {
         let key = `wp${i}`;
         if (!data[key]) continue;
         let value = data[key];
-        setGridData(key, value, { uncap: data[`u${i}`], awk: data[`awk${i}`], trans: data[`u${i}`] });
+        setGridData(key, value, { uncap: data[`u${i}`], awk: data[`awk${i}`], trans: data[`u${i}`], bf: data[`bf${i}`] });
     }
     //selectable weapon skills
     if (data.opus) setGridData("opusSkill2", data.opus.split(",")[0]);
@@ -1596,6 +1656,18 @@ function exportURL() {
                     case "multiattack": awk = 7; break;
                 }
                 if (awk) weap.push(`$${awk}`);
+                let bf = teamData[`${key}BF`];
+                switch (bf) {
+                    case "atk": bf = "73"; break;
+                    case "skill": bf = "74"; break;
+                    case "ca": bf = "75"; break;
+                    case "ma": bf = "77"; break;
+                    case "dsr": bf = "78"; break;
+                    case "hp": bf = "79"; break;
+                    case "def": bf = "80"; break;
+                    case "dot": bf = "81"; break;
+                }
+                if (bf) weap.push(`£${bf}`);
             }
         }
         if (i < 12) weap.push(",")
@@ -1696,9 +1768,11 @@ function importURL() {
     const weapData = params.get("w").split(",");
     if (weapData != "") {
         for (let i = 0; i < weapData.length; i++) {
+            let weap, awk, id, uncap, bf;
             if (weapData[i] == "") continue;
-            let [weap, awk] = weapData[i].split("$");
-            let [id, uncap] = weap.split(".");
+            [weap, bf] = weapData[i].split("£");
+            [weap, awk] = weap.split("$");
+            [id, uncap] = weap.split(".");
             id = base62ToDecimal(id) * 100 + 1000000000;
             switch (awk) {
                 case "1": awk = "attack"; break;
@@ -1709,7 +1783,17 @@ function importURL() {
                 case "6": awk = "healing"; break;
                 case "7": awk = "multiattack"; break;
             }
-            setGridData(i == 0 ? `mh` : `wp${i}`, weapons[id].pageName, { uncap: uncap, awk: awk, trans: uncap });
+            switch (bf) {
+                case "73": bf = "atk"; break;
+                case "74": bf = "skill"; break;
+                case "75": bf = "ca"; break;
+                case "77": bf = "ma"; break;
+                case "78": bf = "dsr"; break;
+                case "79": bf = "hp"; break;
+                case "80": bf = "def"; break;
+                case "81": bf = "dot"; break;
+            }
+            setGridData(i == 0 ? `mh` : `wp${i}`, weapons[id].pageName, { uncap: uncap, awk: awk, trans: uncap, bf: bf });
         }
     }
 
