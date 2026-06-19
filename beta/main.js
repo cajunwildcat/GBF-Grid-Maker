@@ -432,7 +432,7 @@ function setupButtonSearch() {
 
         //janky workaround for searching on any key press
         button.onkeydown = (e) => {
-            if (e.key === "Tab") return;
+            if (e.key === "Tab" || e.key === "Shift" || e.key === "Control" || e.key === "Alt") return;
             button.click();
             searchInput.focus();
         }
@@ -783,9 +783,9 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
     }
     button.dataset.itemId = id;
     if (["characters", "summons", "weapons"].includes(optionSet)) {
-        uncap = addUncapButton(button, optionSet, selectedOption, uncap, id, options.trans);
+        
     }
-    setButtonBackground(button, selectedOption, optionSet, uncap, id);
+    
     switch (optionSet) {
         case 'skills': return;
         case 'classes':
@@ -800,6 +800,7 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
             else removeBulletDiv();
             break;
         case 'characters':
+            uncap = addUncapButton(button, optionSet, selectedOption, uncap, id, options.trans);
             if (parseInt(button.id.replace("char", "")) >= 6 && !unlimited) {
                 toggleUnlimited();
             }
@@ -807,7 +808,7 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
             calcData.chars[button.id] = {
                 tags: [`element:${char.element}`, ...char.weapon.map(w => `weapon:${w}`), ...char.race.map(r => `race:${r}`)].map(e => e.toLowerCase())
             }
-
+            
             if (button.querySelector(".c-awakening")) {
                 delete teamData[button.querySelector(".c-awakening").id];
                 button.querySelector(".c-awakening").remove();
@@ -815,6 +816,7 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
             addAwakeningButton(button, id, options.awk);
             break;
         case 'weapons':
+            uncap = addUncapButton(button, optionSet, selectedOption, uncap, id, options.trans);
             if (parseInt(button.id.replace("wp", "")) >= 11) {
                 if (getSetLocalStorage("extra-collapsed")) {
                     document.querySelector("#collapse-extra-grid-button").click();
@@ -837,7 +839,13 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
             }
             break;
         case 'summons':
-            if (!button.parentElement.classList.contains("team-summon")) addQuickSummonButton(button);
+            if (button.parentElement.classList.contains("team-summon")) {
+                uncap = addUncapButton(button, optionSet, selectedOption, uncap, id, options.trans);
+            }
+            else {
+                uncap = addSummonUncapButtons(button, id, uncap, options.trans);
+                addQuickSummonButton(button);
+            }
             addSummonAuraCalc(button.id, id, uncap);
             break;
         case 'mino':
@@ -856,6 +864,7 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
             console.error('Invalid option set');
             break;
     }
+    setButtonBackground(button, selectedOption, optionSet, uncap, id);
     if (button.id == "s-main") Array(...document.querySelectorAll("#s-main")).filter(e => e.dataset.itemId != id).forEach(e => setButtonToItem(e, optionSet, selectedOption, uncap, options));
     if (optionSet !== "skills" && optionSet.includes("Skill")) {
         teamData[button.id] = selectedOption.metatags[0];
@@ -1086,16 +1095,14 @@ function addUncapButton(button, optionSet, selectedOption, uncap, id, trans) {
     switch (optionSet) {
         case "characters": maxUncap = characters[id].maxUncap; break;
         case "summons": maxUncap = summons[id].maxUncap; break;
-        case "weapons":
-            maxUncap = weapons[id].maxUncap;
-            break;
+        case "weapons": maxUncap = weapons[id].maxUncap; break;
     }
     if (uncap == null) {
         uncap = maxUncap;
     }
     teamData[button.id + "Uncap"] = uncap;
     let uncapButton;
-    if ((optionSet != "characters" && maxUncap == 4) || maxUncap == 5 || (optionSet == "summons" && summons[id].series == "robur")) {
+    if ((optionSet != "characters" && maxUncap == 4) || maxUncap == 5) {
         uncapButton = document.createElement("button");
         uncapButton.classList.add("uncap-toggle");
         uncapButton.classList.add("uncap");
@@ -1107,11 +1114,11 @@ function addUncapButton(button, optionSet, selectedOption, uncap, id, trans) {
             uncapButton.dataset.toggled = uncapButton.dataset.toggled === "true" ? "false" : "true";
             switch (optionSet) {
                 case "characters": uncap = uncapButton.dataset.toggled === "true" ? 5 : 4; break;
-                case "weapons": uncap = uncapButton.dataset.toggled === "true" ? weapons[weaponIDs[selectedOption.label]].maxUncap : 0; break;
-                case "summons": uncap = uncapButton.dataset.toggled === "true" ? summons[summonIDs[selectedOption.label]].maxUncap : 0; break;
+                case "weapons": uncap = uncapButton.dataset.toggled === "true" ? weapons[id].maxUncap : 0; break;
+                case "summons": uncap = uncapButton.dataset.toggled === "true" ? summons[id].maxUncap : 0; break;
             }
             if (button.id == "s-main") Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].querySelector(".uncap").dataset.toggled = uncapButton.dataset.toggled;
-            setButtonBackground(button, selectedOption, optionSet, uncap, button.dataset.itemId);
+            setButtonBackground(button, selectedOption, optionSet, uncap, id);
             teamData[button.id + "Uncap"] = uncap;
         }
         button.appendChild(uncapButton);
@@ -1122,7 +1129,6 @@ function addUncapButton(button, optionSet, selectedOption, uncap, id, trans) {
         uncapButton = document.createElement("button");
         uncapButton.classList.add("uncap-select");
         uncapButton.classList.add("uncap");
-        //TODO: fix trans dataset and change background image to be controlled by it
         uncapButton.dataset.trans = trans ? trans : uncap == 6 ? "t5" : uncap;
         uncapButton.title = "Select Uncap";
         uncapButton.onclick = openTransDropdown;
@@ -1170,6 +1176,105 @@ function addUncapButton(button, optionSet, selectedOption, uncap, id, trans) {
         }
         button.appendChild(uncapButton);
     }
+    return uncap;
+}
+
+function addSummonUncapButtons(button, id, uncap, trans) {
+    let maxUncap = summons[id].maxUncap;
+    if (button.querySelector(".uncap")) button.querySelector(".uncap").remove();
+    if (uncap == null) uncap = maxUncap;
+    teamData[button.id + "Uncap"] = uncap;
+    let uncapDiv = document.createElement("div");
+    uncapDiv.classList.add("uncap", "uncap-multi-button");
+    uncapDiv.dataset.maxUncap = maxUncap;
+    uncapDiv.onclick = (e) => e.stopPropagation();
+    for (let i = 1; i <= Math.min(5,maxUncap); i++) {
+        let star = document.createElement("button");
+        star.classList.add("uncap-button");
+        if (i <= 3) star.classList.add("yellow-star");
+        else if (i <= 5) star.classList.add("blue-star");
+        star.title = `${i}★`;
+        star.dataset.uncap = i;
+        star.dataset.toggled = uncap >= i;
+        star.onclick = (e) => {
+            e.stopPropagation();
+            let newUncap;
+            if (teamData[button.id + "Uncap"] == i) newUncap = i - 1;
+            else newUncap = i;
+            starClick(newUncap);
+        }
+        star.oncontextmenu = (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            starClick(0);
+        }
+        uncapDiv.appendChild(star);
+    }
+    function starClick(u) {
+        teamData[button.id + "Uncap"] = u;
+        uncapDiv.childNodes.forEach(star => star.dataset.toggled = star.dataset.uncap <= u);
+        setButtonBackground(button, null, "summons", u, id);
+        delete teamData[button.id + "Trans"];
+        if (tr = uncapDiv.querySelector(".trans-star")) tr.dataset.trans = "";
+    }
+    if (maxUncap == 6) {
+        trans = teamData[button.id + "Trans"] = trans ? trans : uncap == 6 ? "t5" : null;
+        let star = document.createElement("button");
+        star.classList.add("uncap-button");
+        star.classList.add("trans-star");
+        star.title = "6★";
+        star.dataset.trans = trans;
+        star.onclick = openTransDropdown;
+        function openTransDropdown(e) {
+            e.stopPropagation();
+            hideDropdown();
+            star.onclick = closeTransDropdown;
+            let dropdown = document.createElement("div");
+            dropdown.classList.add("dropdown");
+            dropdown.id = "uncap-dropdown";
+            dropdown.innerHTML = `<ul id='options-list'>
+                <li data-trans="t5" style="background-image: url('assets/Icon_Transcend_Star_5.png');"></li>
+                <li data-trans="t4" style="background-image: url('assets/Icon_Transcend_Star_4.png');"></li>
+                <li data-trans="t3" style="background-image: url('assets/Icon_Transcend_Star_3.png');"></li>
+                <li data-trans="t2" style="background-image: url('assets/Icon_Transcend_Star_2.png');"></li>
+                <li data-trans="t1" style="background-image: url('assets/Icon_Transcend_Star_1.png');"></li>
+                <li data-trans="t0" style="background-image: url('assets/Icon_Transcend_Star_0.png');"></li>
+                </ul>`;
+            dropdown.querySelectorAll("li").forEach(li => {
+                li.onclick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    starClick(6);
+                    let newUncap = li.dataset.trans;
+                    if (newUncap != "t0") {
+                        teamData[button.id + "Uncap"] = 6;
+                        teamData[button.id + "Trans"] = newUncap;
+                    }
+                    else {
+                        teamData[button.id + "Uncap"] = 5;
+                        newUncap = 5;
+                        delete teamData[button.id + "Trans"];
+                    }
+                    star.dataset.trans = newUncap;
+                    if (button.id == "s-main") {
+                        if (newUncap == "t0") Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].querySelector(".uncap").style.backgroundImage = "url('assets/Icon_Blue_Star_Full.png')";
+                        else Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].querySelector(".uncap").style.backgroundImage = li.style.backgroundImage;
+                    }
+                    setButtonBackground(button, null, "summons", newUncap, id);
+                    star.querySelector("#uncap-dropdown")?.remove();
+                    star.onclick = openTransDropdown;
+                }
+            });
+            star.appendChild(dropdown);
+        }
+        function closeTransDropdown(e) {
+            e.stopPropagation();
+            star.querySelector("#uncap-dropdown")?.remove();
+            star.onclick = openTransDropdown;
+        }
+        uncapDiv.appendChild(star);
+    }
+    button.appendChild(uncapDiv);
     return uncap;
 }
 
