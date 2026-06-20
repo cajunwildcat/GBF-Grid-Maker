@@ -522,6 +522,78 @@ ul {
     }
 }
 
+.uncap-multi-button {
+    position: absolute;
+    width: 100%;
+    height: 30px;
+    left: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    .uncap-button {
+        position: relative;
+        background-color: transparent;
+        width: 25px;
+        height: 25px;
+    }
+    &[data-max-uncap="6"] .uncap-button {
+        width: 20px;
+        height: 20px;
+    }
+    &:hover {
+        cursor: default;
+    }
+    .yellow-star {
+        background-image: url('assets/Icon_Yellow_Star.png');
+    }
+    .yellow-star[data-toggled="true"] {
+        background-image: url('assets/Icon_Yellow_Star_Full.png');
+    }
+    .blue-star {
+        background-image: url('assets/Icon_Blue_Star.png');
+    }
+    .blue-star[data-toggled="true"] {
+        background-image: url('assets/Icon_Blue_Star_Full.png');
+    }
+    .trans-star {
+        background-image: url('assets/Icon_Transcend_Star_0.png');
+        &[data-trans="t5"],
+        &[data-trans="trans5"] {
+            background-image: url("assets/Icon_Transcend_Star_5.png");
+        }
+
+        &[data-trans="t4"],
+        &[data-trans="trans4"] {
+            background-image: url("assets/Icon_Transcend_Star_4.png");
+        }
+
+        &[data-trans="t3"],
+        &[data-trans="trans3"] {
+            background-image: url("assets/Icon_Transcend_Star_3.png");
+        }
+
+        &[data-trans="t2"],
+        &[data-trans="trans2"] {
+            background-image: url("assets/Icon_Transcend_Star_2.png");
+        }
+
+        &[data-trans="t1"],
+        &[data-trans="trans1"] {
+            background-image: url("assets/Icon_Transcend_Star_1.png");
+        }
+    }
+}
+
+#s-main .uncap-multi-button,
+.callable-summons .uncap-multi-button {
+    bottom: -48px;
+}
+.sub-summons .uncap-multi-button {
+    bottom: -35px;
+}
+
 .summon-grid {
     grid-area: b;
     background-image: url("assets/summon-grid-background.png");
@@ -747,7 +819,9 @@ li.active {
 
     img {
         max-width: 90%;
-        height: unset !important;
+        max-height: 90%;
+        width: auto !important;
+        height: auto !important;
     }
 }
 
