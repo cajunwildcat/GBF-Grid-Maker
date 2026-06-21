@@ -22,7 +22,7 @@ let filters = {
 }
 let unlimited = false;
 let jp = false;
-let showWiki = true;
+let showWiki = false;
 let djeeta = true;
 
 const useTestData = false;
@@ -447,8 +447,8 @@ function setupButtonSearch() {
         }
     });
     document.addEventListener('keydown', (event) => {
-        if (event.key === "Escape" && document.querySelector("#image-popup")) {
-            document.querySelector("#close-image-button").click();
+        if (event.key === "Escape" && document.querySelector(".popup")) {
+            document.querySelector("#close-popup-button").click();
         }
     });
 
@@ -507,21 +507,38 @@ function setupStaticButtons() {
     //url exports
     document.querySelector("#export-url-button").onclick = (e) => {
         navigator.clipboard.writeText(exportURL());
-        e.target.textContent = "Copied!";
+        e.target.textContent = jp? "コピーしました" : "Copied!";
         setTimeout(() => {
-            e.target.textContent = "Copy URL";
+            e.target.textContent = e.target.dataset[`${jp? "jp" : "en"}label`];
         }, 2500)
     }
 
     //drawer buttons
     document.querySelector("#show-filters-button").onclick = e => {
         let collapsed = document.querySelector("#filters").classList.toggle("filter-transition");
-        e.target.textContent = collapsed ? "↓ Hide Filters ↓" : "↑ Show Filters ↑";
+        if (collapsed) {
+            e.target.dataset.enlabel = "↓ Hide Filters ↓";
+            e.target.dataset.jplabel = "↓ 検索フィルターを非表示にする ↓";
+        }
+        else {
+            e.target.dataset.enlabel = "↑ Show Filters ↑";
+            e.target.dataset.jplabel = "↑ 検索フィルターを表示 ↑";
+        }
+        e.target.textContent = jp? e.target.dataset.jplabel : e.target.dataset.enlabel;
+
     }
 
     document.querySelector("#collapse-extra-grid-button").onclick = e => {
         let collapsed = e.target.parentElement.classList.toggle("collapsed");
-        e.target.textContent = collapsed ? "↓ Show Extra Grid ↓" : "↑ Hide Extra Grid ↑";
+        if (collapsed) {
+            e.target.dataset.enlabel = "↓ Show Extra Grid ↓";
+            e.target.dataset.jplabel = "↓ その他の武器を表示 ↓";
+        }
+        else {
+            e.target.dataset.enlabel = "↑ Hide Extra Grid ↑";
+            e.target.dataset.jplabel = "↑ 追加の武器を非表示にする ↑";
+        }
+        e.target.textContent = jp? e.target.dataset.jplabel : e.target.dataset.enlabel;
         getSetLocalStorage("extra-collapsed", collapsed);
     }
     if (!getSetLocalStorage("extra-collapsed")) {
@@ -545,12 +562,8 @@ function setupStaticButtons() {
 
     document.querySelector("#help-button").onclick = showHelpPopup;
 
-    if (getSetLocalStorage("lang") == "jp") {
-        toggleLang("jp");
-    }
-    //if (getSetLocalStorage("showWiki") == false) toggleWikiControls();
-    getSetLocalStorage("showWiki", true);
-
+    if (getSetLocalStorage("showWiki") == true) toggleWikiControls();
+    if (getSetLocalStorage("lang") == "jp") toggleLang("jp"); 
 }
 
 function toggleUnlimited() {
@@ -566,13 +579,16 @@ function toggleUnlimited() {
 }
 
 function toggleLang(lang) {
+    lang = lang.toLowerCase();
     switch (lang) {
         case "en": jp = false; break;
         case "jp": jp = true; break;
     }
-    document.querySelector("html").lang = lang;
     getSetLocalStorage("lang", lang);
-    // update skills to show correct language
+    [...document.querySelectorAll("*[data-jplabel]")].forEach(e => {
+        e.innerHTML = e.dataset[`${lang}label`];
+    });
+    // update mc skills to show correct language
     [...document.querySelectorAll(`.skill[id*="skill"]`)].forEach(e => {
         if (e.dataset.itemId) { setGridData(e.id, e.dataset.itemId) }
     });
@@ -585,30 +601,40 @@ function toggleWikiControls() {
 }
 
 function showHelpPopup() {
+    hideDropdown();
     const popup = document.createElement("div");
     popup.classList.add("popup")
     popup.id = "help-popup";
     popup.innerHTML = `
-    <div>
-        <div id=help->
-            <h2>How to Use</h2>
+    <div id=help-settings>
+        <h2 data-enlabel="Settings" data-jplabel="設定"></h2>
+        <div id="settings-grid">
+        <span data-enlabel="Display Language" data-jplabel="表示言語"></span><select id=lang-select>
+            <option value="en">English</option>
+            <option value="jp" ${jp? "selected" : ""}>日本語</option>
+        </select>
+        <span data-enlabel="Show Wiki Import/Export" data-jplabel="gbf.wiki の表示設定"></span><input type=checkbox id="wiki-toggle" ${showWiki? "checked" : ""}/>
         </div>
-        <div id=help-settings>
-            <h2>Settings</h2>
-            <span><label for=lang-select>Language</label> <select id=lang-select>
-                <option value="en">English</option>
-                <option value="jp">日本語</option>
-            </select></span>
-            <span><label for=wiki-toggle>Show Wiki Import/Export</label> <input type=checkbox id=wiki-toggle /></span>
+        <div id="links">
+            <a href="https://github.com/cajunwildcat/GBF-Party-Parser#url-version" data-enlabel="Import Bookmarklets" data-jplabel="ブックマークレット"></a>
+            <a href="https://github.com/cajunwildcat/GBF-Grid-Maker" data-enlabel="Source Code" data-jplabel="ソースコード"></a>
+            <a href="https://github.com/cajunwildcat/GBF-Grid-Maker#feature-requests--bug-reports" data-enlabel="Report a Bug" data-jplabel="バグ報告"></a>
+            <a href='https://ko-fi.com/H2H210AHNN' target='_blank'><img id="kofi-button" height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
         </div>
     </div>
-    <button class='ui-button' id='close-image-button'>X</button>
-`
-    popup.querySelector("#close-image-button").onclick = () => {
+    <button class='ui-button' id='close-popup-button'>X</button>
+`;
+    [...popup.querySelectorAll("*[data-jplabel]")].forEach(e => {
+        e.innerHTML = e.dataset[`${jp? "jp" : "en"}label`];
+    });
+    popup.querySelector("#lang-select").onchange = (e) => {
+        toggleLang(e.target.value);
+    }
+    popup.querySelector("#wiki-toggle").onchange = (e) => {
+        toggleWikiControls();
+    }
+    popup.querySelector("#close-popup-button").onclick = () => {
         popup.remove();
-        [...document.querySelectorAll(hideForImage)].forEach(e => {
-            e.style.opacity = "";
-        });
     }
     document.body.append(popup);
 }
@@ -642,7 +668,7 @@ function gridInputClick(event, sort = true, button = null) {
     if (sort) {
         options = options.sort((a, b) => b.weight - a.weight || a.label.localeCompare(b.label));
     }
-    if (dropdown.style.display === 'block' && activeButton === button) {
+    if (dropdown.style.display === 'flex' && (activeButton === button || (button.nodeName != "button" && activeButton === button.parentElement))) {
         hideDropdown();
     } else {
         showDropdown(event, options);
@@ -671,7 +697,8 @@ function gridInputContextMenu(event, button = null) {
             delete teamData[skills.firstChild.id];
             skills.firstChild.remove();
         }
-
+    }
+    if (button.id == "mc" || button.id == "mh") {
         removeBulletDiv();
     }
     else if (button.id == "s-main") {
@@ -781,13 +808,8 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
         setButtonBackground(button, selectedOption, optionSet, uncap, id);
         return;
     }
-    button.dataset.itemId = id;
-    if (["characters", "summons", "weapons"].includes(optionSet)) {
-        
-    }
-    
+    button.dataset.itemId = id;    
     switch (optionSet) {
-        case 'skills': return;
         case 'classes':
             if (button.querySelector(".class-gear")) {
                 gridInputContextMenu(null, button.querySelector(".class-gear"));
@@ -848,6 +870,7 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
             }
             addSummonAuraCalc(button.id, id, uncap);
             break;
+        case 'skills':
         case 'mino':
         case 'shield':
         case 'bullet':
@@ -1983,6 +2006,7 @@ function importURL() {
 }
 
 async function generateImage() {
+    hideDropdown();
     const hideForImage = `.quick-summon-toggle[data-toggled="false"], 
         .c-awakening[data-awk="balanced"],
         .w-awakening[data-awk="empty"],
@@ -2003,7 +2027,14 @@ async function generateImage() {
     const result = await snapdom(document.querySelector("#team-spread"));
     const png = await result.toPng();
     popup.append(png);
-    popup.innerHTML += ("<div style='display:flex; gap: 1em;'><button class='ui-button' id='copy-image-button'>Copy</button><button class='ui-button' id='download-image-button'>Download</button><button class='ui-button' id='download-image-parts-button'>Download Parts</button></div><button class='ui-button' id='close-image-button'>X</button>");
+    popup.innerHTML += `<div style='display:flex; gap: 1em;'>
+        <button class='ui-button' id='copy-image-button' data-enlabel="Copy To Clipboard" data-jplabel="コピー(クリップボード)"></button>
+        <button class='ui-button' id='download-image-button' data-enlabel="Download" data-jplabel="ダウンロード">Download</button>
+        <button class='ui-button' id='download-image-parts-button' data-enlabel="Download Parts" data-jplabel="各部分をダウンロード">Download Parts</button></div>
+        <button class='ui-button' id='close-popup-button'>X</button>`;
+    [...popup.querySelectorAll("*[data-jplabel]")].forEach(e => {
+        e.innerHTML = e.dataset[`${jp? "jp" : "en"}label`];
+    });
     popup.querySelector("#download-image-button").onclick = async () => {
         await result.download({ format: "png", filename: "granblue team" });
     }
@@ -2016,9 +2047,9 @@ async function generateImage() {
                     [blob.type]: blob
                 })
             ]);
-            popup.querySelector("#copy-image-button").textContent = "Copied!"
+            popup.querySelector("#copy-image-button").textContent = jp? "コピーしました" : "Copied!";
         } catch (e) {
-            popup.querySelector("#copy-image-button").textContent = "Copy Failed"
+            popup.querySelector("#copy-image-button").textContent = jp? "コピーに失敗しました" : "Copy Failed";
         }
     }
     popup.querySelector("#download-image-parts-button").onclick = async () => {
@@ -2029,7 +2060,7 @@ async function generateImage() {
         await weapon.download({ format: "png", filename: "weapons.png" });
         await summon.download({ format: "png", filename: "summons.png" });
     }
-    popup.querySelector("#close-image-button").onclick = () => {
+    popup.querySelector("#close-popup-button").onclick = () => {
         popup.remove();
         [...document.querySelectorAll(hideForImage)].forEach(e => {
             e.style.opacity = "";
