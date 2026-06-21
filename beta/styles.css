@@ -1,6 +1,7 @@
 body {
     background-color: #1b1b1b;
     display: flex;
+    margin-top: 0;
 }
 
 div.grid-input,
@@ -361,7 +362,8 @@ ul {
         position: absolute;
         bottom: -18px;
         left: 4px;
-        width: 150px;
+        min-width: 150px;
+        width: fit-content;
     }
 
     &.collapsed {
@@ -538,27 +540,35 @@ ul {
         width: 25px;
         height: 25px;
     }
+
     &[data-max-uncap="6"] .uncap-button {
         width: 20px;
         height: 20px;
     }
+
     &:hover {
         cursor: default;
     }
+
     .yellow-star {
         background-image: url('assets/Icon_Yellow_Star.png');
     }
+
     .yellow-star[data-toggled="true"] {
         background-image: url('assets/Icon_Yellow_Star_Full.png');
     }
+
     .blue-star {
         background-image: url('assets/Icon_Blue_Star.png');
     }
+
     .blue-star[data-toggled="true"] {
         background-image: url('assets/Icon_Blue_Star_Full.png');
     }
+
     .trans-star {
         background-image: url('assets/Icon_Transcend_Star_0.png');
+
         &[data-trans="t5"],
         &[data-trans="trans5"] {
             background-image: url("assets/Icon_Transcend_Star_5.png");
@@ -590,6 +600,7 @@ ul {
 .callable-summons .uncap-multi-button {
     bottom: -48px;
 }
+
 .sub-summons .uncap-multi-button {
     bottom: -35px;
 }
@@ -804,6 +815,13 @@ li.active {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
+
+    #close-popup-button {
+        position: absolute;
+        top: 4%;
+        right: 10%;
+        font-size: 2em;
+    }
 }
 
 #image-popup {
@@ -826,35 +844,61 @@ li.active {
 }
 
 #help-popup {
-    >div {
-        display: grid;
-        gap: 5%;
-        grid-template-areas: 
-            'a b' 
-            'a c';
-        grid-template-columns: 30% 30%;
-        color: white;
-        padding: 10% 0 10% 20%;
-        font-size: 1.2em;
+    display: flex;
+    justify-content: center;
+    color: white;
+    font-size: 1.2em;
 
-        >div {
-            border-radius: 1.2em;
-            padding: 2%;
-            padding-left: 5%;
-            background-color: #292929;
+    >div {
+        border-radius: 1.2em;
+        padding: 2%;
+        padding-left: 3%;
+        padding-right: 3%;
+        margin: 5%;
+        background-color: #292929;
+        width: fit-content;
+    }
+
+    #help-settings {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 280px;
+        height: 500px;
+        margin-top: auto;
+        margin-bottom: auto;
+
+        h2 {
+            margin-top: 0;
         }
 
-        #help-settings {
+        #settings-grid {
+            display: grid;
+            grid-template-columns: 75% 25%;
+            row-gap: 1em;
+        }
+
+        #links {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            align-items: center;
+            margin-top: auto;
+
+            a {
+                color: #025e9b;
+            }
+            a:visited {
+                color: #9b029b;
+            }
+
+            img:not(#kofi-button) {
+                height: 22px;
+                width: 22px;
+                margin-right: 5px;
+            }
+            #kofi-button {
+                margin-top: 10px;
+            }
         }
     }
 }
-
-#close-image-button {
-        position: absolute;
-        top: 4%;
-        right: 10%;
-        font-size: 2em;
-    }
