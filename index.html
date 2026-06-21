@@ -123,7 +123,7 @@
                         </div>
                     </div>
                 </div>
-                <button id="collapse-extra-grid-button">↓ Show Extra Grid ↓</button>
+                <button id="collapse-extra-grid-button" data-enlabel="↓ Show Extra Grid ↓" data-jplabel="↓ その他の武器を表示 ↓">↓ Show Extra Grid ↓</button>
             </div>
         </div>
         <div class="summon-grid">
@@ -146,13 +146,13 @@
                 <button id="standard-toggle-button" class="toggled"></button>
                 <button id="unlimited-toggle-button"></button>
             </div>
-            <button id="copy-image-button" class="ui-button">Generate Image</button>
-            <button id="export-url-button" class="ui-button">Copy URL</button>
+            <button id="copy-image-button" class="ui-button" data-enlabel="Generate Image" data-jplabel="画像作成">Generate Image</button>
+            <button id="export-url-button" class="ui-button" data-enlabel="Copy URL" data-jplabel="コピー(URL)">Copy URL</button>
 
-            <button id="help-button" class="ui-button" hidden>Help</button>
+            <button id="help-button" class="ui-button" data-jplabel="設定" data-enlabel="Settings">Settings</button>
         </div>
     </div>
-    <div id="wiki-controls">
+    <div id="wiki-controls" class="hide">
         <div>
             <button id="export-wikitext-button" class="ui-button wiki-control">Export to<br>Wikitext</button>
             <button id="import-wikitext-button" class="ui-button wiki-control">Import from<br>Wikitext</button>
@@ -160,9 +160,9 @@
         <textarea id="import-export-text" class="wiki-control"></textarea>
     </div>
     <div id="filters">
-        <button id="show-filters-button">↑ Show Filters ↑</button>
+        <button id="show-filters-button" data-enlabel="↑ Show Filters ↑" data-jplabel="↑ 検索フィルターを表示 ↑">↑ Show Filters ↑</button>
         <div id="weapons-filters">
-            <span>Weapons</span>
+            <span data-enlabel="Weapons" data-jplabel="武器">Weapons</span>
             <button class="ui-button filter-button" data-filter-type="rarity" data-filter="n"
                 data-filter-enabled="false"><img src="assets/Label_Rarity_N.png"></button>
             <button class="ui-button filter-button" data-filter-type="rarity" data-filter="r"
@@ -186,7 +186,7 @@
                 data-filter-enabled="true"><img src="assets/Icon_Element_Dark.png"></button>
         </div>
         <div id="characters-filters">
-            <span>Characters</span>
+            <span data-enlabel="Characters" data-jplabel="キャラ">Characters</span>
             <button class="ui-button filter-button" data-filter-type="rarity" data-filter="n"
                 data-filter-enabled="false"><img src="assets/Label_Rarity_N.png"></button>
             <button class="ui-button filter-button" data-filter-type="rarity" data-filter="r"
@@ -210,7 +210,7 @@
                 data-filter-enabled="true"><img src="assets/Icon_Element_Dark.png"></button>
         </div>
         <div id="summons-filters">
-            <span>Summons</span>
+            <span data-enlabel="Summons" data-jplabel="召喚石">Summons</span>
             <button class="ui-button filter-button" data-filter-type="rarity" data-filter="n"
                 data-filter-enabled="false"><img src="assets/Label_Rarity_N.png"></button>
             <button class="ui-button filter-button" data-filter-type="rarity" data-filter="r"
