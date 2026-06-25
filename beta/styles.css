@@ -523,6 +523,9 @@ ul {
     }
 
     &[data-trans="4"],
+    &[data-trans="3"],
+    &[data-trans="2"],
+    &[data-trans="1"],
     &[data-trans="0"] {
         background-image: url("assets/Icon_Blue_Star.png");
     }
