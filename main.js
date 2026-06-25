@@ -507,9 +507,9 @@ function setupStaticButtons() {
     //url exports
     document.querySelector("#export-url-button").onclick = (e) => {
         navigator.clipboard.writeText(exportURL());
-        e.target.textContent = jp? "コピーしました" : "Copied!";
+        e.target.textContent = jp ? "コピーしました" : "Copied!";
         setTimeout(() => {
-            e.target.textContent = e.target.dataset[`${jp? "jp" : "en"}label`];
+            e.target.textContent = e.target.dataset[`${jp ? "jp" : "en"}label`];
         }, 2500)
     }
 
@@ -524,7 +524,7 @@ function setupStaticButtons() {
             e.target.dataset.enlabel = "↑ Show Filters ↑";
             e.target.dataset.jplabel = "↑ 検索フィルターを表示 ↑";
         }
-        e.target.textContent = jp? e.target.dataset.jplabel : e.target.dataset.enlabel;
+        e.target.textContent = jp ? e.target.dataset.jplabel : e.target.dataset.enlabel;
 
     }
 
@@ -538,7 +538,7 @@ function setupStaticButtons() {
             e.target.dataset.enlabel = "↑ Hide Extra Grid ↑";
             e.target.dataset.jplabel = "↑ 追加の武器を非表示にする ↑";
         }
-        e.target.textContent = jp? e.target.dataset.jplabel : e.target.dataset.enlabel;
+        e.target.textContent = jp ? e.target.dataset.jplabel : e.target.dataset.enlabel;
         getSetLocalStorage("extra-collapsed", collapsed);
     }
     if (!getSetLocalStorage("extra-collapsed")) {
@@ -563,7 +563,7 @@ function setupStaticButtons() {
     document.querySelector("#help-button").onclick = showHelpPopup;
 
     if (getSetLocalStorage("showWiki") == true) toggleWikiControls();
-    if (getSetLocalStorage("lang") == "jp") toggleLang("jp"); 
+    if (getSetLocalStorage("lang") == "jp") toggleLang("jp");
 }
 
 function toggleUnlimited() {
@@ -611,9 +611,9 @@ function showHelpPopup() {
         <div id="settings-grid">
         <span data-enlabel="Display Language" data-jplabel="表示言語"></span><select id=lang-select>
             <option value="en">English</option>
-            <option value="jp" ${jp? "selected" : ""}>日本語</option>
+            <option value="jp" ${jp ? "selected" : ""}>日本語</option>
         </select>
-        <span data-enlabel="Show Wiki Import/Export" data-jplabel="gbf.wiki の表示設定"></span><input type=checkbox id="wiki-toggle" ${showWiki? "checked" : ""}/>
+        <span data-enlabel="Show Wiki Import/Export" data-jplabel="gbf.wiki の表示設定"></span><input type=checkbox id="wiki-toggle" ${showWiki ? "checked" : ""}/>
         </div>
         <div id="links">
             <a href="https://github.com/cajunwildcat/GBF-Party-Parser#url-version" data-enlabel="Import Bookmarklets" data-jplabel="ブックマークレット"></a>
@@ -625,7 +625,7 @@ function showHelpPopup() {
     <button class='ui-button' id='close-popup-button'>X</button>
 `;
     [...popup.querySelectorAll("*[data-jplabel]")].forEach(e => {
-        e.innerHTML = e.dataset[`${jp? "jp" : "en"}label`];
+        e.innerHTML = e.dataset[`${jp ? "jp" : "en"}label`];
     });
     popup.querySelector("#lang-select").onchange = (e) => {
         toggleLang(e.target.value);
@@ -808,7 +808,7 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
         setButtonBackground(button, selectedOption, optionSet, uncap, id);
         return;
     }
-    button.dataset.itemId = id;    
+    button.dataset.itemId = id;
     switch (optionSet) {
         case 'classes':
             if (button.querySelector(".class-gear")) {
@@ -830,7 +830,7 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
             calcData.chars[button.id] = {
                 tags: [`element:${char.element}`, ...char.weapon.map(w => `weapon:${w}`), ...char.race.map(r => `race:${r}`)].map(e => e.toLowerCase())
             }
-            
+
             if (button.querySelector(".c-awakening")) {
                 delete teamData[button.querySelector(".c-awakening").id];
                 button.querySelector(".c-awakening").remove();
@@ -1175,16 +1175,17 @@ function addUncapButton(button, optionSet, selectedOption, uncap, id, trans) {
                 li.onclick = (e) => {
                     e.preventDefault();
                     e.stopPropagation();
+                    let newUncap, newTrans = null;
                     if (li.dataset.trans.includes("t")) {
-                        teamData[button.id + "Uncap"] = 6;
-                        teamData[button.id + "Trans"] = li.dataset.trans;
+                        newUncap = teamData[button.id + "Uncap"] = 6;
+                        newTrans = teamData[button.id + "Trans"] = li.dataset.trans;
                     }
                     else {
-                        teamData[button.id + "Uncap"] = parseInt(li.dataset.trans);
+                        newUncap = teamData[button.id + "Uncap"] = parseInt(li.dataset.trans);
                         delete teamData[button.id + "Trans"];
                     }
                     uncapButton.style.backgroundImage = li.style.backgroundImage;
-                    if (button.id == "s-main") Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].querySelector(".uncap").style.backgroundImage = li.style.backgroundImage;
+                    if (button.id == "s-main") addSummonUncapButtons(Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0], id, newUncap, newTrans);
                     setButtonBackground(button, selectedOption, optionSet, li.dataset.trans, button.dataset.itemId);
                     uncapButton.querySelector("#uncap-dropdown")?.remove();
                     uncapButton.onclick = openTransDropdown;
@@ -1203,6 +1204,9 @@ function addUncapButton(button, optionSet, selectedOption, uncap, id, trans) {
 }
 
 function addSummonUncapButtons(button, id, uncap, trans) {
+    if (oldDiv = button.querySelector(".uncap-multi-button")) {
+        oldDiv.remove();
+    }
     let maxUncap = summons[id].maxUncap;
     if (button.querySelector(".uncap")) button.querySelector(".uncap").remove();
     if (uncap == null) uncap = maxUncap;
@@ -1211,7 +1215,7 @@ function addSummonUncapButtons(button, id, uncap, trans) {
     uncapDiv.classList.add("uncap", "uncap-multi-button");
     uncapDiv.dataset.maxUncap = maxUncap;
     uncapDiv.onclick = (e) => e.stopPropagation();
-    for (let i = 1; i <= Math.min(5,maxUncap); i++) {
+    for (let i = 1; i <= Math.min(5, maxUncap); i++) {
         let star = document.createElement("button");
         star.classList.add("uncap-button");
         if (i <= 3) star.classList.add("yellow-star");
@@ -1226,19 +1230,22 @@ function addSummonUncapButtons(button, id, uncap, trans) {
             else newUncap = i;
             starClick(newUncap);
         }
-        star.oncontextmenu = (e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            starClick(0);
-        }
         uncapDiv.appendChild(star);
+    }
+    uncapDiv.oncontextmenu = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        starClick(0);
     }
     function starClick(u) {
         teamData[button.id + "Uncap"] = u;
         uncapDiv.childNodes.forEach(star => star.dataset.toggled = star.dataset.uncap <= u);
         setButtonBackground(button, null, "summons", u, id);
-        if (u != 6) delete teamData[button.id + "Trans"];
-        if (tr = uncapDiv.querySelector(".trans-star")) tr.dataset.trans = "";
+        if (u != 6) {
+            delete teamData[button.id + "Trans"];
+            if (tr = uncapDiv.querySelector(".trans-star")) tr.dataset.trans = "";
+        }
+        if (button.id == "s-main") addUncapButton(Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0], "summons", null, Math.min(5, u), id, teamData[button.id + "Trans"]);
     }
     if (maxUncap == 6) {
         trans = teamData[button.id + "Trans"] = trans ? trans : uncap == 6 ? "t5" : null;
@@ -1268,7 +1275,6 @@ function addSummonUncapButtons(button, id, uncap, trans) {
                 li.onclick = (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    starClick(6);
                     let newUncap = li.dataset.trans;
                     if (newUncap != "t0") {
                         teamData[button.id + "Uncap"] = 6;
@@ -1280,10 +1286,7 @@ function addSummonUncapButtons(button, id, uncap, trans) {
                         delete teamData[button.id + "Trans"];
                     }
                     star.dataset.trans = newUncap;
-                    if (button.id == "s-main") {
-                        if (newUncap == "t0") Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].querySelector(".uncap").style.backgroundImage = "url('./assets/Icon_Blue_Star_Full.png')";
-                        else Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].querySelector(".uncap").style.backgroundImage = li.style.backgroundImage;
-                    }
+                    starClick(6);
                     setButtonBackground(button, null, "summons", newUncap, id);
                     star.querySelector("#uncap-dropdown")?.remove();
                     star.onclick = openTransDropdown;
@@ -1426,7 +1429,7 @@ function addBFButton(button, id, iBF) {
         dropdown.id = "bf-dropdown";
         dropdown.innerHTML = `<ul id="options-list">
             ${bfs.map(bf =>
-            `<li data-bf="${bf}" style="background-image: url('./assets/bf_${bf.replace(" ","_")}.png');"></li>`
+            `<li data-bf="${bf}" style="background-image: url('./assets/bf_${bf.replace(" ", "_")}.png');"></li>`
         ).join("\n")}
             </ul>`;
         dropdown.querySelectorAll("li").forEach(li => {
@@ -1611,7 +1614,7 @@ function generateWikiTemplate() {
         if ((uncap != 6 && uncap == weapons[weaponIDs[weapon]].maxUncap) || (weapons[weaponIDs[weapon]].series == "dark opus" && uncap == 5)) {
             uncap = null;
         }
-        return `${weapon}${uncap != null ? `|u${index}=${trans ? trans : uncap}` : ""}${awk && awk != "empty" ? `|awk${index}=${awk}` : ""}${bf? `|bf${index}=${bf}` : ""}`;
+        return `${weapon}${uncap != null ? `|u${index}=${trans ? trans : uncap}` : ""}${awk && awk != "empty" ? `|awk${index}=${awk}` : ""}${bf ? `|bf${index}=${bf}` : ""}`;
     }
 
     function getCharacterInfo(characterSlot) {
@@ -2036,7 +2039,7 @@ async function generateImage() {
         <button class='ui-button' id='download-image-parts-button' data-enlabel="Download Parts" data-jplabel="各部分をダウンロード">Download Parts</button></div>
         <button class='ui-button' id='close-popup-button'>X</button>`;
     [...popup.querySelectorAll("*[data-jplabel]")].forEach(e => {
-        e.innerHTML = e.dataset[`${jp? "jp" : "en"}label`];
+        e.innerHTML = e.dataset[`${jp ? "jp" : "en"}label`];
     });
     popup.querySelector("#download-image-button").onclick = async () => {
         await result.download({ format: "png", filename: "granblue team" });
@@ -2050,9 +2053,9 @@ async function generateImage() {
                     [blob.type]: blob
                 })
             ]);
-            popup.querySelector("#copy-image-button").textContent = jp? "コピーしました" : "Copied!";
+            popup.querySelector("#copy-image-button").textContent = jp ? "コピーしました" : "Copied!";
         } catch (e) {
-            popup.querySelector("#copy-image-button").textContent = jp? "コピーに失敗しました" : "Copy Failed";
+            popup.querySelector("#copy-image-button").textContent = jp ? "コピーに失敗しました" : "Copy Failed";
         }
     }
     popup.querySelector("#download-image-parts-button").onclick = async () => {
