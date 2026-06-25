@@ -231,10 +231,13 @@ ul {
     }
 }
 
-.skill-text {
-    overflow-x: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis
+.skill.name {
+    font-family: "Noto Serif JP", serif;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    overflow: hidden;
+    display: inline-block;
+    line-height: 25px;
 }
 
 .team-summon {
@@ -891,6 +894,7 @@ li.active {
             a {
                 color: #025e9b;
             }
+
             a:visited {
                 color: #9b029b;
             }
@@ -900,6 +904,7 @@ li.active {
                 width: 22px;
                 margin-right: 5px;
             }
+
             #kofi-button {
                 margin-top: 10px;
             }
