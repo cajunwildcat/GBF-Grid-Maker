@@ -780,6 +780,10 @@ ul {
 .dropdown li {
     padding: 5px;
     cursor: pointer;
+
+    &:nth-child(2n) {
+        background-color: rgb(231, 231, 231);
+    }
 }
 
 .dropdown li:hover {
