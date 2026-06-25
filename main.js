@@ -687,7 +687,7 @@ function gridInputContextMenu(event, button = null) {
     button.style.backgroundImage = null;
     //TODO: rewrite all .grid-input items to have their default images controlled by CSS instead
     if (button.dataset.options == "skills") {
-        button.querySelector("img").src = "assets/empty-skill.png";
+        button.querySelector("img").src = "./assets/empty-skill.png";
         button.querySelector("span").textContent = "";
     }
     else if (button.dataset.options == "weapons") {
@@ -1163,13 +1163,13 @@ function addUncapButton(button, optionSet, selectedOption, uncap, id, trans) {
             dropdown.classList.add("dropdown");
             dropdown.id = "uncap-dropdown";
             dropdown.innerHTML = `<ul id='options-list'>
-                <li data-trans="t5" style="background-image: url('assets/Icon_Transcend_Star_5.png');"></li>
-                <li data-trans="t4" style="background-image: url('assets/Icon_Transcend_Star_4.png');"></li>
-                <li data-trans="t3" style="background-image: url('assets/Icon_Transcend_Star_3.png');"></li>
-                <li data-trans="t2" style="background-image: url('assets/Icon_Transcend_Star_2.png');"></li>
-                <li data-trans="t1" style="background-image: url('assets/Icon_Transcend_Star_1.png');"></li>
-                <li data-trans="5" style="background-image: url('assets/Icon_Blue_Star_Full.png');"></li>
-                <li data-trans="4" style="background-image: url('assets/Icon_Blue_Star.png');"></li>
+                <li data-trans="t5" style="background-image: url('./assets/Icon_Transcend_Star_5.png');"></li>
+                <li data-trans="t4" style="background-image: url('./assets/Icon_Transcend_Star_4.png');"></li>
+                <li data-trans="t3" style="background-image: url('./assets/Icon_Transcend_Star_3.png');"></li>
+                <li data-trans="t2" style="background-image: url('./assets/Icon_Transcend_Star_2.png');"></li>
+                <li data-trans="t1" style="background-image: url('./assets/Icon_Transcend_Star_1.png');"></li>
+                <li data-trans="5" style="background-image: url('./assets/Icon_Blue_Star_Full.png');"></li>
+                <li data-trans="4" style="background-image: url('./assets/Icon_Blue_Star.png');"></li>
                 </ul>`;
             dropdown.querySelectorAll("li").forEach(li => {
                 li.onclick = (e) => {
@@ -1237,11 +1237,12 @@ function addSummonUncapButtons(button, id, uncap, trans) {
         teamData[button.id + "Uncap"] = u;
         uncapDiv.childNodes.forEach(star => star.dataset.toggled = star.dataset.uncap <= u);
         setButtonBackground(button, null, "summons", u, id);
-        delete teamData[button.id + "Trans"];
+        if (u != 6) delete teamData[button.id + "Trans"];
         if (tr = uncapDiv.querySelector(".trans-star")) tr.dataset.trans = "";
     }
     if (maxUncap == 6) {
         trans = teamData[button.id + "Trans"] = trans ? trans : uncap == 6 ? "t5" : null;
+        if (trans) starClick(6);
         let star = document.createElement("button");
         star.classList.add("uncap-button");
         star.classList.add("trans-star");
@@ -1256,12 +1257,12 @@ function addSummonUncapButtons(button, id, uncap, trans) {
             dropdown.classList.add("dropdown");
             dropdown.id = "uncap-dropdown";
             dropdown.innerHTML = `<ul id='options-list'>
-                <li data-trans="t5" style="background-image: url('assets/Icon_Transcend_Star_5.png');"></li>
-                <li data-trans="t4" style="background-image: url('assets/Icon_Transcend_Star_4.png');"></li>
-                <li data-trans="t3" style="background-image: url('assets/Icon_Transcend_Star_3.png');"></li>
-                <li data-trans="t2" style="background-image: url('assets/Icon_Transcend_Star_2.png');"></li>
-                <li data-trans="t1" style="background-image: url('assets/Icon_Transcend_Star_1.png');"></li>
-                <li data-trans="t0" style="background-image: url('assets/Icon_Transcend_Star_0.png');"></li>
+                <li data-trans="t5" style="background-image: url('./assets/Icon_Transcend_Star_5.png');"></li>
+                <li data-trans="t4" style="background-image: url('./assets/Icon_Transcend_Star_4.png');"></li>
+                <li data-trans="t3" style="background-image: url('./assets/Icon_Transcend_Star_3.png');"></li>
+                <li data-trans="t2" style="background-image: url('./assets/Icon_Transcend_Star_2.png');"></li>
+                <li data-trans="t1" style="background-image: url('./assets/Icon_Transcend_Star_1.png');"></li>
+                <li data-trans="t0" style="background-image: url('./assets/Icon_Transcend_Star_0.png');"></li>
                 </ul>`;
             dropdown.querySelectorAll("li").forEach(li => {
                 li.onclick = (e) => {
@@ -1280,7 +1281,7 @@ function addSummonUncapButtons(button, id, uncap, trans) {
                     }
                     star.dataset.trans = newUncap;
                     if (button.id == "s-main") {
-                        if (newUncap == "t0") Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].querySelector(".uncap").style.backgroundImage = "url('assets/Icon_Blue_Star_Full.png')";
+                        if (newUncap == "t0") Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].querySelector(".uncap").style.backgroundImage = "url('./assets/Icon_Blue_Star_Full.png')";
                         else Array(...document.querySelectorAll("#s-main")).filter(e => e !== button)[0].querySelector(".uncap").style.backgroundImage = li.style.backgroundImage;
                     }
                     setButtonBackground(button, null, "summons", newUncap, id);
@@ -1324,18 +1325,17 @@ function addAwakeningButton(button, id, iAwk) {
         let awkButton = document.createElement("button");
         awkButton.classList.add("w-awakening");
         awkButton.classList.add("w-awakening-toggle");
-        awkButton.id = button.id + "Awk";
         awkButton.dataset.toggled = "false";
         awkButton.title = "Toggle Awakening";
         awkButton.onclick = (e) => {
             e.stopPropagation();
             awkButton.dataset.toggled = awkButton.dataset.toggled === "true" ? "false" : "true";
             if (awkButton.dataset.toggled == "true") {
-                teamData[awkButton.id] = awkType;
+                teamData[button.id + "Awk"] = awkType;
                 awkButton.style.backgroundImage = `url(assets/Awakening_${awkType}.png)`;
             }
             else {
-                delete teamData[awkButton.id];
+                delete teamData[button.id + "Awk"];
                 awkButton.style.backgroundImage = `url(assets/Awakening_Empty.png)`;
             }
         }
@@ -1366,7 +1366,6 @@ function addAwakeningButton(button, id, iAwk) {
     let awkButton = document.createElement("button");
     awkButton.classList.add(`${awkType}-awakening`);
     awkButton.classList.add(`${awkType}-awakening-select`);
-    awkButton.id = button.id + "Awk";
     awkButton.title = "Select Awakening";
     awkButton.dataset.awk = "empty";
     awkButton.onclick = openAwakeningDropdown;
@@ -1380,14 +1379,14 @@ function addAwakeningButton(button, id, iAwk) {
         dropdown.id = "awakening-dropdown";
         dropdown.innerHTML = `<ul id="options-list">
             ${awks.map(awk =>
-            `<li data-awk="${awk}" style="background-image: url('assets/Awakening_${awk}.png');"></li>`
+            `<li data-awk="${awk}" style="background-image: url('./assets/Awakening_${awk}.png');"></li>`
         ).join("\n")}
             </ul>`;
         dropdown.querySelectorAll("li").forEach(li => {
             li.onclick = (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                teamData[awkButton.id] = li.dataset.awk;
+                teamData[button.id + "Awk"] = li.dataset.awk;
                 awkButton.style.backgroundImage = li.style.backgroundImage;
                 awkButton.dataset.awk = li.dataset.awk;
                 closeAwakeningDropdown(e);
@@ -1403,8 +1402,8 @@ function addAwakeningButton(button, id, iAwk) {
         awkButton.onclick = openAwakeningDropdown;
     }
     if (iAwk) {
-        awkButton.style.backgroundImage = `url('assets/Awakening_${iAwk}.png')`;
-        teamData[awkButton.id] = iAwk;
+        awkButton.style.backgroundImage = `url('./assets/Awakening_${iAwk}.png')`;
+        teamData[button.id + "Awk"] = iAwk;
         awkButton.dataset.awk = iAwk;
         addAwakeningStats(button, weapons[id], iAwk)
     }
@@ -1415,9 +1414,8 @@ function addBFButton(button, id, iBF) {
     let bfs = ["atk", "skill", "ca", "ma", "dsr", "hp", "def", "dot"];
     let bfButton = document.createElement("button");
     bfButton.classList.add("w-bf", "w-bf-select");
-    bfButton.id = button.id + "BF";
     bfButton.dataset.bf = "atk";
-    bfButton.style.backgroundImage = "url('assets/bf_atk.png')";
+    bfButton.style.backgroundImage = "url('./assets/bf_atk.png')";
     bfButton.onclick = openBFDropdown;
     function openBFDropdown(e) {
         e.stopPropagation();
@@ -1428,14 +1426,14 @@ function addBFButton(button, id, iBF) {
         dropdown.id = "bf-dropdown";
         dropdown.innerHTML = `<ul id="options-list">
             ${bfs.map(bf =>
-            `<li data-bf="${bf}" style="background-image: url('assets/bf_${bf.replace(" ","_")}.png');"></li>`
+            `<li data-bf="${bf}" style="background-image: url('./assets/bf_${bf.replace(" ","_")}.png');"></li>`
         ).join("\n")}
             </ul>`;
         dropdown.querySelectorAll("li").forEach(li => {
             li.onclick = (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                teamData[bfButton.id] = li.dataset.bf;
+                teamData[button.id + "BF"] = li.dataset.bf;
                 bfButton.style.backgroundImage = li.style.backgroundImage;
                 bfButton.dataset.bf = li.dataset.bf;
                 closeBFDropdown(e);
@@ -1450,8 +1448,8 @@ function addBFButton(button, id, iBF) {
         bfButton.onclick = openBFDropdown;
     }
     if (iBF) {
-        bfButton.style.backgroundImage = `url('assets/bf_${iBF}.png')`;
-        teamData[bfButton.id] = iBF;
+        bfButton.style.backgroundImage = `url('./assets/bf_${iBF}.png')`;
+        teamData[button.id + "BF"] = iBF;
         bfButton.dataset.bf = iBF;
         //addBFStats(button, weapons[id], iBF);
     }
@@ -1610,7 +1608,7 @@ function generateWikiTemplate() {
         let bf = teamData[weaponSlot + "BF"];
         if (!weapon) return "";
         if (index != "mh" && !(index == "1" && teamData.mc && auxClasses.includes(teamData.mc)) && ["ultima", "ccw"].includes(weapons[weaponIDs[weapon]].series)) weapon = weapon.split("(")[0].trim();
-        if ((uncap !== 6 && uncap === weapons[weaponIDs[weapon]].maxUncap) || (weapons[weaponIDs[weapon]].series == "dark opus" && uncap == 5)) {
+        if ((uncap != 6 && uncap == weapons[weaponIDs[weapon]].maxUncap) || (weapons[weaponIDs[weapon]].series == "dark opus" && uncap == 5)) {
             uncap = null;
         }
         return `${weapon}${uncap != null ? `|u${index}=${trans ? trans : uncap}` : ""}${awk && awk != "empty" ? `|awk${index}=${awk}` : ""}${bf? `|bf${index}=${bf}` : ""}`;
@@ -1632,7 +1630,7 @@ function generateWikiTemplate() {
         let uncap = teamData[summonSlot + "Uncap"];
         let trans = teamData[summonSlot + "Trans"];
         if (!summon) return "";
-        if (trans === "t5" || (uncap !== 6 && uncap === summons[summonIDs[summon]].maxUncap)) {
+        if (trans === "t5" || (uncap != 6 && uncap == summons[summonIDs[summon]].maxUncap)) {
             return `${summon}`;
         }
         return `${summon}|u${slot}=${trans ? trans.replace("trans", "t") : uncap}`;
@@ -1721,18 +1719,23 @@ function importWikiTextV2(inputData) {
 
 //helper function to get correct item from optionSet
 function setGridData(key, value, options = {}) {
-    let button = document.querySelector(`#${key}`);
-    let optionSet = button.dataset.options;
-    let selectedOption;
-    selectedOption = optionSets[optionSet].find(option => option.label.toLowerCase() == value.toLowerCase() || option.jplabel == value);
-    if (selectedOption == null) {
-        selectedOption = optionSets[optionSet].find(option => option.metatags.includes(value.toLowerCase()));
+    try {
+        value = value.toLowerCase();
+        let button = document.querySelector(`#${key}`);
+        let optionSet = button.dataset.options;
+        let selectedOption;
+        selectedOption = optionSets[optionSet].find(option => option.label.toLowerCase() == value || option.jplabel == value);
+        if (selectedOption == null) {
+            selectedOption = optionSets[optionSet].find(option => option.metatags.includes(value));
+        }
+        if (!selectedOption) {
+            alert(`There was an issue reading the value for ${key}. Please double check it is spelled and capitalized correctly.`);
+            return;
+        }
+        setButtonToItem(button, optionSet, selectedOption, options.uncap ? options.uncap : null, options);
+    } catch (e) {
+        console.log(e);
     }
-    if (!selectedOption) {
-        alert(`There was an issue reading the value for ${key}. Please double check it is spelled and capitalized correctly.`);
-        return;
-    }
-    setButtonToItem(button, optionSet, selectedOption, options.uncap ? options.uncap : null, options);
 }
 
 function exportURL() {
@@ -2119,7 +2122,7 @@ function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
     const missingSkill = () => {
         let weap = document.querySelector(`#${weaponSlot}`);
         let warn = document.createElement("img");
-        warn.src = "assets/warning.png";
+        warn.src = "./assets/warning.png";
         warn.style = `width: 20px; height: 20px; position: absolute; top: 0px; right: 0px;`;
         warn.title = "Skill data for one or more skill on this weapon is missing."
         weap.appendChild(warn);

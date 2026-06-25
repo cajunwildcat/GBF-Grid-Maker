@@ -231,10 +231,14 @@ ul {
     }
 }
 
-.skill-text {
-    overflow-x: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis
+.skill.name {
+    font-size: 15px;
+    font-family: "Noto Serif JP", serif;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    overflow: hidden;
+    display: inline-block;
+    line-height: 25px;
 }
 
 .team-summon {
@@ -780,6 +784,10 @@ ul {
 .dropdown li {
     padding: 5px;
     cursor: pointer;
+
+    &:nth-child(2n) {
+        background-color: rgb(231, 231, 231);
+    }
 }
 
 .dropdown li:hover {
@@ -887,6 +895,7 @@ li.active {
             a {
                 color: #025e9b;
             }
+
             a:visited {
                 color: #9b029b;
             }
@@ -896,6 +905,7 @@ li.active {
                 width: 22px;
                 margin-right: 5px;
             }
+
             #kofi-button {
                 margin-top: 10px;
             }
