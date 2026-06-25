@@ -1237,11 +1237,12 @@ function addSummonUncapButtons(button, id, uncap, trans) {
         teamData[button.id + "Uncap"] = u;
         uncapDiv.childNodes.forEach(star => star.dataset.toggled = star.dataset.uncap <= u);
         setButtonBackground(button, null, "summons", u, id);
-        delete teamData[button.id + "Trans"];
+        if (u != 6) delete teamData[button.id + "Trans"];
         if (tr = uncapDiv.querySelector(".trans-star")) tr.dataset.trans = "";
     }
     if (maxUncap == 6) {
         trans = teamData[button.id + "Trans"] = trans ? trans : uncap == 6 ? "t5" : null;
+        if (trans) starClick(6);
         let star = document.createElement("button");
         star.classList.add("uncap-button");
         star.classList.add("trans-star");
