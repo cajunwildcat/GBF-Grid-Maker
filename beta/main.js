@@ -307,7 +307,7 @@ window.onload = async (e) => {
     // Make weapon grid elements draggable
     InitWeaponsContainer();
 
-    importURL();
+    importURL(new URLSearchParams(window.location.search));
 };
 
 const optionSets = {
@@ -1641,6 +1641,10 @@ function exportWikiText() {
 }
 
 function importWikiTextV2(inputData) {
+    if (inputData.includes("https://cajunwildcat.github.io/GBF-Grid-Maker")) {
+        importURL(new URLSearchParams(inputData.split('/?')[1]));
+        return;
+    }
     //use old importer for old format compatibility
     if (inputData.includes("|team=")) {
         importDataV1(inputData);
@@ -1870,15 +1874,14 @@ function exportURL() {
     return window.location.origin + window.location.pathname + `?c=${char.join("")}&w=${weap.join("")}&s=${summ.join("")}&mc=${mc.join("")}${teamData.quickSummon ? `&qs=${teamData.quickSummon}` : ""}${wskill.join("")}`;
 }
 
-function importURL() {
+function importURL(params) {
+    if (params.size == 0) return;
+
     //clear existing data
     document.querySelectorAll(".grid-input").forEach(button => {
         gridInputContextMenu(null, button);
     });
     teamData = {};
-
-    const params = new URLSearchParams(window.location.search);
-    if (params.size == 0) return;
 
     const charData = params.get("c").split(",");
     if (charData != "") {
