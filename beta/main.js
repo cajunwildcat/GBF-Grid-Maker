@@ -491,7 +491,7 @@ function setupButtonSearch() {
 function setupStaticButtons() {
     //wikitext import/export
     document.querySelector("#export-wikitext-button").onclick = () => {
-        document.querySelector("#import-export-text").value = generateWikiTemplate();
+        document.querySelector("#import-export-text").value = exportWikiText();
     }
 
     document.querySelector("#import-wikitext-button").onclick = () => {
@@ -799,7 +799,7 @@ function updateActiveOption() {
 /// 
 
 function setButtonToItem(button, optionSet, selectedOption, uncap = null, options = {}) {
-    Object.keys(teamData)?.filter(key => key.includes(button.id)).forEach(key => delete teamData[key]);
+    Object.keys(teamData)?.filter(key => key === button.id || key.match(new RegExp(`${button.id}[^\\d]`))).forEach(key => delete teamData[key]);
     calcData.wSkills = calcData.wSkills.filter(s => s.addedBy != button.id);
 
     let itemName = selectedOption.label;
@@ -1482,7 +1482,7 @@ function addBulletButtons(weaponID) {
 ///
 /// Export / Import
 ///
-function generateWikiTemplate() {
+function exportWikiText() {
     return `{{TeamSpread
 |class=${getTeamData("mc")}${teamData.mino ? `|mino=${teamData.mino}` : ""}${teamData.shield ? `|shield=${teamData.shield}` : ""}${getBulletInfo()}
 |char1=${getCharacterInfo("char1")}
