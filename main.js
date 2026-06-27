@@ -1824,7 +1824,7 @@ function exportURL() {
             let id = (summonIDs[teamData[key]] - 2000000000) / 1000;
             summ.push(decimalToBase62(id));
             if (teamData[`${key}Trans`] && teamData[`${key}Trans`] != "t5") summ.push(`.${teamData[`${key}Trans`]}`);
-            else if (teamData[`${key}Uncap`] !== summons[summonIDs[teamData[key]]].maxUncap) summ.push(`.${teamData[`${key}Uncap`]}`);
+            else if (!teamData[`${key}Trans`] && teamData[`${key}Uncap`] !== summons[summonIDs[teamData[key]]].maxUncap) summ.push(`.${teamData[`${key}Uncap`]}`);
         }
         if (i < 7) summ.push(",");
     }
