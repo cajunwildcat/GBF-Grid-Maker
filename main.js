@@ -307,7 +307,7 @@ window.onload = async (e) => {
     // Make weapon grid elements draggable
     InitWeaponsContainer();
 
-    importURL();
+    importURL(new URLSearchParams(window.location.search));
 };
 
 const optionSets = {
@@ -491,7 +491,7 @@ function setupButtonSearch() {
 function setupStaticButtons() {
     //wikitext import/export
     document.querySelector("#export-wikitext-button").onclick = () => {
-        document.querySelector("#import-export-text").value = generateWikiTemplate();
+        document.querySelector("#import-export-text").value = exportWikiText();
     }
 
     document.querySelector("#import-wikitext-button").onclick = () => {
@@ -799,7 +799,7 @@ function updateActiveOption() {
 /// 
 
 function setButtonToItem(button, optionSet, selectedOption, uncap = null, options = {}) {
-    Object.keys(teamData)?.filter(key => key.includes(button.id)).forEach(key => delete teamData[key]);
+    Object.keys(teamData)?.filter(key => key === button.id || key.match(new RegExp(`${button.id}[^\\d]`))).forEach(key => delete teamData[key]);
     calcData.wSkills = calcData.wSkills.filter(s => s.addedBy != button.id);
 
     let itemName = selectedOption.label;
@@ -1482,7 +1482,7 @@ function addBulletButtons(weaponID) {
 ///
 /// Export / Import
 ///
-function generateWikiTemplate() {
+function exportWikiText() {
     return `{{TeamSpread
 |class=${getTeamData("mc")}${teamData.mino ? `|mino=${teamData.mino}` : ""}${teamData.shield ? `|shield=${teamData.shield}` : ""}${getBulletInfo()}
 |char1=${getCharacterInfo("char1")}
@@ -1641,6 +1641,10 @@ function generateWikiTemplate() {
 }
 
 function importWikiTextV2(inputData) {
+    if (inputData.includes("https://cajunwildcat.github.io/GBF-Grid-Maker")) {
+        importURL(new URLSearchParams(inputData.split('/?')[1]));
+        return;
+    }
     //use old importer for old format compatibility
     if (inputData.includes("|team=")) {
         importDataV1(inputData);
@@ -1820,7 +1824,7 @@ function exportURL() {
             let id = (summonIDs[teamData[key]] - 2000000000) / 1000;
             summ.push(decimalToBase62(id));
             if (teamData[`${key}Trans`] && teamData[`${key}Trans`] != "t5") summ.push(`.${teamData[`${key}Trans`]}`);
-            else if (teamData[`${key}Uncap`] !== summons[summonIDs[teamData[key]]].maxUncap) summ.push(`.${teamData[`${key}Uncap`]}`);
+            else if (!teamData[`${key}Trans`] && teamData[`${key}Uncap`] !== summons[summonIDs[teamData[key]]].maxUncap) summ.push(`.${teamData[`${key}Uncap`]}`);
         }
         if (i < 7) summ.push(",");
     }
@@ -1870,15 +1874,14 @@ function exportURL() {
     return window.location.origin + window.location.pathname + `?c=${char.join("")}&w=${weap.join("")}&s=${summ.join("")}&mc=${mc.join("")}${teamData.quickSummon ? `&qs=${teamData.quickSummon}` : ""}${wskill.join("")}`;
 }
 
-function importURL() {
+function importURL(params) {
+    if (params.size == 0) return;
+
     //clear existing data
     document.querySelectorAll(".grid-input").forEach(button => {
         gridInputContextMenu(null, button);
     });
     teamData = {};
-
-    const params = new URLSearchParams(window.location.search);
-    if (params.size == 0) return;
 
     const charData = params.get("c").split(",");
     if (charData != "") {
