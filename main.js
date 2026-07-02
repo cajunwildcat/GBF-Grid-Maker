@@ -815,7 +815,7 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
                 gridInputContextMenu(null, button.querySelector(".class-gear"));
                 button.querySelector(".class-gear").remove();
             }
-            if (["Manadiver", "Paladin", "Shieldsworn"].includes(itemName)) addClassGear(button, itemName);
+            if (["Manadiver", "Wizard Origin", "Paladin", "Shieldsworn"].includes(itemName)) addClassGear(button, itemName);
             if (itemName == "Soldier") {
                 if (teamData.mh && weapons[weaponIDs[teamData.mh]].type == "gun") addBulletButtons(weaponIDs[teamData.mh]);
             }
@@ -983,6 +983,7 @@ function addClassGear(button, className) {
     let options, id;
     switch (className) {
         case "Manadiver":
+        case "Wizard Origin":
             id = options = "mino";
             break;
         case "Shieldsworn":
@@ -1664,7 +1665,7 @@ function importWikiTextV2(inputData) {
     }
 
     if (data.class) setGridData("mc", data.class);
-    if (data.class == "Manadiver" && data.mino) setGridData("mino", data.mino);
+    if ((data.class == "Manadiver" || data.class == "Wizard Origin") && data.mino) setGridData("mino", data.mino);
     if ((data.class == "Paladin" || data.class == "Shieldsworn") && data.shield) setGridData("shield", data.shield);
     //characters
     for (let i = 1; i <= 8; i++) {
