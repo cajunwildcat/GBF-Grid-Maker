@@ -60,7 +60,7 @@ const draconicSkillOptions = {
         { label: "Tempest Teluma", jplabel: "暴風", metatags: ["wind", "tempest", "emerald", "翠", "風"], img: "./assets/skill_damage_red_4.png" },
         { label: "Aureole Teluma", jplabel: "後光", metatags: ["light", "aureole", "white", "白", "光"], img: "./assets/skill_damage_red_5.png" },
         { label: "Malice Teluma", jplabel: "闇禍", metatags: ["dark", "malice", "black", "黒", "闇"], img: "./assets/skill_damage_red_6.png" },
-        { label: "Salvation Teluma", jplabel: "燦護のテルマ", metatags: ["hp", "salvation", "fortitude"], img: "./assets/skill_draconic_hp_add_5.png" },
+        { label: "Salvation Teluma", jplabel: "燦護のテルマ", metatags: ["hp", "salvation", "fortitude"], img: "./assets/skill_draconic_hp_add_<element>.png" },
         { label: "Oblivion Teluma", jplabel: "冥烈のテルマ", metatags: ["amp", "oblivion", "magnitude"], img: "./assets/skill_item_15009.jpg" },
     ],
     skill3: [

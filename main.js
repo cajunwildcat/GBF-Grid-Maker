@@ -1046,6 +1046,7 @@ function addWeaponSkills(button, weaponID, uncap) {
         else if (weapon.series === "draconic" || weapon.series === "draconicprovenance") {
             skill = document.createElement("button");
             skill = addSelectableWeaponSkill(skill, "draconicSkill2");
+            skill.dataset.element = weapon.element;
         }
         else if (weapon.series === "ultima") {
             skill = document.createElement("button");
