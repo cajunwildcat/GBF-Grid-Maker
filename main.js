@@ -1123,7 +1123,8 @@ function addUncapButton(button, optionSet, selectedOption, uncap, id, trans) {
         case "weapons": maxUncap = weapons[id].maxUncap; break;
     }
     if (uncap == null) {
-        uncap = maxUncap;
+        if (optionSet == "characters") uncap = 4;
+        else uncap = maxUncap;
     }
     teamData[button.id + "Uncap"] = uncap;
     let uncapButton;
@@ -1890,8 +1891,8 @@ function importURL(params) {
         for (let i = 0; i < charData.length; i++) {
             if (charData[i] == "") continue;
             let id = charData[i].match("\\w[^\\W]+")[0];
-            let uncap = charData[i].match("\\.\\d");
-            if (uncap) uncap = uncap[0][1];
+            let uncap = charData[i].match("\\.t?\\d");
+            if (uncap) uncap = uncap[0].slice(1);
             let awk = charData[i].match("\\$\\d");
             if (awk) awk = awk[0][1];
             let style = charData[i].match("\\%\\d");
