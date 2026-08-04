@@ -711,6 +711,7 @@ function gridInputContextMenu(event, button = null) {
 
     button.querySelector(".uncap")?.remove();
     button.querySelector(".w-awakening")?.remove();
+    button.querySelector(".w-bf")?.remove();
     button.querySelector(".c-awakening")?.remove();
     if (button.querySelector(".quick-summon-toggle")) {
         if (button.querySelector(".quick-summon-toggle").dataset.toggled == "true") delete teamData.quickSummon;
