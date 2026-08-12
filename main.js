@@ -12,7 +12,10 @@ const worldHarps = [1040815000, 1040815100, 1040815200, 1040815300, 1040815400];
 const beastSummons = [2040376000, 2040377000, 2040378000, 2040379000, 2040449000, 2040450000];
 const auxClasses = ["Gladiator", "Chrysaor", "Iatromantis", "Street King", "Viking"];
 let teamData = {};
-let calcData = { wSkills: [], chars: {}, auraBoosts: {} };
+let calcData = { 
+chars: {},  weaps: [], summs: [],
+cSkills: [], wSkills: [], sSkills: [],
+};
 let characters, summons, weapons, abilities, classes, minos, shields, bullets;
 let characterIDs = {}, summonIDs = {}, weaponIDs = {};
 let filters = {
@@ -828,7 +831,7 @@ function setButtonToItem(button, optionSet, selectedOption, uncap = null, option
                 toggleUnlimited();
             }
             let char = characters[selectedOption.metatags[0]];
-            calcData.chars[button.id] = {
+            calcData.chars[button.id.replace("char", "")] = {
                 tags: [`element:${char.element}`, ...char.weapon.map(w => `weapon:${w}`), ...char.race.map(r => `race:${r}`)].map(e => e.toLowerCase())
             }
 
@@ -1530,6 +1533,7 @@ function exportWikiText() {
 |quick=${teamData.quickSummon ? teamData.quickSummon : ""}
 
 |source=
+|setup=
 |comments=
 |rotation=
 }}`;
@@ -2084,47 +2088,77 @@ async function generateImage() {
 /// Stat Calcs
 ///
 
-function calcCharStats(charSlot) {
+function calcCharStats(charSlot, hp = 100, turn = 1, arcarum = false) {
     if (!enableCalcs) return;
+    let skillInfo = {
+        hp: hp,
+        turn: turn,
+        arcarum: arcarum
+    }
     let char = calcData.chars[charSlot];
-    let stats = calcData.wSkills.filter(s => char.tags.includes(s.affects) || s.affects == "all");
-    stats = stats.map(s => { return { ...s } });
-    stats.forEach(s => {
-        if (!s.boostedBy) return;
-        s.value = s.value * (1 + calcData.wSkills.filter(m => m.aura == s.boostedBy).reduce((sum, cur) => sum += cur.value, 0));
+    let wSkills = calcData.wSkills.filter(s => char.tags.includes(s.affects) || s.affects == "all");
+    wSkills = wSkills.map(s => { return { ...s } });
+    let sSkills = calcData.sSkills;
+
+    // Calc all total aura boosts
+    let auraBoosts = {}
+    calcData.wSkills.filter(m => m.aura !== undefined).forEach(a => {
+        let aura = a.aura;
+        if (auraBoosts[aura]) return;
+        let boost = Math.min(gridSkillCaps[a.statName].cap, calcData.wSkills.filter(m => m.aura == aura).reduce((sum, cur) => sum += cur.value, 0));
+        auraBoosts[aura] = boost;
     });
-    stats = Object.values(stats.reduce((acc, obj) => {
+    sSkills.filter(s => s.aura != undefined).forEach(s =>{
+        let aura = s.aura;
+        if (!auraBoosts[aura]) auraBoosts[aura] = 0;
+        auraBoosts[aura] += s.value;
+    });
+    
+
+    // Apply aura boosts to weapon skills
+    wSkills = wSkills.map(s => {
+        if (typeof(s.value) == "function") s.value = s.value(skillInfo);
+        if (s.boostedBy) s.value = s.value + (s.value * (auraBoosts[s.boostedBy] || 1)) / 100;
+        return s;
+    });
+
+    // Sum each boost
+    wSkills = Object.values(wSkills.reduce((acc, obj) => {
         const key = `${obj.frame || "noframe"}-${obj.statName}`;
         if (!acc[key]) acc[key] = { value: obj.value, statName: obj.statName, frame: obj.frame };
         else acc[key].value += obj.value;
         return acc;
     }, {}));
-    stats.forEach(s => {
-        if (s.frame !== "grid") return;
+
+    // Apply Grid Stat Caps and Grid Overskills
+    wSkills.forEach(s => {
         let overcap = s.value;
-        if (s.statName == "hp") console.log(s.value);
-        s.value = truncToDigit(Math.min(s.value, gridSkillCaps[s.statName].cap), 5);
+        //if (s.statName == "hp") console.log(s.value);
+        s.value = Math.min(s.value, gridSkillCaps[s.statName].cap);
         overcap -= s.value;
         //TODO: handle overcap
     });
-    console.log(stats);
+
+    wSkills.sort((a,b) => gridSkillCaps[a.statName].sortOrder - gridSkillCaps[b.statName].sortOrder)
+    console.log(wSkills);
 }
 
 function addSummonAuraCalc(summonSlot, summonID, uncap) {
     if (!enableCalcs) return;
-    calcData.wSkills = calcData.wSkills.filter(s => s.addedBy != summonSlot);
+    calcData.sSkills = calcData.sSkills.filter(s => s.addedBy != summonSlot);
     let summonAura = summonAuraData[summonID];
     if (!summonAura) return;
-    if (summonSlot == "s-main" || summonSlot == "s-support") {
-        summonAura = summonAura["main"];
-        if (!summonAura) { console.log(`There is no main/support aura data for ${summons[summonID].pageName}`); }
-        if (uncap == 6) uncap = teamData[`${summonSlot}Trans`];
-        let boosts = summonAura[uncap];
-        boosts = boosts.map(b => {
-            return { ...b, addedBy: summonSlot, frame: "summon" };
-        });
-        calcData.wSkills.push(...boosts);
-    }
+    let aura;
+    if (summonSlot == "s-main" || summonSlot == "s-support") aura = "main";
+    else aura = "sub"
+    summonAura = summonAura[aura];
+    if (!summonAura) { console.log(`There is no ${aura} aura data for ${summons[summonID].pageName}`); return; }
+    if (uncap == 6) uncap = teamData[`${summonSlot}Trans`];
+    let boosts = summonAura[uncap];
+    boosts = boosts.map(b => {
+        return { ...b, addedBy: summonSlot, frame: "summon" };
+    });
+    calcData.sSkills.push(...boosts);
 }
 
 function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
@@ -2138,15 +2172,16 @@ function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
         weap.appendChild(warn);
         console.log(`${skill} does not have skill data.`);
     }
-    let skillLevel = teamData[weaponSlot + "Trans"] ? teamData[weaponSlot + "Trans"] : teamData[weaponSlot + "Uncap"];
+    let skillLevel = teamData[weaponSlot + "Trans"] ? teamData[weaponSlot + "Trans"] : teamData[weaponSlot + "Uncap"]? teamData[weaponSlot + "Uncap"] : `${weapons[weaponIDs[teamData[weaponSlot]]]}`;
     switch (skillLevel) {
-        default: skillLevel = 10; break;
-        case 4: skillLevel = 15; break;
+        case "0":
+        case "3": skillLevel = 10; break;
+        case "4": skillLevel = 15; break;
         case "t1":
         case "t2":
         case "t3":
         case "t4":
-        case 5: skillLevel = 20; break;
+        case "5": skillLevel = 20; break;
         case "t5": skillLevel = 25; break;
     }
     let skillName = wSkillInfo.name;
@@ -2175,12 +2210,14 @@ function addWeaponSkillCalcData(wSkillInfo, weaponSlot) {
         } catch (e) { try { skill = [...skill[size][skillLevel]] } catch (e) { missingSkill(); return; } }
         skill = skill.map(stat => {
             let statName = stat.statName;
-            if (statName == "might" || statName == "stamina" || statName == "emnity") statName = "omega " + statName;
+            if (statName == "might" || statName == "emnity") statName = "omega " + statName;
             let affects;
             switch (stat.affects) {
                 case "<element>": affects = `element:${element}`; break;
             }
-            return { ...stat, statName: statName, affects, addedBy: weaponSlot, boostedBy: boost, frame: "grid" };
+            let res = { ...stat, statName: statName, affects, addedBy: weaponSlot, frame: "grid" };
+            if (!res.unboosted) res.boostedBy = boost;
+            return res;
         });
         calcData.wSkills.push(...skill);
     }
@@ -2218,8 +2255,8 @@ function addAwakeningStats(button, weapon, awk) {
     switch (awk) {
         case "attack":
             switch (weapon.awakening) {
-                case "revansmkII": stats = [{ value: 35, statName: "might", affects: "<element>" }, { value: 15, statName: "ele atk", affects: "<element>" }, { value: 10, statName: "ex might", affects: "<element>" }]
-                    break;
+                case "revansmkII": stats = [{ value: 35, statName: "might", affects: "<element>" }, { value: 15, statName: "ele atk", affects: "<element>" }, { value: 10, statName: "ex might", affects: "<element>" }]; break;
+                case "celestial": stats = [{ value: 10, statName: "might", affects: "<weapon>" }, { value: 10, statName: "ex might", affects: "<weapon>" }, { value: 5, statName: "ta", affects: "<weapon>" }, { value: 5, statName: "na dmg cap", affects: "<weapon>" }]; break;
                 default: break;
             }
             break;
@@ -2237,6 +2274,7 @@ function addAwakeningStats(button, weapon, awk) {
         s.frame = "grid";
         switch (s.affects) {
             case "<element>": s.affects = `element:${weapon.element}`; break;
+            case "<weapon>": s.affects = `weapon:${weapon.type}`; break;
         }
     });
     calcData.wSkills.push(...stats);
