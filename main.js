@@ -28,15 +28,15 @@ let jp = false;
 let showWiki = false;
 let djeeta = true;
 
-const useTestData = false;
 const enableCalcs = false;
 
 window.onload = async (e) => {
     setupStaticButtons();
 
-    await fetch(useTestData ? "./test data/characters.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/characters.json")
+    await fetch("https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/grid-maker-mins.json")
         .then(function (response) { return response.json(); })
-        .then((response) => characters = response);
+        .then((response) => minData = response);
+    characters = minData.characters;
     for (let id in characters) {
         let c = characters[id];
         let name = c.pageName;
@@ -100,9 +100,7 @@ window.onload = async (e) => {
         });
     }
 
-    await fetch(useTestData ? "./test data/summons.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/summons.json")
-        .then(function (response) { return response.json(); })
-        .then((response) => summons = response);
+    summons = minData.summons;
     for (let id in summons) {
         let s = summons[id];
         let name = s.pageName;
@@ -158,9 +156,7 @@ window.onload = async (e) => {
         });
     }
 
-    await fetch(useTestData ? "./test data/weapons.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/weapons.json")
-        .then(function (response) { return response.json(); })
-        .then((response) => weapons = response);
+    weapons = minData.weapons;
     for (let id in weapons) {
         let w = weapons[id];
         let name = w.pageName;
@@ -203,9 +199,7 @@ window.onload = async (e) => {
         });
     }
 
-    await fetch(useTestData ? "./test data/abilities.json" : "https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/abilities.json")
-        .then(function (response) { return response.json(); })
-        .then((response) => abilities = response);
+    abilities = minData.abilities;
     //Abilities that are sub options from a selectable ability or otherwise not settable
     let abilityExclusions = ["Affliction Arrow", "Sweeping Arrow", "Deepshot Arrow", "Ensemble of Heroes", "Ensemble of Warriors", "Sky Splitter", "Salt of Cleansing Spirits", "Combat Spirit Infusion", "Spirit Suppression"]
     for (let id in abilities) {
@@ -225,9 +219,7 @@ window.onload = async (e) => {
         });
     }
 
-    await fetch("https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/classes.json")
-        .then(function (response) { return response.json(); })
-        .then((response) => classes = response);
+    classes = minData.classes;
     for (let id in classes) {
         cl = classes[id];
         let metas = [cl.imgid, cl.jpname, id.toString()];
@@ -243,9 +235,7 @@ window.onload = async (e) => {
         });
     }
 
-    await fetch("https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/minos.json")
-        .then(function (response) { return response.json(); })
-        .then((response) => minos = response);
+    minos = minData.minos;
     for (let id in minos) {
         let m = minos[id];
         let metas = [id];
@@ -261,9 +251,7 @@ window.onload = async (e) => {
         });
     }
 
-    await fetch("https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/shields.json")
-        .then(function (response) { return response.json(); })
-        .then((response) => shields = response);
+    shields = minData.shields;
     for (let id in shields) {
         let s = shields[id];
         let metas = [id];
@@ -279,9 +267,7 @@ window.onload = async (e) => {
         });
     }
 
-    await fetch("https://raw.githubusercontent.com/cajunwildcat/The-GrandCypher/main/bullets.json")
-        .then(function (response) { return response.json(); })
-        .then((response) => bullets = response);
+    bullets = minData.bullets;
     for (let id in bullets) {
         let b = bullets[id];
         let type = ["", "parabellum", "rifle", "cartridge", "aetherial"][id.toString()[0]];
