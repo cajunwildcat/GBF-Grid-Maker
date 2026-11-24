@@ -1834,10 +1834,10 @@ function exportURL() {
         mc.push(id.join("_"));
     }
     if (teamData.shield) {
-        mc.push(`&shield=${Object.values(shieldOptions).find(v => v.metatags.includes(teamData.shield)).metatags[0]}`);
+        mc.push(`&shield=${Object.values(shieldOptions).find(v => v.metatags.includes(teamData.shield) || teamData.shield == v.label).metatags[0]}`);
     }
     if (teamData.mino) {
-        mc.push(`&mino=${Object.values(minoOptions).find(v => v.metatags.includes(teamData.mino)).metatags[0]}`);
+        mc.push(`&mino=${Object.values(minoOptions).find(v => v.metatags.includes(teamData.mino) || teamData.mino == v.label).metatags[0]}`);
     }
     //selectable weapon skills
     if (teamData.ccwSkill2) {
