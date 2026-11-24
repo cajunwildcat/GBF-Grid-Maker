@@ -945,6 +945,13 @@ function setButtonBackground(button, selectedOption, optionSet, uncap, id) {
             if (backgroundUrl.includes("<element>")) {
                 backgroundUrl = backgroundUrl.replace("<element>", elements[button.dataset.element]);
             }
+            if (backgroundUrl.includes("<boost>")) {
+                let rep = "m_";
+                if (teamData[`wp${button.parentElement.parentElement.id.slice(-1)}`].includes("Repudiation")) {
+                    rep = ""
+                }
+                backgroundUrl = backgroundUrl.replace("<boost>", rep);
+            }
             if (backgroundUrl.includes("<weapon type>")) {
                 backgroundUrl = backgroundUrl.replace("<weapon type>", weaponTypes[button.dataset.weaponType]);
             }
